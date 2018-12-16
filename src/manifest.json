@@ -1,6 +1,7 @@
 {
 
   "icon": "icon.png",
+  "identifier": "com.saint_loup.sketch.french-typography",
   "commands": [
     {
       "name": "Search and replace",

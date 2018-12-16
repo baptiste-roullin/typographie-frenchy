@@ -37,19 +37,20 @@ const DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
 let DEBUG = false;
 
 export function initPlugin(context) {
-  if (DEBUG) {
-    testRegex(context.actionContext);
-  } console.log("param autoReplace devrait à 1, il est à : ", Settings.settingForKey("autoReplace"));
+  console.log(context);
+  // if (DEBUG) {
+  //   testRegex(context.actionContext);
+  // } console.log("param autoReplace devrait à 1, il est à : ", Settings.settingForKey("autoReplace"));
 
 
-  if (!Settings.settingForKey("USE_NNBSP")) {
-    Settings.setSettingForKey("USE_NNBSP", "1");
-    console.log("param USE_NNBSP devrait à 1, il est à : ", Settings.settingForKey("USE_NNBSP"));
-  }
-  if (!Settings.settingForKey("autoReplace")) {
-    Settings.setSettingForKey("autoReplace", "1");
+  // if (!Settings.settingForKey("USE_NNBSP")) {
+  //   Settings.setSettingForKey("USE_NNBSP", "1");
+  //   console.log("param USE_NNBSP devrait à 1, il est à : ", Settings.settingForKey("USE_NNBSP"));
+  // }
+  // if (!Settings.settingForKey("autoReplace")) {
+  //   Settings.setSettingForKey("autoReplace", "1");
 
-  }
+  // }
 
 }
 
