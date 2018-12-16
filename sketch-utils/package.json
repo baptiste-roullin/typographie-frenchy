@@ -1,0 +1,39 @@
+{
+  "_from": "sketch-utils",
+  "_id": "sketch-utils@0.1.2",
+  "_inBundle": false,
+  "_integrity": "sha512-sLWDIKrcnqNC2cLoO6oAeJALlG6C9tWOIhJnB6v99oqO0NJsg3kX//I16l3nwGtpYgHGKTPPRHC/KMnhO0xkIQ==",
+  "_location": "/sketch-utils",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "sketch-utils",
+    "name": "sketch-utils",
+    "escapedName": "sketch-utils",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/sketch-utils/-/sketch-utils-0.1.2.tgz",
+  "_shasum": "7c4d39ba19abe581e727d08c2cb70465bb74a81c",
+  "_spec": "sketch-utils",
+  "_where": "/Users/baptiste/french-typo",
+  "author": {
+    "name": "Mathieu Dutour"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "A collection of useful functions to deal with Sketch's CocoaScript bridge",
+  "license": "MIT",
+  "main": "index.js",
+  "name": "sketch-utils",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.1.2"
+}
