@@ -33,12 +33,6 @@
       "identifier": "disableAutoReplace",
       "script": "command.js",
       "handler": "disableAutoReplace"
-    },
-    {
-      "name": "natif",
-      "identifier": "settings",
-      "script": "command.js",
-      "handler": "settings"
     }
   ],
   "menu": {

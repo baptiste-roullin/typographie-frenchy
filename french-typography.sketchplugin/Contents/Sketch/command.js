@@ -370,7 +370,6 @@ exports.replaceWNBSPbyNNBSP = replaceWNBSPbyNNBSP;
 exports.disableAutoReplace = disableAutoReplace;
 exports.use_NNBSP = use_NNBSP;
 exports.fixLayer = fixLayer;
-exports.settings = settings;
 // todo : rendre compatible que le param système de quote intelligent soit activé ou non.
 // inspiration :  https://github.com/mathieudutour/git-sketch-plugin/blob/master/src/preferences.js
 // vraie UI  pour les dialogs
@@ -409,8 +408,7 @@ var DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
 //FLAGS
 var DEBUG = false;
 
-function initPlugin(context) {
-  console.log(context);
+function initPlugin(contex) {
   // if (DEBUG) {
   //   testRegex(context.actionContext);
   // } console.log("param autoReplace devrait à 1, il est à : ", Settings.settingForKey("autoReplace"));
@@ -424,6 +422,7 @@ function initPlugin(context) {
   //   Settings.setSettingForKey("autoReplace", "1");
 
   // }
+
 }
 
 function replaceNNBSPbyWNBSP(context) {
@@ -463,29 +462,32 @@ function testRegex(context) {
 // fonction qui ouvre un menu de paramètres depuis le menu.
 function disableAutoReplace(context) {
   var dialogWindow = COSAlertWindow.alloc().init();
+  var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
+  dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
 
   var checkboxAutoReplace = NSButton.alloc().initWithFrame(NSMakeRect(0, 0, 200, 23));
   checkboxAutoReplace.setButtonType(NSSwitchButton);
   checkboxAutoReplace.setBezelStyle(0);
   checkboxAutoReplace.setTitle("Remplacement automatique");
+
   checkboxAutoReplace.setState(NSOffState);
 
   dialogWindow.addAccessoryView(checkboxAutoReplace);
   return dialogWindow.runModal();
 
   // si false : l'utilisateur a cliqué sur cancel, donc on arrête la fonction.
-  if (!selection[2]) {
-    return;
-  }
-  console.log(selection);
-  if (selection[1] == "0") {
-    // s'il répond oui (première réponse dans l'array)
-    Settings.setSettingForKey("autoReplace", "0"); // on passe le setting à désactivé
-    console.log("param autoReplace devrait à 0, il est à : ", Settings.settingForKey("autoReplace"));
-  } else {
-    Settings.setSettingForKey("autoReplace", "1");
-    console.log("param autoReplace devrait à 1, il est à : ", "ici ?", Settings.settingForKey("autoReplace"));
-  }
+  // if (!selection[2]) {
+  //   return
+  //  }
+  // console.log(selection);
+  // if (selection[1] == "0") {
+  //   // s'il répond oui (première réponse dans l'array)
+  //   Settings.setSettingForKey("autoReplace", "0"); // on passe le setting à désactivé
+  //   console.log("param autoReplace devrait à 0, il est à : ", Settings.settingForKey("autoReplace"));
+  // } else {
+  //   Settings.setSettingForKey("autoReplace", "1");
+  //   console.log("param autoReplace devrait à 1, il est à : ", "ici ?", Settings.settingForKey("autoReplace"));
+  //}
 }
 
 function use_NNBSP(context) {
@@ -666,10 +668,10 @@ function fixLayer(context) {
   var startDate = new Date();
 
   if (context.actionContext.old) {
-    var _selection = sketch.fromNative(context.actionContext.layer);
+    var selection = sketch.fromNative(context.actionContext.layer);
 
-    var newText = replaceString(_selection.text);
-    _selection.text = newText.string;
+    var newText = replaceString(selection.text);
+    selection.text = newText.string;
 
     var count = newText.count;
     var endDate = new Date();
@@ -678,28 +680,15 @@ function fixLayer(context) {
       sketch.UI.message(String(count) + " remplacement effectu\xE9 en  " + duration, document);
     }
 
-    if (Settings.settingForKey("USE_NNBSP") == "1" && RegExp(NNBSP).test(_selection)) {
+    if (Settings.settingForKey("USE_NNBSP") == "1" && RegExp(NNBSP).test(selection)) {
       console.log("replaceWNBSPbyNNBSP n'a pas marché");
     }
-    if (Settings.settingForKey("USE_NNBSP") == "0" && RegExp(WNBSP).test(_selection)) {
+    if (Settings.settingForKey("USE_NNBSP") == "0" && RegExp(WNBSP).test(selection)) {
       console.log("replaceNNBSPbyWNBSP n'a pas marché");
     }
   } else {
     throw new Error("unable to access selection");
   }
-}
-
-function settings(context) {
-  var dialogWindow = COSAlertWindow.alloc().init();
-
-  var checkbox = NSButton.alloc().initWithFrame(NSMakeRect(0, 0, 200, 23));
-  checkbox.setButtonType(NSSwitchButton);
-  checkbox.setBezelStyle(0);
-  checkbox.setTitle("A fancy copy here");
-  checkbox.setState(NSOffState);
-
-  dialogWindow.addAccessoryView(checkbox);
-  dialogWindow.runModal();
 }
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
@@ -2988,5 +2977,4 @@ that['fixLayer'] = __skpm_run.bind(this, 'fixLayer');
 that['onRun'] = __skpm_run.bind(this, 'default');
 that['initPlugin'] = __skpm_run.bind(this, 'initPlugin');
 that['use_NNBSP'] = __skpm_run.bind(this, 'use_NNBSP');
-that['disableAutoReplace'] = __skpm_run.bind(this, 'disableAutoReplace');
-that['settings'] = __skpm_run.bind(this, 'settings')
+that['disableAutoReplace'] = __skpm_run.bind(this, 'disableAutoReplace')

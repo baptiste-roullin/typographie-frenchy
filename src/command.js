@@ -36,8 +36,7 @@ const DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
 //FLAGS
 let DEBUG = false;
 
-export function initPlugin(context) {
-  console.log(context);
+export function initPlugin(contex) {
   // if (DEBUG) {
   //   testRegex(context.actionContext);
   // } console.log("param autoReplace devrait à 1, il est à : ", Settings.settingForKey("autoReplace"));
@@ -93,29 +92,32 @@ function testRegex(context) {
 // fonction qui ouvre un menu de paramètres depuis le menu.
 export function disableAutoReplace(context) {
   var dialogWindow = COSAlertWindow.alloc().init();
+   var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
+   dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
 
   var checkboxAutoReplace = NSButton.alloc().initWithFrame(NSMakeRect(0, 0, 200, 23));
   checkboxAutoReplace.setButtonType(NSSwitchButton);
   checkboxAutoReplace.setBezelStyle(0);
   checkboxAutoReplace.setTitle("Remplacement automatique");
+  
   checkboxAutoReplace.setState(NSOffState);
 
   dialogWindow.addAccessoryView(checkboxAutoReplace);
   return dialogWindow.runModal();
 
   // si false : l'utilisateur a cliqué sur cancel, donc on arrête la fonction.
-  if (!selection[2]) {
-    return
-  }
-  console.log(selection);
-  if (selection[1] == "0") {
-    // s'il répond oui (première réponse dans l'array)
-    Settings.setSettingForKey("autoReplace", "0"); // on passe le setting à désactivé
-    console.log("param autoReplace devrait à 0, il est à : ", Settings.settingForKey("autoReplace"));
-  } else {
-    Settings.setSettingForKey("autoReplace", "1");
-    console.log("param autoReplace devrait à 1, il est à : ", "ici ?", Settings.settingForKey("autoReplace"));
-  }
+  // if (!selection[2]) {
+  //   return
+  //  }
+  // console.log(selection);
+  // if (selection[1] == "0") {
+  //   // s'il répond oui (première réponse dans l'array)
+  //   Settings.setSettingForKey("autoReplace", "0"); // on passe le setting à désactivé
+  //   console.log("param autoReplace devrait à 0, il est à : ", Settings.settingForKey("autoReplace"));
+  // } else {
+  //   Settings.setSettingForKey("autoReplace", "1");
+  //   console.log("param autoReplace devrait à 1, il est à : ", "ici ?", Settings.settingForKey("autoReplace"));
+  //}
 }
 
 export function use_NNBSP(context) {
@@ -336,16 +338,3 @@ export function fixLayer(context) {
   }
 }
 
-
-export function settings(context) {
-  var dialogWindow = COSAlertWindow.alloc().init();
-
-  var checkbox = NSButton.alloc().initWithFrame(NSMakeRect(0, 0, 200, 23));
-  checkbox.setButtonType(NSSwitchButton);
-  checkbox.setBezelStyle(0);
-  checkbox.setTitle("A fancy copy here");
-  checkbox.setState(NSOffState);
-
-  dialogWindow.addAccessoryView(checkbox);
-  dialogWindow.runModal();
-}
