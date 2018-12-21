@@ -35,10 +35,15 @@ const ANY_NUMBER_EXCEPT_ONE = "(?!1\b)d+"; // positive lookahed or some weird-as
 const DOUBLE_QUOTE_OPEN = '/(?: "(?=\w) )  | (?: (?<=\s|\A)"(?=\S) )/Sx';
 const DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
 
-const settings = {
-  autoReplace = 'false',
-
-
+const settingsList = {
+  autoReplace : {
+    state : 'false',
+    label : "Remplacement automatique"
+  },
+    use_NNBSP : {
+    state : 'false',
+    label : "Remplacement automatique"
+  }
 }
 
 //FLAGS
@@ -97,6 +102,36 @@ function testRegex(context) {
   }
 }
 
+
+function createCheckboxes() {
+  let posX = 0;
+  for (props in settingsList) {
+    let checkbox = NSButton.alloc().initWithFrame(NSMakeRect(posX, 0, 200, 23));
+    posX += 20;
+    checkbox.setButtonType(NSSwitchButton);
+    checkbox.setBezelStyle(0);
+    checkbox.setTitle(settingsList[props]['label']);
+    if (Settings.settingForKey(settingsList[props].toString()) == 'true') {
+      checkbox.setState(NSOnState);
+    }
+    else {
+      checkbox.setState(NSOffState);
+    }
+}
+
+
+function createCheckboxes() {
+  for (props in settingsList) {
+   
+    if (  checkbox.setState(NSOnState) == 1) {
+      Settings.setSettingForKey('true')
+    }
+    else {
+      Settings.setSettingForKey('false')
+    }
+}
+  
+
 // fonction qui ouvre un menu de paramètres depuis le menu.
 export function disableAutoReplace(context) {
 
@@ -104,28 +139,13 @@ export function disableAutoReplace(context) {
   var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
   dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
 
-  var checkboxAutoReplace = NSButton.alloc().initWithFrame(NSMakeRect(0, 0, 200, 23));
-  checkboxAutoReplace.setButtonType(NSSwitchButton);
-  checkboxAutoReplace.setBezelStyle(0);
-  checkboxAutoReplace.setTitle("Remplacement automatique");
-
-
-funtion setCheckbox(checkbox, setting) {
-
-}
-
-if (Settings.settingForKey("autoReplace") == 'true') {
-    checkboxAutoReplace.setState(NSOnState);
-}
-else {
-    checkboxAutoReplace.setState(NSOffState);
-}
-
   if (response == "1000"){ 
-//var checkboxResult = checkboxAutoReplace.toFixString()
+      saveChangedSettings()
 
-  }
+    }
+}
 
+  
 
   dialogWindow.addAccessoryView(checkboxAutoReplace);
   return dialogWindow.runModal();

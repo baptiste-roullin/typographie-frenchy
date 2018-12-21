@@ -34,14 +34,15 @@
 
     {
       "name": "Désactiver les substitutions automatiques",
-      "identifier": "disableAutoReplace",
+      "identifier": "openSettings",
       "script": "./command.js",
-      "handler":  "disableAutoReplace"
+      "handler":  "openSettings"
       }
       
   ],
   "menu": {
     "title": "Typographie française",
-    "items": ["use_NNBSP", "disableAutoReplace", "settings"]
+    "items": ["openSettings"],
+    "isRoot": "true"
   }
 }
