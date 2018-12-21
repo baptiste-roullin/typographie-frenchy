@@ -103,7 +103,24 @@ function testRegex(context) {
 }
 
 
-function createCheckboxes() {
+
+
+// fonction qui ouvre un menu de paramètres depuis le menu.
+export function openSettings(context) {
+
+  var dialogWindow = COSAlertWindow.alloc().init();
+  var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
+  dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
+  createCheckboxes(settingsList);
+    if (response == "1000"){ 
+      saveChangedSettings(settingsList)
+
+    }
+
+  return dialogWindow.runModal();
+
+}
+function createCheckboxes(settingsList) {
   let posX = 0;
   for (props in settingsList) {
     let checkbox = NSButton.alloc().initWithFrame(NSMakeRect(posX, 0, 200, 23));
@@ -119,21 +136,20 @@ function createCheckboxes() {
     }
 }
 
-
-function createCheckboxes() {
+function createCheckboxes(settingsList) {
   for (props in settingsList) {
    
-    if (  checkbox.setState(NSOnState) == 1) {
-      Settings.setSettingForKey('true')
+    if ( checkbox.setState(NSOnState) == 1) {
+      Settings.setSettingForKey(settingsList[props].toString() ) == 'true'
     }
     else {
-      Settings.setSettingForKey('false')
+      Settings.setSettingForKey(settingsList[props].toString() ) == 'false'
     }
 }
   
 
 // fonction qui ouvre un menu de paramètres depuis le menu.
-export function disableAutoReplace(context) {
+/*export function disableAutoReplace(context) {
 
   var dialogWindow = COSAlertWindow.alloc().init();
   var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
@@ -144,12 +160,9 @@ export function disableAutoReplace(context) {
 
     }
 }
-
-  
-
-  dialogWindow.addAccessoryView(checkboxAutoReplace);
   return dialogWindow.runModal();
-
+  
+}*/
   // si false : l'utilisateur a cliqué sur cancel, donc on arrête la fonction.
   // if (!selection[2]) {
   //   return
@@ -163,7 +176,7 @@ export function disableAutoReplace(context) {
   //   Settings.setSettingForKey("autoReplace", "1");
   //   console.log("param autoReplace devrait à 1, il est à : ", "ici ?", Settings.settingForKey("autoReplace"));
   //}
-}
+//}
 
 export function use_NNBSP(context) {
   var options = [
