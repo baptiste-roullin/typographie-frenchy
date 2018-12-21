@@ -102,82 +102,51 @@ function testRegex(context) {
   }
 }
 
-
-
-
 // fonction qui ouvre un menu de paramètres depuis le menu.
 export function openSettings(context) {
 
   var dialogWindow = COSAlertWindow.alloc().init();
+
   var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
   dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
+
   createCheckboxes(settingsList);
-    if (response == "1000"){ 
-      saveChangedSettings(settingsList)
 
-    }
+    // if (dialogWindow.response == "1000"){ 
+    //   for (var props in settingsList) {
 
+    //     if ( checkbox.setState(NSOnState) == 1) {
+    //       Settings.setSettingForKey(settingsList[props]['label'].toString() ) == 'true'
+    //     }
+    //     else {
+    //       Settings.setSettingForKey(settingsList[props]['label'].toString() ) == 'false'
+    //     }
+    //   }
+    // }
+
+
+    //var response = alert.runModal()
   return dialogWindow.runModal();
 
 }
-function createCheckboxes(settingsList) {
+
+export function createCheckboxes(settingsList) {
   let posX = 0;
-  for (props in settingsList) {
+  for (var props in settingsList) {
     let checkbox = NSButton.alloc().initWithFrame(NSMakeRect(posX, 0, 200, 23));
     posX += 20;
     checkbox.setButtonType(NSSwitchButton);
     checkbox.setBezelStyle(0);
     checkbox.setTitle(settingsList[props]['label']);
-    if (Settings.settingForKey(settingsList[props].toString()) == 'true') {
+    if (Settings.settingForKey(settingsList[props]['state'].toString()) == 'true') {
       checkbox.setState(NSOnState);
     }
     else {
       checkbox.setState(NSOffState);
     }
+  }
 }
-
-function createCheckboxes(settingsList) {
-  for (props in settingsList) {
-   
-    if ( checkbox.setState(NSOnState) == 1) {
-      Settings.setSettingForKey(settingsList[props].toString() ) == 'true'
-    }
-    else {
-      Settings.setSettingForKey(settingsList[props].toString() ) == 'false'
-    }
-}
-  
-
-// fonction qui ouvre un menu de paramètres depuis le menu.
-/*export function disableAutoReplace(context) {
-
-  var dialogWindow = COSAlertWindow.alloc().init();
-  var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
-  dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
-
-  if (response == "1000"){ 
-      saveChangedSettings()
-
-    }
-}
-  return dialogWindow.runModal();
-  
-}*/
-  // si false : l'utilisateur a cliqué sur cancel, donc on arrête la fonction.
-  // if (!selection[2]) {
-  //   return
-  //  }
-  // console.log(selection);
-  // if (selection[1] == "0") {
-  //   // s'il répond oui (première réponse dans l'array)
-  //   Settings.setSettingForKey("autoReplace", "0"); // on passe le setting à désactivé
-  //   console.log("param autoReplace devrait à 0, il est à : ", Settings.settingForKey("autoReplace"));
-  // } else {
-  //   Settings.setSettingForKey("autoReplace", "1");
-  //   console.log("param autoReplace devrait à 1, il est à : ", "ici ?", Settings.settingForKey("autoReplace"));
-  //}
-//}
-
+ 
 export function use_NNBSP(context) {
   var options = [
     "Respecter la convention et utiliser des espaces fines insécables",
@@ -210,7 +179,7 @@ export function use_NNBSP(context) {
   //console.log("param :", Settings.settingForKey("USE_NNBSP"));
 }
 
-function replaceString(string) {
+export function replaceString(string) {
   let count = 0;
   //console.log(Settings.settingForKey("USE_NNBSP"), NBSP);
 
@@ -395,4 +364,3 @@ export function fixLayer(context) {
     throw new Error("unable to access selection");
   }
 }
-

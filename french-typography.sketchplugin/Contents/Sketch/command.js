@@ -367,12 +367,16 @@ Object.defineProperty(exports, "__esModule", {
 exports.initPlugin = initPlugin;
 exports.replaceNNBSPbyWNBSP = replaceNNBSPbyWNBSP;
 exports.replaceWNBSPbyNNBSP = replaceWNBSPbyNNBSP;
-exports.disableAutoReplace = disableAutoReplace;
+exports.openSettings = openSettings;
+exports.createCheckboxes = createCheckboxes;
 exports.use_NNBSP = use_NNBSP;
+exports.replaceString = replaceString;
 exports.fixLayer = fixLayer;
 // todo : rendre compatible que le param système de quote intelligent soit activé ou non.
 // inspiration :  https://github.com/mathieudutour/git-sketch-plugin/blob/master/src/preferences.js
 // vraie UI  pour les dialogs
+
+// déplacer les tests de init() à 'run script'
 
 //installer
 // désactiver : plist pas supprimé
@@ -405,8 +409,18 @@ var ANY_NUMBER_EXCEPT_ONE = "(?!1\b)d+"; // positive lookahed or some weird-ass 
 var DOUBLE_QUOTE_OPEN = '/(?: "(?=\w) )  | (?: (?<=\s|\A)"(?=\S) )/Sx';
 var DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
 
-//FLAGS
-var DEBUG = false;
+var settingsList = {
+  autoReplace: {
+    state: 'false',
+    label: "Remplacement automatique"
+  },
+  use_NNBSP: {
+    state: 'false',
+    label: "Remplacement automatique"
+  }
+
+  //FLAGS
+};var DEBUG = false;
 
 function initPlugin(contex) {
   // if (DEBUG) {
@@ -460,34 +474,44 @@ function testRegex(context) {
 }
 
 // fonction qui ouvre un menu de paramètres depuis le menu.
-function disableAutoReplace(context) {
+function openSettings(context) {
+
   var dialogWindow = COSAlertWindow.alloc().init();
+
   var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
   dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
 
-  var checkboxAutoReplace = NSButton.alloc().initWithFrame(NSMakeRect(0, 0, 200, 23));
-  checkboxAutoReplace.setButtonType(NSSwitchButton);
-  checkboxAutoReplace.setBezelStyle(0);
-  checkboxAutoReplace.setTitle("Remplacement automatique");
+  createCheckboxes(settingsList);
 
-  checkboxAutoReplace.setState(NSOffState);
+  // if (dialogWindow.response == "1000"){ 
+  //   for (var props in settingsList) {
 
-  dialogWindow.addAccessoryView(checkboxAutoReplace);
+  //     if ( checkbox.setState(NSOnState) == 1) {
+  //       Settings.setSettingForKey(settingsList[props]['label'].toString() ) == 'true'
+  //     }
+  //     else {
+  //       Settings.setSettingForKey(settingsList[props]['label'].toString() ) == 'false'
+  //     }
+  //   }
+  // }
+
   return dialogWindow.runModal();
+}
 
-  // si false : l'utilisateur a cliqué sur cancel, donc on arrête la fonction.
-  // if (!selection[2]) {
-  //   return
-  //  }
-  // console.log(selection);
-  // if (selection[1] == "0") {
-  //   // s'il répond oui (première réponse dans l'array)
-  //   Settings.setSettingForKey("autoReplace", "0"); // on passe le setting à désactivé
-  //   console.log("param autoReplace devrait à 0, il est à : ", Settings.settingForKey("autoReplace"));
-  // } else {
-  //   Settings.setSettingForKey("autoReplace", "1");
-  //   console.log("param autoReplace devrait à 1, il est à : ", "ici ?", Settings.settingForKey("autoReplace"));
-  //}
+function createCheckboxes(settingsList) {
+  var posX = 0;
+  for (var props in settingsList) {
+    var checkbox = NSButton.alloc().initWithFrame(NSMakeRect(posX, 0, 200, 23));
+    posX += 20;
+    checkbox.setButtonType(NSSwitchButton);
+    checkbox.setBezelStyle(0);
+    checkbox.setTitle(settingsList[props]['label']);
+    if (Settings.settingForKey(settingsList[props]['state'].toString()) == 'true') {
+      checkbox.setState(NSOnState);
+    } else {
+      checkbox.setState(NSOffState);
+    }
+  }
 }
 
 function use_NNBSP(context) {
@@ -2977,4 +3001,4 @@ that['fixLayer'] = __skpm_run.bind(this, 'fixLayer');
 that['onRun'] = __skpm_run.bind(this, 'default');
 that['initPlugin'] = __skpm_run.bind(this, 'initPlugin');
 that['use_NNBSP'] = __skpm_run.bind(this, 'use_NNBSP');
-that['disableAutoReplace'] = __skpm_run.bind(this, 'disableAutoReplace')
+that['openSettings'] = __skpm_run.bind(this, 'openSettings')
