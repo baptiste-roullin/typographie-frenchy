@@ -2,6 +2,8 @@
 // inspiration :  https://github.com/mathieudutour/git-sketch-plugin/blob/master/src/preferences.js
 // vraie UI  pour les dialogs
 
+// déplacer les tests de init() à 'run script'
+
 //installer
 // désactiver : plist pas supprimé
 //réactiver
@@ -32,6 +34,12 @@ const REGEX_ELLIPSIS = /\.{2,5}|\. \. \./gu;
 const ANY_NUMBER_EXCEPT_ONE = "(?!1\b)d+"; // positive lookahed or some weird-ass regex witchery
 const DOUBLE_QUOTE_OPEN = '/(?: "(?=\w) )  | (?: (?<=\s|\A)"(?=\S) )/Sx';
 const DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
+
+const settings = {
+  autoReplace = 'false',
+
+
+}
 
 //FLAGS
 let DEBUG = false;
@@ -91,16 +99,33 @@ function testRegex(context) {
 
 // fonction qui ouvre un menu de paramètres depuis le menu.
 export function disableAutoReplace(context) {
+
   var dialogWindow = COSAlertWindow.alloc().init();
-   var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
-   dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
+  var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
+  dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
 
   var checkboxAutoReplace = NSButton.alloc().initWithFrame(NSMakeRect(0, 0, 200, 23));
   checkboxAutoReplace.setButtonType(NSSwitchButton);
   checkboxAutoReplace.setBezelStyle(0);
   checkboxAutoReplace.setTitle("Remplacement automatique");
-  
-  checkboxAutoReplace.setState(NSOffState);
+
+
+funtion setCheckbox(checkbox, setting) {
+
+}
+
+if (Settings.settingForKey("autoReplace") == 'true') {
+    checkboxAutoReplace.setState(NSOnState);
+}
+else {
+    checkboxAutoReplace.setState(NSOffState);
+}
+
+  if (response == "1000"){ 
+//var checkboxResult = checkboxAutoReplace.toFixString()
+
+  }
+
 
   dialogWindow.addAccessoryView(checkboxAutoReplace);
   return dialogWindow.runModal();
