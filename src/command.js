@@ -37,11 +37,11 @@ const DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
 
 const settingsList = {
   autoReplace : {
-	state : 'false',
+	state : '',
 	label : "Remplacement automatique"
   },
 	use_NNBSP : {
-	state : 'false',
+	state : '',
 	label : "Utiliser des espaces fines insécables"
   }
 }
@@ -49,20 +49,22 @@ const settingsList = {
 //FLAGS
 let DEBUG = false;
 
-export function initPlugin(contex) {
-  // if (DEBUG) {
-  //   testRegex(context.actionContext);
-  // } console.log("param autoReplace devrait à 1, il est à : ", Settings.settingForKey("autoReplace"));
+export function initPlugin(context) {
+//   if (DEBUG) {
+//     testRegex(context.actionContext);
+//   } console.log("param autoReplace devrait à 1, il est à : ", Settings.settingForKey("autoReplace"));
 
 
-  // if (!Settings.settingForKey("USE_NNBSP")) {
-  //   Settings.setSettingForKey("USE_NNBSP", "1");
-  //   console.log("param USE_NNBSP devrait à 1, il est à : ", Settings.settingForKey("USE_NNBSP"));
-  // }
-  // if (!Settings.settingForKey("autoReplace")) {
-  //   Settings.setSettingForKey("autoReplace", "1");
+  if (!Settings.settingForKey("USE_NNBSP")) {
+    Settings.setSettingForKey("USE_NNBSP", true);
+    console.log("param USE_NNBSP devrait à 1, il est à : ", Settings.settingForKey("USE_NNBSP"));
+  }
+  if (!Settings.settingForKey("autoReplace")) {
+    Settings.setSettingForKey("autoReplace", true);
 
-  // }
+  }
+  console.log(Settings.settingForKey('autoReplace'))
+
 
 }
 
@@ -102,56 +104,60 @@ function testRegex(context) {
   }
 }
 
+
+export function createCheckbox(ID, frame) {
+	let checkbox = NSButton.alloc().initWithFrame(frame);
+	checkbox.setButtonType(NSSwitchButton);
+	checkbox.setBezelStyle(0);
+	checkbox.setTitle(ID.label);
+	if (Settings.settingForKey(ID.toString()) == true) {
+		checkbox.setState(NSOnState);
+	  }
+	  else {
+		checkbox.setState(NSOffState);
+	  }
+
+	return checkbox;
+  }
+
+export function saveSettings(ID, checkbox) {
+	ID.state = (checkbox.state() == true); 
+	Settings.setSettingForKey(JSON.stringify(ID), ID.state);
+	}
+
 // fonction qui ouvre un menu de paramètres depuis le menu.
 export function openSettings(context) {
+	 
 
-  var dialogWindow = COSAlertWindow.alloc().init();
-
-  var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
+  let dialogWindow = COSAlertWindow.alloc().init();
+  let pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
   dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
   dialogWindow.setMessageText("Paramètres");
+  //console.log(Settings.settingForKey('autoReplace'))
 
-  let posX = 0;
-  let checkboxList = {};
-  for (var props in settingsList) {
+  let checkboxAutoReplace = 	createCheckbox(settingsList.autoReplace, NSMakeRect(0, 0, 250, 23) );
+  let checkboxUseNNBSP = 		createCheckbox(settingsList.use_NNBSP, NSMakeRect(25, 0, 250, 23) );
+  dialogWindow.addAccessoryView(checkboxAutoReplace);
+  dialogWindow.addAccessoryView(checkboxUseNNBSP);
 
 
-	checkboxList[settingsList[props]['label']] = checkbox;
-	posX += 20;
-	checkbox.setButtonType(NSSwitchButton);
-	checkboxList.id = settingsList[props]['label'];
-	checkbox.setBezelStyle(0);
-	checkbox.setTitle(settingsList[props]['label']);
-	if (Settings.settingForKey(settingsList[props]['state'].toString()) == 'true') {
-	  checkbox.setState(NSOnState);
-	}
-	else {
-	  checkbox.setState(NSOffState);
-	}
-	dialogWindow.addAccessoryView(checkbox);
-  }
   dialogWindow.addButtonWithTitle("Valider");
   dialogWindow.addButtonWithTitle("Annuler");
 
   let response = dialogWindow.runModal()
 
-	// if (response == "1000"){ 
-	//   for (var props in settingsList) {
+	if (response == "1000"){ 
+		saveSettings(settingsList.autoReplace, checkboxAutoReplace, );
+		saveSettings(settingsList.autoReplace, checkboxUseNNBSP);
+	    console.log(Settings.settingForKey('autoReplace'))
 
-	// 	if ( checkboxList[settingsList[props]['label']].stringValue == 1) {
-	// 	  Settings.setSettingForKey(settingsList[props]['label'].toString() ) == 'true'
-	// 	}
-	// 	else {
-	// 	  Settings.setSettingForKey(settingsList[props]['label'].toString() ) == 'false'
-	// 	}
-	//   }
-	//   return;
-	// }
-	// else {
-	//   return;
-	// }
+	  return;
+	}
+	else {
+	  return;
+	}
 
-return;
+
 }
  
 export function use_NNBSP(context) {
@@ -171,13 +177,13 @@ export function use_NNBSP(context) {
 
   if (selection[1] == "0") {
 	// s'il répond oui (première réponse dans l'array)
-	Settings.setSettingForKey("USE_NNBSP", "1");
+	Settings.setSettingForKey("USE_NNBSP", true);
 	const NBSP = NNBSP;
 	console.log(Settings.settingForKey("USE_NNBSP"), NBSP);
 
 	replaceWNBSPbyNNBSP();
   } else {
-	Settings.setSettingForKey("USE_NNBSP", "0");
+	Settings.setSettingForKey("USE_NNBSP", false);
 	const NBSP = WNBSP;
 	console.log(Settings.settingForKey("USE_NNBSP"), NBSP);
 
