@@ -367,6 +367,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.initPlugin = initPlugin;
 exports.replaceNNBSPbyWNBSP = replaceNNBSPbyWNBSP;
 exports.replaceWNBSPbyNNBSP = replaceWNBSPbyNNBSP;
+exports.createCheckbox = createCheckbox;
+exports.saveSettings = saveSettings;
 exports.openSettings = openSettings;
 exports.use_NNBSP = use_NNBSP;
 exports.replaceString = replaceString;
@@ -410,11 +412,11 @@ var DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
 
 var settingsList = {
 	autoReplace: {
-		state: 'false',
+		state: '',
 		label: "Remplacement automatique"
 	},
 	use_NNBSP: {
-		state: 'false',
+		state: '',
 		label: "Utiliser des espaces fines insécables"
 	}
 
@@ -472,54 +474,52 @@ function testRegex(context) {
 	}
 }
 
+function createCheckbox(ID, frame) {
+	var checkbox = NSButton.alloc().initWithFrame(frame);
+	checkbox.setButtonType(NSSwitchButton);
+	checkbox.setBezelStyle(0);
+	checkbox.setTitle(ID.label);
+	if (Settings.settingForKey(ID.toString()) == true) {
+		checkbox.setState(NSOnState);
+	} else {
+		checkbox.setState(NSOffState);
+	}
+
+	return checkbox;
+}
+
+function saveSettings(checkbox) {
+	settingsList[ID].state = checkbox.state() == NSOnState;
+	Settings.setSettingForKey(settingsList[ID].toString(), settingsList[ID].state);
+}
+
 // fonction qui ouvre un menu de paramètres depuis le menu.
 function openSettings(context) {
 
 	var dialogWindow = COSAlertWindow.alloc().init();
-
 	var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
 	dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
 	dialogWindow.setMessageText("Paramètres");
 
-	var posX = 0;
-	var checkboxList = {};
-	for (var props in settingsList) {
+	var checkboxAutoReplace = createCheckbox(settingsList.autoReplace, NSMakeRect(0, 0, 250, 23));
+	var checkboxUseNNBSP = createCheckbox(settingsList.use_NNBSP, NSMakeRect(25, 0, 250, 23));
+	dialogWindow.addAccessoryView(checkboxAutoReplace);
+	dialogWindow.addAccessoryView(checkboxUseNNBSP);
 
-		checkboxList[settingsList[props]['label']] = checkbox;
-		posX += 20;
-		checkbox.setButtonType(NSSwitchButton);
-		checkboxList.id = settingsList[props]['label'];
-		checkbox.setBezelStyle(0);
-		checkbox.setTitle(settingsList[props]['label']);
-		if (Settings.settingForKey(settingsList[props]['state'].toString()) == 'true') {
-			checkbox.setState(NSOnState);
-		} else {
-			checkbox.setState(NSOffState);
-		}
-		dialogWindow.addAccessoryView(checkbox);
-	}
 	dialogWindow.addButtonWithTitle("Valider");
 	dialogWindow.addButtonWithTitle("Annuler");
 
 	var response = dialogWindow.runModal();
 
-	// if (response == "1000"){ 
-	//   for (var props in settingsList) {
+	if (response == "1000") {
 
-	// 	if ( checkboxList[settingsList[props]['label']].stringValue == 1) {
-	// 	  Settings.setSettingForKey(settingsList[props]['label'].toString() ) == 'true'
-	// 	}
-	// 	else {
-	// 	  Settings.setSettingForKey(settingsList[props]['label'].toString() ) == 'false'
-	// 	}
-	//   }
-	//   return;
-	// }
-	// else {
-	//   return;
-	// }
+		saveSettings(checkboxAutoReplace);
+		saveSettings(checkboxUseNNBSP);
 
-	return;
+		return;
+	} else {
+		return;
+	}
 }
 
 function use_NNBSP(context) {
