@@ -362,13 +362,12 @@ module.exports = function () {
 /* WEBPACK VAR INJECTION */(function(console) {
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 exports.initPlugin = initPlugin;
 exports.replaceNNBSPbyWNBSP = replaceNNBSPbyWNBSP;
 exports.replaceWNBSPbyNNBSP = replaceWNBSPbyNNBSP;
 exports.openSettings = openSettings;
-exports.createCheckboxes = createCheckboxes;
 exports.use_NNBSP = use_NNBSP;
 exports.replaceString = replaceString;
 exports.fixLayer = fixLayer;
@@ -410,309 +409,318 @@ var DOUBLE_QUOTE_OPEN = '/(?: "(?=\w) )  | (?: (?<=\s|\A)"(?=\S) )/Sx';
 var DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
 
 var settingsList = {
-  autoReplace: {
-    state: 'false',
-    label: "Remplacement automatique"
-  },
-  use_NNBSP: {
-    state: 'false',
-    label: "Remplacement automatique"
-  }
+	autoReplace: {
+		state: 'false',
+		label: "Remplacement automatique"
+	},
+	use_NNBSP: {
+		state: 'false',
+		label: "Utiliser des espaces fines insécables"
+	}
 
-  //FLAGS
+	//FLAGS
 };var DEBUG = false;
 
 function initPlugin(contex) {
-  // if (DEBUG) {
-  //   testRegex(context.actionContext);
-  // } console.log("param autoReplace devrait à 1, il est à : ", Settings.settingForKey("autoReplace"));
+	// if (DEBUG) {
+	//   testRegex(context.actionContext);
+	// } console.log("param autoReplace devrait à 1, il est à : ", Settings.settingForKey("autoReplace"));
 
 
-  // if (!Settings.settingForKey("USE_NNBSP")) {
-  //   Settings.setSettingForKey("USE_NNBSP", "1");
-  //   console.log("param USE_NNBSP devrait à 1, il est à : ", Settings.settingForKey("USE_NNBSP"));
-  // }
-  // if (!Settings.settingForKey("autoReplace")) {
-  //   Settings.setSettingForKey("autoReplace", "1");
+	// if (!Settings.settingForKey("USE_NNBSP")) {
+	//   Settings.setSettingForKey("USE_NNBSP", "1");
+	//   console.log("param USE_NNBSP devrait à 1, il est à : ", Settings.settingForKey("USE_NNBSP"));
+	// }
+	// if (!Settings.settingForKey("autoReplace")) {
+	//   Settings.setSettingForKey("autoReplace", "1");
 
-  // }
+	// }
 
 }
 
 function replaceNNBSPbyWNBSP(context) {
-  var textLayers = searchAllTextLayers.searchInLayer(document, true);
-  textLayers.forEach(function (layer) {
-    var newText = layer.text.replace(RegExp(NNBSP, 'gu'), WNBSP);
-    layer.text = newText;
-  });
+	var textLayers = searchAllTextLayers.searchInLayer(document, true);
+	textLayers.forEach(function (layer) {
+		var newText = layer.text.replace(RegExp(NNBSP, 'gu'), WNBSP);
+		layer.text = newText;
+	});
 }
 
 function replaceWNBSPbyNNBSP(context) {
-  var textLayers = searchAllTextLayers.searchInLayer(document, true);
-  textLayers.forEach(function (layer) {
-    var newText = layer.text.replace(RegExp(WNBSP, 'gu'), NNBSP);
-    layer.text = newText;
-  });
+	var textLayers = searchAllTextLayers.searchInLayer(document, true);
+	textLayers.forEach(function (layer) {
+		var newText = layer.text.replace(RegExp(WNBSP, 'gu'), NNBSP);
+		layer.text = newText;
+	});
 }
 
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
 function testRegex(context) {
-  var referenceString = "L’Histoire ne fait rien, elle ne « possède » pas de « richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme – et rien que de l'homme – poursuivant ses fins… Y a-t-il une suite à ce texte ?\n";
+	var referenceString = "L’Histoire ne fait rien, elle ne « possède » pas de « richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme – et rien que de l'homme – poursuivant ses fins… Y a-t-il une suite à ce texte ?\n";
 
-  var toFixString = "L’Histoire ne fait rien, elle ne « possède» pas de «richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme - et rien que de l'homme -- poursuivant ses fins… Y a-t-il une suite à ce texte?\n";
+	var toFixString = "L’Histoire ne fait rien, elle ne « possède» pas de «richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme - et rien que de l'homme -- poursuivant ses fins… Y a-t-il une suite à ce texte?\n";
 
-  //const referenceString = "Y a-t-il une suite à ce texte ?";
-  //const toFixString ="Y a-t-il une suite à ce texte ?";
+	//const referenceString = "Y a-t-il une suite à ce texte ?";
+	//const toFixString ="Y a-t-il une suite à ce texte ?";
 
-  var fixedString = replaceString(toFixString).string;
+	var fixedString = replaceString(toFixString).string;
 
-  if (fixedString == referenceString) {
-    console.log("test : succ\xE8s");
-  } else {
-    console.log("\n\n test : erreur \n", JsDiff.diffChars(fixedString, referenceString));
-  }
+	if (fixedString == referenceString) {
+		console.log("test : succ\xE8s");
+	} else {
+		console.log("\n\n test : erreur \n", JsDiff.diffChars(fixedString, referenceString));
+	}
 }
 
 // fonction qui ouvre un menu de paramètres depuis le menu.
 function openSettings(context) {
 
-  var dialogWindow = COSAlertWindow.alloc().init();
+	var dialogWindow = COSAlertWindow.alloc().init();
 
-  var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
-  dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
+	var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
+	dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
+	dialogWindow.setMessageText("Paramètres");
 
-  createCheckboxes(settingsList);
+	var posX = 0;
+	var checkboxList = {};
+	for (var props in settingsList) {
 
-  // if (dialogWindow.response == "1000"){ 
-  //   for (var props in settingsList) {
+		checkboxList[settingsList[props]['label']] = checkbox;
+		posX += 20;
+		checkbox.setButtonType(NSSwitchButton);
+		checkboxList.id = settingsList[props]['label'];
+		checkbox.setBezelStyle(0);
+		checkbox.setTitle(settingsList[props]['label']);
+		if (Settings.settingForKey(settingsList[props]['state'].toString()) == 'true') {
+			checkbox.setState(NSOnState);
+		} else {
+			checkbox.setState(NSOffState);
+		}
+		dialogWindow.addAccessoryView(checkbox);
+	}
+	dialogWindow.addButtonWithTitle("Valider");
+	dialogWindow.addButtonWithTitle("Annuler");
 
-  //     if ( checkbox.setState(NSOnState) == 1) {
-  //       Settings.setSettingForKey(settingsList[props]['label'].toString() ) == 'true'
-  //     }
-  //     else {
-  //       Settings.setSettingForKey(settingsList[props]['label'].toString() ) == 'false'
-  //     }
-  //   }
-  // }
+	var response = dialogWindow.runModal();
 
-  return dialogWindow.runModal();
-}
+	// if (response == "1000"){ 
+	//   for (var props in settingsList) {
 
-function createCheckboxes(settingsList) {
-  var posX = 0;
-  for (var props in settingsList) {
-    var checkbox = NSButton.alloc().initWithFrame(NSMakeRect(posX, 0, 200, 23));
-    posX += 20;
-    checkbox.setButtonType(NSSwitchButton);
-    checkbox.setBezelStyle(0);
-    checkbox.setTitle(settingsList[props]['label']);
-    if (Settings.settingForKey(settingsList[props]['state'].toString()) == 'true') {
-      checkbox.setState(NSOnState);
-    } else {
-      checkbox.setState(NSOffState);
-    }
-  }
+	// 	if ( checkboxList[settingsList[props]['label']].stringValue == 1) {
+	// 	  Settings.setSettingForKey(settingsList[props]['label'].toString() ) == 'true'
+	// 	}
+	// 	else {
+	// 	  Settings.setSettingForKey(settingsList[props]['label'].toString() ) == 'false'
+	// 	}
+	//   }
+	//   return;
+	// }
+	// else {
+	//   return;
+	// }
+
+	return;
 }
 
 function use_NNBSP(context) {
-  var options = ["Respecter la convention et utiliser des espaces fines insécables", "Rendre le texte compatible avec Safari (par défaut)"];
-  var selection = sketch.UI.getSelectionFromUser("Les espaces insécables fines ne sont pas gérées par Safari. Voulez-vous que ce plugin les utilise quand même ?  \n", options);
+	var options = ["Respecter la convention et utiliser des espaces fines insécables", "Rendre le texte compatible avec Safari (par défaut)"];
+	var selection = sketch.UI.getSelectionFromUser("Les espaces insécables fines ne sont pas gérées par Safari. Voulez-vous que ce plugin les utilise quand même ?  \n", options);
 
-  // si false : l'utilisateur a cliqué sur cancel, donc on arrête la fonction.
-  if (!selection[2]) {
-    return;
-  }
+	// si false : l'utilisateur a cliqué sur cancel, donc on arrête la fonction.
+	if (!selection[2]) {
+		return;
+	}
 
-  if (selection[1] == "0") {
-    // s'il répond oui (première réponse dans l'array)
-    Settings.setSettingForKey("USE_NNBSP", "1");
-    var _NBSP = NNBSP;
-    console.log(Settings.settingForKey("USE_NNBSP"), _NBSP);
+	if (selection[1] == "0") {
+		// s'il répond oui (première réponse dans l'array)
+		Settings.setSettingForKey("USE_NNBSP", "1");
+		var _NBSP = NNBSP;
+		console.log(Settings.settingForKey("USE_NNBSP"), _NBSP);
 
-    replaceWNBSPbyNNBSP();
-  } else {
-    Settings.setSettingForKey("USE_NNBSP", "0");
-    var _NBSP2 = WNBSP;
-    console.log(Settings.settingForKey("USE_NNBSP"), _NBSP2);
+		replaceWNBSPbyNNBSP();
+	} else {
+		Settings.setSettingForKey("USE_NNBSP", "0");
+		var _NBSP2 = WNBSP;
+		console.log(Settings.settingForKey("USE_NNBSP"), _NBSP2);
 
-    replaceNNBSPbyWNBSP();
-  }
-  //console.log("param :", Settings.settingForKey("USE_NNBSP"));
+		replaceNNBSPbyWNBSP();
+	}
+	//console.log("param :", Settings.settingForKey("USE_NNBSP"));
 }
 
 function replaceString(string) {
-  var count = 0;
-  //console.log(Settings.settingForKey("USE_NNBSP"), NBSP);
+	var count = 0;
+	//console.log(Settings.settingForKey("USE_NNBSP"), NBSP);
 
-  // REMPLACEMENTS
-  string = string
-  // points de suspension
-  .replace(REGEX_ELLIPSIS, function () {
-    console.log("points de suspension");
-    count++;
-    return ELLIPSIS;
-  })
-  //incises intelligentes
-  .replace(/((?:[\0-\/:-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])\x2D\x2D?([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?(?:[\0-\/:-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))/g, function (match, p1, p2, p3) {
-    console.log("incises intelligentes");
-    count++;
-    return String(p1) + "\u2013" + String(p2);
-  })
-  // puces en début de ligne
-  .replace(/(^|\n|\r)\x2D\x2D?/g, function (match, p1) {
-    console.log("puces en début de ligne");
-    count++;
-    return "–";
-  })
-  //  n° --> №
-  .replace(/n\xB0/g, function (match, p1, p2, p3) {
-    count++;
-    console.log("n°");
-    return "№";
-  })
-  // 1/2, 1/3, 1/4 --> caractères dédiés pour ces fractions
-  .replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|^)1\/2([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|$)/g, function (match, p1, p2) {
-    count++;
-    console.log("1/2");
-    return String(p1) + "\xBD" + String(p2);
-  }).replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|^)1\/3([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|$)/g, function (match, p1, p2) {
-    count++;
-    console.log("1/3");
-    return String(p1) + "\u2153" + String(p2);
-  }).replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|^)1\/4([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|$)/g, function (match, p1, p2) {
-    count++;
-    console.log("1/4");
-    return String(p1) + "\xBC" + String(p2);
-  })
-  // 1er --> ordinal en exposant
-  .replace(/\b1er?\b/g, function (match, p1, p2) {
-    count++;
-    console.log("1er --> ordinal en exposant");
-    return "1\u1D49\u02B3";
-  })
-  //2e --> ordinal en exposant
-  .replace(/(?!1\b)([0-9]+)e\b/g, function (match, p1, p2) {
-    count++;
-    console.log("2e --> ordinal en exposant");
-    return String(p1) + "\u1D49";
-  });
+	// REMPLACEMENTS
+	string = string
+	// points de suspension
+	.replace(REGEX_ELLIPSIS, function () {
+		console.log("points de suspension");
+		count++;
+		return ELLIPSIS;
+	})
+	//incises intelligentes
+	.replace(/((?:[\0-\/:-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])\x2D\x2D?([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?(?:[\0-\/:-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))/g, function (match, p1, p2, p3) {
+		console.log("incises intelligentes");
+		count++;
+		return String(p1) + "\u2013" + String(p2);
+	})
+	// puces en début de ligne
+	.replace(/(^|\n|\r)\x2D\x2D?/g, function (match, p1) {
+		console.log("puces en début de ligne");
+		count++;
+		return "–";
+	})
+	//  n° --> №
+	.replace(/n\xB0/g, function (match, p1, p2, p3) {
+		count++;
+		console.log("n°");
+		return "№";
+	})
+	// 1/2, 1/3, 1/4 --> caractères dédiés pour ces fractions
+	.replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|^)1\/2([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|$)/g, function (match, p1, p2) {
+		count++;
+		console.log("1/2");
+		return String(p1) + "\xBD" + String(p2);
+	}).replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|^)1\/3([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|$)/g, function (match, p1, p2) {
+		count++;
+		console.log("1/3");
+		return String(p1) + "\u2153" + String(p2);
+	}).replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|^)1\/4([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|$)/g, function (match, p1, p2) {
+		count++;
+		console.log("1/4");
+		return String(p1) + "\xBC" + String(p2);
+	})
+	// 1er --> ordinal en exposant
+	.replace(/\b1er?\b/g, function (match, p1, p2) {
+		count++;
+		console.log("1er --> ordinal en exposant");
+		return "1\u1D49\u02B3";
+	})
+	//2e --> ordinal en exposant
+	.replace(/(?!1\b)([0-9]+)e\b/g, function (match, p1, p2) {
+		count++;
+		console.log("2e --> ordinal en exposant");
+		return String(p1) + "\u1D49";
+	});
 
-  //  ESPACES INSÉCABLES
-  string = string
-  //espaces fines insécables avant ? ! ; :
-  .replace(REGEX_NNBSP_DOUBLE_PUNCTUATION, function (match, p1, p2, p3, p4) {
-    console.log("espaces fines insécables avant ? ! ; :");
-    count++;
-    return "" + String(p1) + NBSP + String(p3) + String(p4);
-  })
-  //après «
-  .replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|^)(\xAB)( ?)([0-9A-Z_a-z]+)/g, function (match, p1, p2, p3, p4) {
-    console.log("//après «");
-    count++;
-    return "" + String(p1) + OPENING_QUOTE + NBSP + String(p4);
-  })
-  //avant »
-  .replace(/([0-9A-Z_a-z]+[!\.\?]?)( ?)(\xBB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[!,\.:\?]|$)/g, function (match, p1, p2, p3, p4) {
-    console.log("//avant »");
-    count++;
-    return "" + String(p1) + NBSP + CLOSING_QUOTE + String(p4);
-  })
-  //avant %
-  .replace(/([0-9]+) ?%/g, function (match, p1, p2) {
-    console.log("//avant %");
-    count++;
-    return "" + String(p1) + NBSP + "%";
-  })
-  //avant $£€
-  .replace(/([0-9]+) ?([\$\xA3\u20AC])/g, function (match, p1, p2, p3) {
-    console.log("/avant $£€");
-    count++;
-    return "" + String(p1) + NBSP + String(p2);
-  });
-  // .replace(/(\d{3})( |\D|$)/gu, function (match, p1, p2) {
-  //     console.log('milliers')
-  //     count++;
-  //     return `${p1}${NNBSP}`;
-  // })
+	//  ESPACES INSÉCABLES
+	string = string
+	//espaces fines insécables avant ? ! ; :
+	.replace(REGEX_NNBSP_DOUBLE_PUNCTUATION, function (match, p1, p2, p3, p4) {
+		console.log("espaces fines insécables avant ? ! ; :");
+		count++;
+		return "" + String(p1) + NBSP + String(p3) + String(p4);
+	})
+	//après «
+	.replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|^)(\xAB)( ?)([0-9A-Z_a-z]+)/g, function (match, p1, p2, p3, p4) {
+		console.log("//après «");
+		count++;
+		return "" + String(p1) + OPENING_QUOTE + NBSP + String(p4);
+	})
+	//avant »
+	.replace(/([0-9A-Z_a-z]+[!\.\?]?)( ?)(\xBB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[!,\.:\?]|$)/g, function (match, p1, p2, p3, p4) {
+		console.log("//avant »");
+		count++;
+		return "" + String(p1) + NBSP + CLOSING_QUOTE + String(p4);
+	})
+	//avant %
+	.replace(/([0-9]+) ?%/g, function (match, p1, p2) {
+		console.log("//avant %");
+		count++;
+		return "" + String(p1) + NBSP + "%";
+	})
+	//avant $£€
+	.replace(/([0-9]+) ?([\$\xA3\u20AC])/g, function (match, p1, p2, p3) {
+		console.log("/avant $£€");
+		count++;
+		return "" + String(p1) + NBSP + String(p2);
+	});
+	// .replace(/(\d{3})( |\D|$)/gu, function (match, p1, p2) {
+	//     console.log('milliers')
+	//     count++;
+	//     return `${p1}${NNBSP}`;
+	// })
 
-  //  ESPACES INSÉCABLES
-  string = string
-  //espaces fines insécables avant ? ! ; :
-  .replace(REGEX_NNBSP_DOUBLE_PUNCTUATION, function (match, p1, p2, p3, p4) {
-    console.log("espaces fines insécables avant ? ! ; :");
-    count++;
-    return "" + String(p1) + NBSP + String(p3) + String(p4);
-  })
-  //après «
-  .replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|^)(\xAB)( ?)([0-9A-Z_a-z]+)/g, function (match, p1, p2, p3, p4) {
-    console.log("//après «");
-    count++;
-    return "" + String(p1) + OPENING_QUOTE + NBSP + String(p4);
-  })
-  //avant »
-  .replace(/([0-9A-Z_a-z]+[!\.\?]?)( ?)(\xBB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[!,\.:\?]|$)/g, function (match, p1, p2, p3, p4) {
-    console.log("//avant »");
-    count++;
-    return "" + String(p1) + NBSP + CLOSING_QUOTE + String(p4);
-  })
-  //avant %
-  .replace(/([0-9]+) ?%/g, function (match, p1, p2) {
-    console.log("//avant %");
-    count++;
-    return "" + String(p1) + NBSP + "%";
-  })
-  //avant $£€
-  .replace(/([0-9]+) ?([\$\xA3\u20AC])/g, function (match, p1, p2, p3) {
-    console.log("/avant $£€");
-    count++;
-    return "" + String(p1) + NBSP + String(p2);
-  });
-  // .replace(/(\d{3})( |\D|$)/gu, function (match, p1, p2) {
-  //     console.log('milliers')
-  //     count++;
-  //     return `${p1}${NNBSP}`;
-  // })
+	//  ESPACES INSÉCABLES
+	string = string
+	//espaces fines insécables avant ? ! ; :
+	.replace(REGEX_NNBSP_DOUBLE_PUNCTUATION, function (match, p1, p2, p3, p4) {
+		console.log("espaces fines insécables avant ? ! ; :");
+		count++;
+		return "" + String(p1) + NBSP + String(p3) + String(p4);
+	})
+	//après «
+	.replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|^)(\xAB)( ?)([0-9A-Z_a-z]+)/g, function (match, p1, p2, p3, p4) {
+		console.log("//après «");
+		count++;
+		return "" + String(p1) + OPENING_QUOTE + NBSP + String(p4);
+	})
+	//avant »
+	.replace(/([0-9A-Z_a-z]+[!\.\?]?)( ?)(\xBB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[!,\.:\?]|$)/g, function (match, p1, p2, p3, p4) {
+		console.log("//avant »");
+		count++;
+		return "" + String(p1) + NBSP + CLOSING_QUOTE + String(p4);
+	})
+	//avant %
+	.replace(/([0-9]+) ?%/g, function (match, p1, p2) {
+		console.log("//avant %");
+		count++;
+		return "" + String(p1) + NBSP + "%";
+	})
+	//avant $£€
+	.replace(/([0-9]+) ?([\$\xA3\u20AC])/g, function (match, p1, p2, p3) {
+		console.log("/avant $£€");
+		count++;
+		return "" + String(p1) + NBSP + String(p2);
+	});
+	// .replace(/(\d{3})( |\D|$)/gu, function (match, p1, p2) {
+	//     console.log('milliers')
+	//     count++;
+	//     return `${p1}${NNBSP}`;
+	// })
 
 
-  return {
-    string: string,
-    count: count
-  };
+	return {
+		string: string,
+		count: count
+	};
 }
 
 //fonction qui prend le texte du calque sélectionné,invoque replaceString() et compte le temps écoulé. Invocable lors de textChanged
 function fixLayer(context) {
-  // Si le remplacement automatique est désactivé dans les paramètres, on quitte la fonction
-  var autoReplaceActivated = Settings.settingForKey("autoReplace");
+	// Si le remplacement automatique est désactivé dans les paramètres, on quitte la fonction
+	var autoReplaceActivated = Settings.settingForKey("autoReplace");
 
-  if (autoReplaceActivated == "0") {
-    return;
-  }
+	if (autoReplaceActivated == "0") {
+		return;
+	}
 
-  var startDate = new Date();
+	var startDate = new Date();
 
-  if (context.actionContext.old) {
-    var selection = sketch.fromNative(context.actionContext.layer);
+	if (context.actionContext.old) {
+		var selection = sketch.fromNative(context.actionContext.layer);
 
-    var newText = replaceString(selection.text);
-    selection.text = newText.string;
+		var newText = replaceString(selection.text);
+		selection.text = newText.string;
 
-    var count = newText.count;
-    var endDate = new Date();
-    var duration = (endDate.getTime() - startDate.getTime()) / 1000;
-    if (count > 0 && DEBUG) {
-      sketch.UI.message(String(count) + " remplacement effectu\xE9 en  " + duration, document);
-    }
+		var count = newText.count;
+		var endDate = new Date();
+		var duration = (endDate.getTime() - startDate.getTime()) / 1000;
+		if (count > 0 && DEBUG) {
+			sketch.UI.message(String(count) + " remplacement effectu\xE9 en  " + duration, document);
+		}
 
-    if (Settings.settingForKey("USE_NNBSP") == "1" && RegExp(NNBSP).test(selection)) {
-      console.log("replaceWNBSPbyNNBSP n'a pas marché");
-    }
-    if (Settings.settingForKey("USE_NNBSP") == "0" && RegExp(WNBSP).test(selection)) {
-      console.log("replaceNNBSPbyWNBSP n'a pas marché");
-    }
-  } else {
-    throw new Error("unable to access selection");
-  }
+		if (Settings.settingForKey("USE_NNBSP") == "1" && RegExp(NNBSP).test(selection)) {
+			console.log("replaceWNBSPbyNNBSP n'a pas marché");
+		}
+		if (Settings.settingForKey("USE_NNBSP") == "0" && RegExp(WNBSP).test(selection)) {
+			console.log("replaceNNBSPbyWNBSP n'a pas marché");
+		}
+	} else {
+		throw new Error("unable to access selection");
+	}
 }
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
