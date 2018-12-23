@@ -499,7 +499,6 @@ function openSettings(context) {
 	var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
 	dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
 	dialogWindow.setMessageText("Paramètres");
-	//console.log(Settings.settingForKey('autoReplace'))
 
 	var checkboxAutoReplace = createCheckbox(settingsList.autoReplace, NSMakeRect(0, 0, 250, 23));
 	var checkboxUseNNBSP = createCheckbox(settingsList.use_NNBSP, NSMakeRect(25, 0, 250, 23));

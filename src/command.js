@@ -123,6 +123,7 @@ export function createCheckbox(ID, frame) {
 export function saveSettings(ID, checkbox) {
 	ID.state = (checkbox.state() == true); 
 	Settings.setSettingForKey(JSON.stringify(ID), ID.state);
+
 	}
 
 // fonction qui ouvre un menu de paramètres depuis le menu.
@@ -133,18 +134,20 @@ export function openSettings(context) {
   let pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
   dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
   dialogWindow.setMessageText("Paramètres");
-  //console.log(Settings.settingForKey('autoReplace'))
 
+  
   let checkboxAutoReplace = 	createCheckbox(settingsList.autoReplace, NSMakeRect(0, 0, 250, 23) );
   let checkboxUseNNBSP = 		createCheckbox(settingsList.use_NNBSP, NSMakeRect(25, 0, 250, 23) );
   dialogWindow.addAccessoryView(checkboxAutoReplace);
   dialogWindow.addAccessoryView(checkboxUseNNBSP);
-
+  
 
   dialogWindow.addButtonWithTitle("Valider");
   dialogWindow.addButtonWithTitle("Annuler");
 
   let response = dialogWindow.runModal()
+
+
 
 	if (response == "1000"){ 
 		saveSettings(settingsList.autoReplace, checkboxAutoReplace, );
@@ -156,6 +159,7 @@ export function openSettings(context) {
 	else {
 	  return;
 	}
+
 
 
 }
