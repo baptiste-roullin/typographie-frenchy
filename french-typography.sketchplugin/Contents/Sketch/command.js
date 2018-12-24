@@ -367,6 +367,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.initPlugin = initPlugin;
 exports.replaceNNBSPbyWNBSP = replaceNNBSPbyWNBSP;
 exports.replaceWNBSPbyNNBSP = replaceWNBSPbyNNBSP;
+exports.testRegex = testRegex;
 exports.createCheckbox = createCheckbox;
 exports.saveSettings = saveSettings;
 exports.openSettings = openSettings;
@@ -412,31 +413,30 @@ var DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
 
 var settingsList = {
 	autoReplace: {
-		state: '',
-		label: "Remplacement automatique"
+		ID: "autoReplace",
+		state: true,
+		label: " Remplacement automatique"
 	},
 	use_NNBSP: {
-		state: '',
-		label: "Utiliser des espaces fines insécables"
+		ID: "USE_NNBSP",
+		state: false,
+		label: " Utiliser des espaces fines insécables"
 	}
 
 	//FLAGS
-};var DEBUG = false;
+};var DEBUG = true;
 
 function initPlugin(context) {
-	//   if (DEBUG) {
-	//     testRegex(context.actionContext);
-	//   } console.log("param autoReplace devrait à 1, il est à : ", Settings.settingForKey("autoReplace"));
+	if (DEBUG) {}
+	testRegex();
 
-
+	console.log('test');
 	if (!Settings.settingForKey("USE_NNBSP")) {
-		Settings.setSettingForKey("USE_NNBSP", true);
-		console.log("param USE_NNBSP devrait à 1, il est à : ", Settings.settingForKey("USE_NNBSP"));
+		Settings.setSettingForKey("USE_NNBSP", false);
 	}
 	if (!Settings.settingForKey("autoReplace")) {
 		Settings.setSettingForKey("autoReplace", true);
 	}
-	console.log(Settings.settingForKey('autoReplace'));
 }
 
 function replaceNNBSPbyWNBSP(context) {
@@ -465,20 +465,19 @@ function testRegex(context) {
 	//const toFixString ="Y a-t-il une suite à ce texte ?";
 
 	var fixedString = replaceString(toFixString).string;
-
 	if (fixedString == referenceString) {
-		console.log("test : succ\xE8s");
+		console.log('test : succès');
 	} else {
 		console.log("\n\n test : erreur \n", JsDiff.diffChars(fixedString, referenceString));
 	}
 }
 
-function createCheckbox(ID, frame) {
+function createCheckbox(setting, frame) {
 	var checkbox = NSButton.alloc().initWithFrame(frame);
 	checkbox.setButtonType(NSSwitchButton);
 	checkbox.setBezelStyle(0);
-	checkbox.setTitle(ID.label);
-	if (Settings.settingForKey(ID.toString()) == true) {
+	checkbox.setTitle(setting.label);
+	if (Settings.settingForKey(setting.ID) == true) {
 		checkbox.setState(NSOnState);
 	} else {
 		checkbox.setState(NSOffState);
@@ -487,9 +486,9 @@ function createCheckbox(ID, frame) {
 	return checkbox;
 }
 
-function saveSettings(ID, checkbox) {
-	ID.state = checkbox.state() == true;
-	Settings.setSettingForKey(JSON.stringify(ID), ID.state);
+function saveSettings(setting, checkbox) {
+	setting.state = checkbox.state() == true;
+	Settings.setSettingForKey(setting.ID, setting.state);
 }
 
 // fonction qui ouvre un menu de paramètres depuis le menu.
@@ -513,7 +512,6 @@ function openSettings(context) {
 	if (response == "1000") {
 		saveSettings(settingsList.autoReplace, checkboxAutoReplace);
 		saveSettings(settingsList.autoReplace, checkboxUseNNBSP);
-		console.log(Settings.settingForKey('autoReplace'));
 
 		return;
 	} else {
@@ -692,7 +690,7 @@ function fixLayer(context) {
 	// Si le remplacement automatique est désactivé dans les paramètres, on quitte la fonction
 	var autoReplaceActivated = Settings.settingForKey("autoReplace");
 
-	if (autoReplaceActivated == "0") {
+	if (autoReplaceActivated == false) {
 		return;
 	}
 
@@ -711,10 +709,10 @@ function fixLayer(context) {
 			sketch.UI.message(String(count) + " remplacement effectu\xE9 en  " + duration, document);
 		}
 
-		if (Settings.settingForKey("USE_NNBSP") == "1" && RegExp(NNBSP).test(selection)) {
+		if (Settings.settingForKey("USE_NNBSP") == true && RegExp(NNBSP).test(selection)) {
 			console.log("replaceWNBSPbyNNBSP n'a pas marché");
 		}
-		if (Settings.settingForKey("USE_NNBSP") == "0" && RegExp(WNBSP).test(selection)) {
+		if (Settings.settingForKey("USE_NNBSP") == false && RegExp(WNBSP).test(selection)) {
 			console.log("replaceNNBSPbyWNBSP n'a pas marché");
 		}
 	} else {

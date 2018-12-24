@@ -37,34 +37,32 @@ const DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
 
 const settingsList = {
   autoReplace : {
-	state : '',
-	label : "Remplacement automatique"
+		ID : "autoReplace",
+		state : true,
+		label : " Remplacement automatique"
   },
 	use_NNBSP : {
-	state : '',
-	label : "Utiliser des espaces fines insécables"
+		ID : "USE_NNBSP",
+		state : false,
+		label : " Utiliser des espaces fines insécables"
   }
 }
 
 //FLAGS
-let DEBUG = false;
+let DEBUG = true;
 
 export function initPlugin(context) {
-//   if (DEBUG) {
-//     testRegex(context.actionContext);
-//   } console.log("param autoReplace devrait à 1, il est à : ", Settings.settingForKey("autoReplace"));
+  if (DEBUG) {
+   } 
+	 testRegex();
 
-
+console.log('test');
   if (!Settings.settingForKey("USE_NNBSP")) {
-    Settings.setSettingForKey("USE_NNBSP", true);
-    console.log("param USE_NNBSP devrait à 1, il est à : ", Settings.settingForKey("USE_NNBSP"));
+    Settings.setSettingForKey("USE_NNBSP", false);
   }
   if (!Settings.settingForKey("autoReplace")) {
     Settings.setSettingForKey("autoReplace", true);
-
   }
-  console.log(Settings.settingForKey('autoReplace'))
-
 
 }
 
@@ -85,7 +83,7 @@ export function replaceWNBSPbyNNBSP(context) {
 }
 
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
-function testRegex(context) {
+export function testRegex(context) {
   const referenceString =
 	"L’Histoire ne fait rien, elle ne « possède » pas de « richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme – et rien que de l'homme – poursuivant ses fins… Y a-t-il une suite à ce texte ?\n";
 
@@ -96,21 +94,20 @@ function testRegex(context) {
   //const toFixString ="Y a-t-il une suite à ce texte ?";
 
   const fixedString = replaceString(toFixString).string;
-
   if (fixedString == referenceString) {
-	console.log(`test : succès`);
+	console.log('test : succès');
   } else {
 	console.log(`\n\n test : erreur \n`, JsDiff.diffChars(fixedString, referenceString));
   }
 }
 
 
-export function createCheckbox(ID, frame) {
+export function createCheckbox(setting, frame) {
 	let checkbox = NSButton.alloc().initWithFrame(frame);
 	checkbox.setButtonType(NSSwitchButton);
 	checkbox.setBezelStyle(0);
-	checkbox.setTitle(ID.label);
-	if (Settings.settingForKey(ID.toString()) == true) {
+	checkbox.setTitle(setting.label);
+	if (Settings.settingForKey(setting.ID) == true) {
 		checkbox.setState(NSOnState);
 	  }
 	  else {
@@ -120,24 +117,22 @@ export function createCheckbox(ID, frame) {
 	return checkbox;
   }
 
-export function saveSettings(ID, checkbox) {
-	ID.state = (checkbox.state() == true); 
-	Settings.setSettingForKey(JSON.stringify(ID), ID.state);
+export function saveSettings(setting, checkbox) {
+	setting.state = (checkbox.state() == true); 
+	Settings.setSettingForKey(setting.ID, setting.state);
 
 	}
 
 // fonction qui ouvre un menu de paramètres depuis le menu.
 export function openSettings(context) {
 	 
-
-  let dialogWindow = COSAlertWindow.alloc().init();
-  let pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
+  let dialogWindow = 		COSAlertWindow.alloc().init();
+  let pluginIconPath = 	context.plugin.urlForResourceNamed("icon.png").path();
   dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
   dialogWindow.setMessageText("Paramètres");
-
   
   let checkboxAutoReplace = 	createCheckbox(settingsList.autoReplace, NSMakeRect(0, 0, 250, 23) );
-  let checkboxUseNNBSP = 		createCheckbox(settingsList.use_NNBSP, NSMakeRect(25, 0, 250, 23) );
+  let checkboxUseNNBSP = 			createCheckbox(settingsList.use_NNBSP, NSMakeRect(25, 0, 250, 23) );
   dialogWindow.addAccessoryView(checkboxAutoReplace);
   dialogWindow.addAccessoryView(checkboxUseNNBSP);
   
@@ -147,12 +142,9 @@ export function openSettings(context) {
 
   let response = dialogWindow.runModal()
 
-
-
 	if (response == "1000"){ 
-		saveSettings(settingsList.autoReplace, checkboxAutoReplace, );
+		saveSettings(settingsList.autoReplace, checkboxAutoReplace );
 		saveSettings(settingsList.autoReplace, checkboxUseNNBSP);
-	    console.log(Settings.settingForKey('autoReplace'))
 
 	  return;
 	}
@@ -343,7 +335,7 @@ export function fixLayer(context) {
   // Si le remplacement automatique est désactivé dans les paramètres, on quitte la fonction
   let autoReplaceActivated = Settings.settingForKey("autoReplace");
 
-  if (autoReplaceActivated == "0") {
+  if (autoReplaceActivated == false) {
 	return;
   }
 
@@ -366,13 +358,13 @@ export function fixLayer(context) {
 	}
 
 	if (
-	  Settings.settingForKey("USE_NNBSP") == "1" &&
+	  Settings.settingForKey("USE_NNBSP") == true &&
 	  RegExp(NNBSP).test(selection)
 	) {
 	  console.log("replaceWNBSPbyNNBSP n'a pas marché");
 	}
 	if (
-	  Settings.settingForKey("USE_NNBSP") == "0" &&
+	  Settings.settingForKey("USE_NNBSP") == false &&
 	  RegExp(WNBSP).test(selection)
 	) {
 	  console.log("replaceNNBSPbyWNBSP n'a pas marché");
