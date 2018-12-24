@@ -51,3 +51,8 @@ Ce plugin n'a pas vocation à traiter les cas suivants :
 * L'accentuation des lettres capitales (pas de moyen simple pour déterminer si l'utilisateur veut dire SALE ou SALÉ).
 * Les choses dont le rendu et le support sont complexes et imparfaits en unicode et beaucoup mieux traités avec un balisage HTML ou spécialisé. Exemple : la gestion des [fractions et exposants].(https://en.wikipedia.org/wiki/Unicode_subscripts_and_superscripts#Superscripts_and_subscripts_block).
 * Les erreurs genre double espace.
+
+
+## tests
+
+/Applications/Sketch.app/Contents/Resources/sketchtool/bin/sketchtool run /Users/baptiste/Library/Application\ Support/com.bohemiancoding.sketch3/Plugins/french-typography/french-typography.sketchplugin "testRegex" --without-activating=YES

@@ -25,6 +25,13 @@
         }
       }
     },
+    
+    {
+      "name": "Tester les regex",
+      "identifier": "testRegex",
+      "script": "./command.js",
+      "handler": "testRegex"
+       },
     {
       "name": "Utiliser des espaces fines insécables",
       "identifier": "use_NNBSP",

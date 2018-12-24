@@ -456,7 +456,7 @@ function replaceWNBSPbyNNBSP(context) {
 }
 
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
-function testRegex(context) {
+function testRegex() {
 	var referenceString = "L’Histoire ne fait rien, elle ne « possède » pas de « richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme – et rien que de l'homme – poursuivant ses fins… Y a-t-il une suite à ce texte ?\n";
 
 	var toFixString = "L’Histoire ne fait rien, elle ne « possède» pas de «richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme - et rien que de l'homme -- poursuivant ses fins… Y a-t-il une suite à ce texte?\n";
@@ -3005,5 +3005,6 @@ function searchInLayer(layer, inSymbolMaster) {
 that['fixLayer'] = __skpm_run.bind(this, 'fixLayer');
 that['onRun'] = __skpm_run.bind(this, 'default');
 that['initPlugin'] = __skpm_run.bind(this, 'initPlugin');
+that['testRegex'] = __skpm_run.bind(this, 'testRegex');
 that['use_NNBSP'] = __skpm_run.bind(this, 'use_NNBSP');
 that['openSettings'] = __skpm_run.bind(this, 'openSettings')

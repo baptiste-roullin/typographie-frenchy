@@ -83,7 +83,7 @@ export function replaceWNBSPbyNNBSP(context) {
 }
 
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
-export function testRegex(context) {
+export function testRegex() {
   const referenceString =
 	"L’Histoire ne fait rien, elle ne « possède » pas de « richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme – et rien que de l'homme – poursuivant ses fins… Y a-t-il une suite à ce texte ?\n";
 
