@@ -371,7 +371,6 @@ exports.testRegex = testRegex;
 exports.createCheckbox = createCheckbox;
 exports.saveSettings = saveSettings;
 exports.openSettings = openSettings;
-exports.use_NNBSP = use_NNBSP;
 exports.replaceString = replaceString;
 exports.fixLayer = fixLayer;
 // todo : rendre compatible que le param système de quote intelligent soit activé ou non.
@@ -400,17 +399,19 @@ var ELLIPSIS = "\u2026";
 var SPACE = " ";
 var WNBSP = "\xA0"; // wide non breakable space
 var NNBSP = "\u202F"; // narrow non breakable space
-var NBSP = WNBSP; // Non breakable space as chosen by the user. Default : WNBSP
 var OPENING_QUOTE = "«";
 var CLOSING_QUOTE = "»";
 
 // REGEXs
-var REGEX_NNBSP_DOUBLE_PUNCTUATION = /([0-9A-Z_a-z]+(?:[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?\xBB)?)( ?)([!:;\?])([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|$)/g;
+var REGEX_NNBSP_DOUBLE_PUNCTUATION = /([0-9A-Z_a-z]+(?:[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?\xBB)?)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)([!:;\?])([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|$)/g;
 var REGEX_ELLIPSIS = /\.{2,5}|\. \. \./g;
 var ANY_NUMBER_EXCEPT_ONE = "(?!1\b)d+"; // positive lookahed or some weird-ass regex witchery
 var DOUBLE_QUOTE_OPEN = '/(?: "(?=\w) )  | (?: (?<=\s|\A)"(?=\S) )/Sx';
 var DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
 
+// SETTINGS
+var DEBUG = true;
+var NBSP = WNBSP; // Non breakable space as chosen by the user. Default : WNBSP
 var settingsList = {
 	AUTO_REPLACE: {
 		ID: "AUTO_REPLACE",
@@ -422,9 +423,7 @@ var settingsList = {
 		state: false,
 		label: " Enable narrow non-breakable spaces (resulting text is not compatible with Safari"
 	}
-
-	//FLAGS
-};var DEBUG = true;
+};
 
 function initPlugin(context) {
 
@@ -434,7 +433,6 @@ function initPlugin(context) {
 	if (Settings.settingForKey(settingsList.AUTO_REPLACE.ID) == undefined) {
 		Settings.setSettingForKey(settingsList.AUTO_REPLACE.ID, true);
 	}
-	console.log('sfefezfze', Settings.settingForKey("fefezfze"));
 }
 
 function replaceNNBSPbyWNBSP(context) {
@@ -453,9 +451,16 @@ function replaceWNBSPbyNNBSP(context) {
 	});
 }
 
+function spaceInUnicode(str) {
+	var newstring = str.replace(/(\xA0|\u202F)/g, function (match, p1) {
+		return "" + String(p1.charCodeAt().toString(16));
+	});
+	return newstring;
+}
+
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
 function testRegex() {
-	var referenceString = "L’Histoire ne fait rien, elle ne « possède » pas de « richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme – et rien que de l'homme – poursuivant ses fins… Y a-t-il une suite à ce texte ?\n";
+	var referenceString = "L’Histoire ne fait rien, elle ne « possède » pas de « richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme – et rien que de l'homme – poursuivant ses fins… Y a-t-il une suite à ce texte ?\n";
 
 	var toFixString = "L’Histoire ne fait rien, elle ne « possède» pas de «richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme - et rien que de l'homme -- poursuivant ses fins… Y a-t-il une suite à ce texte?\n";
 
@@ -466,7 +471,9 @@ function testRegex() {
 	if (fixedString == referenceString) {
 		console.log('test : succès');
 	} else {
-		console.log("\n\n test : erreur \n", JSON.stringify(Diff.diffChars(fixedString, referenceString), null, '\t'));
+
+		console.log("référence \t", spaceInUnicode(referenceString), "résultat \t", spaceInUnicode(fixedString), "origine \t", spaceInUnicode(toFixString));
+		console.log("\n\n test : erreur \n", Diff.diffChars(fixedString, referenceString));
 	}
 }
 
@@ -498,7 +505,7 @@ function openSettings(context) {
 	var dialogWindow = COSAlertWindow.alloc().init();
 	var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
 	dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
-	dialogWindow.setMessageText("Paramètres");
+	dialogWindow.setMessageText("French typography settings");
 
 	var checkboxAutoReplace = createCheckbox(settingsList.AUTO_REPLACE, NSMakeRect(0, 0, 250, 23));
 	var checkboxUseNNBSP = createCheckbox(settingsList.USE_NNBSP, NSMakeRect(25, 0, 250, 23));
@@ -513,36 +520,18 @@ function openSettings(context) {
 		saveSettings(settingsList.AUTO_REPLACE, checkboxAutoReplace);
 		saveSettings(settingsList.USE_NNBSP, checkboxUseNNBSP);
 
+		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true) {
+			NBSP = NNBSP;
+			replaceWNBSPbyNNBSP();
+		} else {
+			NBSP = WNBSP;
+			replaceNNBSPbyWNBSP();
+		}
+
 		return;
 	} else {
 		return;
 	}
-}
-
-function use_NNBSP(context) {
-	var options = ["Respecter la convention et utiliser des espaces fines insécables", "Rendre le texte compatible avec Safari (par défaut)"];
-	var selection = sketch.UI.getSelectionFromUser("Les espaces insécables fines ne sont pas gérées par Safari. Voulez-vous que ce plugin les utilise quand même ?  \n", options);
-
-	// si false : l'utilisateur a cliqué sur cancel, donc on arrête la fonction.
-	if (!selection[2]) {
-		return;
-	}
-
-	if (selection[1] == "0") {
-		// s'il répond oui (première réponse dans l'array)
-		Settings.setSettingForKey(settingsList.USE_NNBSP.ID, true);
-		var _NBSP = NNBSP;
-		console.log(Settings.settingForKey(settingsList.USE_NNBSP.ID), _NBSP);
-
-		replaceWNBSPbyNNBSP();
-	} else {
-		Settings.setSettingForKey(settingsList.USE_NNBSP.ID, false);
-		var _NBSP2 = WNBSP;
-		console.log(Settings.settingForKey(settingsList.USE_NNBSP.ID), _NBSP2);
-
-		replaceNNBSPbyWNBSP();
-	}
-	//console.log("param :", Settings.settingForKey(settingsList.USE_NNBSP.ID));
 }
 
 function replaceString(string) {
@@ -611,63 +600,25 @@ function replaceString(string) {
 		return "" + String(p1) + NBSP + String(p3) + String(p4);
 	})
 	//après «
-	.replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|^)(\xAB)( ?)([0-9A-Z_a-z]+)/g, function (match, p1, p2, p3, p4) {
+	.replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|^)(\xAB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)([0-9A-Z_a-z]+)/g, function (match, p1, p2, p3, p4) {
 		console.log("//après «");
 		count++;
 		return "" + String(p1) + OPENING_QUOTE + NBSP + String(p4);
 	})
 	//avant »
-	.replace(/([0-9A-Z_a-z]+[!\.\?]?)( ?)(\xBB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[!,\.:\?]|$)/g, function (match, p1, p2, p3, p4) {
+	.replace(/([0-9A-Z_a-z]+[!\.\?]?)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)(\xBB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[!,\.:\?]|$)/g, function (match, p1, p2, p3, p4) {
 		console.log("//avant »");
 		count++;
 		return "" + String(p1) + NBSP + CLOSING_QUOTE + String(p4);
 	})
 	//avant %
-	.replace(/([0-9]+) ?%/g, function (match, p1, p2) {
+	.replace(/([0-9]+)[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?%/g, function (match, p1, p2) {
 		console.log("//avant %");
 		count++;
 		return "" + String(p1) + NBSP + "%";
 	})
 	//avant $£€
-	.replace(/([0-9]+) ?([\$\xA3\u20AC])/g, function (match, p1, p2, p3) {
-		console.log("/avant $£€");
-		count++;
-		return "" + String(p1) + NBSP + String(p2);
-	});
-	// .replace(/(\d{3})( |\D|$)/gu, function (match, p1, p2) {
-	//     console.log('milliers')
-	//     count++;
-	//     return `${p1}${NNBSP}`;
-	// })
-
-	//  ESPACES INSÉCABLES
-	string = string
-	//espaces fines insécables avant ? ! ; :
-	.replace(REGEX_NNBSP_DOUBLE_PUNCTUATION, function (match, p1, p2, p3, p4) {
-		console.log("espaces fines insécables avant ? ! ; :");
-		count++;
-		return "" + String(p1) + NBSP + String(p3) + String(p4);
-	})
-	//après «
-	.replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|^)(\xAB)( ?)([0-9A-Z_a-z]+)/g, function (match, p1, p2, p3, p4) {
-		console.log("//après «");
-		count++;
-		return "" + String(p1) + OPENING_QUOTE + NBSP + String(p4);
-	})
-	//avant »
-	.replace(/([0-9A-Z_a-z]+[!\.\?]?)( ?)(\xBB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[!,\.:\?]|$)/g, function (match, p1, p2, p3, p4) {
-		console.log("//avant »");
-		count++;
-		return "" + String(p1) + NBSP + CLOSING_QUOTE + String(p4);
-	})
-	//avant %
-	.replace(/([0-9]+) ?%/g, function (match, p1, p2) {
-		console.log("//avant %");
-		count++;
-		return "" + String(p1) + NBSP + "%";
-	})
-	//avant $£€
-	.replace(/([0-9]+) ?([\$\xA3\u20AC])/g, function (match, p1, p2, p3) {
+	.replace(/([0-9]+)[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?([\$\xA3\u20AC])/g, function (match, p1, p2, p3) {
 		console.log("/avant $£€");
 		count++;
 		return "" + String(p1) + NBSP + String(p2);

@@ -35,7 +35,7 @@
       "handler": "use_NNBSP"
     },
     {
-      "name": "Paramètres de typographie française",
+      "name": "French typography settings",
       "identifier": "openSettings",
       "script": "command.js",
       "handler": "openSettings"

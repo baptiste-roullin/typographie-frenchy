@@ -24,17 +24,20 @@ const ELLIPSIS = "\u2026";
 const SPACE = "\u0020";
 const WNBSP = "\u00A0";   // wide non breakable space
 const NNBSP = "\u202F";   // narrow non breakable space
-const NBSP = WNBSP;       // Non breakable space as chosen by the user. Default : WNBSP
 const OPENING_QUOTE = "«";
 const CLOSING_QUOTE = "»";
 
 // REGEXs
-const REGEX_NNBSP_DOUBLE_PUNCTUATION = /(\w+(?:\s?»)?)( ?)([?!;:])(\s|$)/gu;
+const REGEX_NNBSP_DOUBLE_PUNCTUATION = /(\w+(?:\s?»)?)(\s?)([?!;:])(\s|$)/gu;
 const REGEX_ELLIPSIS = /\.{2,5}|\. \. \./gu;
 const ANY_NUMBER_EXCEPT_ONE = "(?!1\b)d+"; // positive lookahed or some weird-ass regex witchery
 const DOUBLE_QUOTE_OPEN = '/(?: "(?=\w) )  | (?: (?<=\s|\A)"(?=\S) )/Sx';
 const DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
 
+
+// SETTINGS
+let DEBUG = true;
+let NBSP = WNBSP;       // Non breakable space as chosen by the user. Default : WNBSP
 const settingsList = {
   AUTO_REPLACE : {
 		ID : "AUTO_REPLACE",
@@ -48,8 +51,8 @@ const settingsList = {
   }
 }
 
-//FLAGS
-let DEBUG = true;
+
+
 
 export function initPlugin(context) {
 
@@ -61,7 +64,6 @@ export function initPlugin(context) {
 		Settings.setSettingForKey(settingsList.AUTO_REPLACE.ID, true);
 
   }
-	console.log('sfefezfze', Settings.settingForKey("fefezfze"));
 
 }
 
@@ -81,10 +83,17 @@ export function replaceWNBSPbyNNBSP(context) {
   });
 }
 
+function spaceInUnicode(str) {
+	let newstring = str.replace(/(\u00A0|\u202F)/gu, function (match, p1) {
+		return `${p1.charCodeAt().toString(16)}`;
+	})
+	return newstring
+}
+
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
 export function testRegex() {
   const referenceString =
-	"L’Histoire ne fait rien, elle ne « possède » pas de « richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme – et rien que de l'homme – poursuivant ses fins… Y a-t-il une suite à ce texte ?\n";
+	"L’Histoire ne fait rien, elle ne « possède » pas de « richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme – et rien que de l'homme – poursuivant ses fins… Y a-t-il une suite à ce texte ?\n";
 
   const toFixString =
 	"L’Histoire ne fait rien, elle ne « possède» pas de «richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme - et rien que de l'homme -- poursuivant ses fins… Y a-t-il une suite à ce texte?\n";
@@ -94,9 +103,11 @@ export function testRegex() {
 
 	const fixedString = replaceString(toFixString).string;
   if (fixedString == referenceString) {
-	console.log('test : succès');
+		console.log('test : succès');
   } else {
-	console.log("\n\n test : erreur \n", JSON.stringify(Diff.diffChars(fixedString, referenceString), null, '\t' ));
+		
+		console.log("référence \t", spaceInUnicode(referenceString), "résultat \t", spaceInUnicode(fixedString), "origine \t",spaceInUnicode(toFixString));
+		console.log("\n\n test : erreur \n",  Diff.diffChars(fixedString, referenceString));
   }
 }
 
@@ -130,7 +141,7 @@ export function openSettings(context) {
   let dialogWindow = 		COSAlertWindow.alloc().init();
   let pluginIconPath = 	context.plugin.urlForResourceNamed("icon.png").path();
   dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
-  dialogWindow.setMessageText("Paramètres");
+  dialogWindow.setMessageText("French typography settings");
   
   let checkboxAutoReplace = 	createCheckbox(settingsList.AUTO_REPLACE, NSMakeRect(0, 0, 250, 23) );
   let checkboxUseNNBSP = 			createCheckbox(settingsList.USE_NNBSP, NSMakeRect(25, 0, 250, 23) );
@@ -145,47 +156,23 @@ export function openSettings(context) {
 		saveSettings(settingsList.AUTO_REPLACE, checkboxAutoReplace );
 		saveSettings(settingsList.USE_NNBSP, checkboxUseNNBSP);
 
+		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true ) {
+		NBSP = NNBSP;	
+		replaceWNBSPbyNNBSP();
+		} else {
+		NBSP = WNBSP;	
+		replaceNNBSPbyWNBSP();		
+		}
+
 	  return;
 	}
 	else {
 	  return;
 	}
 
-
-
 }
  
-export function use_NNBSP(context) {
-  var options = [
-	"Respecter la convention et utiliser des espaces fines insécables",
-	"Rendre le texte compatible avec Safari (par défaut)"
-  ];
-  var selection = sketch.UI.getSelectionFromUser(
-	"Les espaces insécables fines ne sont pas gérées par Safari. Voulez-vous que ce plugin les utilise quand même ?  \n",
-	options
-  );
 
-  // si false : l'utilisateur a cliqué sur cancel, donc on arrête la fonction.
-  if (!selection[2]) {
-	return
-  }
-
-  if (selection[1] == "0") {
-	// s'il répond oui (première réponse dans l'array)
-	Settings.setSettingForKey(settingsList.USE_NNBSP.ID, true);
-	const NBSP = NNBSP;
-	console.log(Settings.settingForKey(settingsList.USE_NNBSP.ID), NBSP);
-
-	replaceWNBSPbyNNBSP();
-  } else {
-	Settings.setSettingForKey(settingsList.USE_NNBSP.ID, false);
-	const NBSP = WNBSP;
-	console.log(Settings.settingForKey(settingsList.USE_NNBSP.ID), NBSP);
-
-	replaceNNBSPbyWNBSP();
-  }
-  //console.log("param :", Settings.settingForKey(settingsList.USE_NNBSP.ID));
-}
 
 export function replaceString(string) {
   let count = 0;
@@ -255,63 +242,25 @@ export function replaceString(string) {
 	  return `${p1}${NBSP}${p3}${p4}`;
 	})
 	//après «
-	.replace(/(\s|^)(«)( ?)(\w+)/gu, function (match, p1, p2, p3, p4) {
+	.replace(/(\s|^)(«)(\s?)(\w+)/gu, function (match, p1, p2, p3, p4) {
 	  console.log("//après «");
 	  count++;
 	  return `${p1}${OPENING_QUOTE}${NBSP}${p4}`;
 	})
 	//avant »
-	.replace(/(\w+[.?!]?)( ?)(»)(\s|[.,?!:]|$)/gu, function (match, p1, p2, p3, p4) {
+	.replace(/(\w+[.?!]?)(\s?)(»)(\s|[.,?!:]|$)/gu, function (match, p1, p2, p3, p4) {
 	  console.log("//avant »");
 	  count++;
 	  return `${p1}${NBSP}${CLOSING_QUOTE}${p4}`;
 	})
 	//avant %
-	.replace(/(\d+) ?\%/gu, function (match, p1, p2) {
+	.replace(/(\d+)\s?\%/gu, function (match, p1, p2) {
 	  console.log("//avant %");
 	  count++;
 	  return `${p1}${NBSP}%`;
 	})
 	//avant $£€
-	.replace(/(\d+) ?([$£€])/gu, function (match, p1, p2, p3) {
-	  console.log("/avant $£€");
-	  count++;
-	  return `${p1}${NBSP}${p2}`;
-	});
-  // .replace(/(\d{3})( |\D|$)/gu, function (match, p1, p2) {
-  //     console.log('milliers')
-  //     count++;
-  //     return `${p1}${NNBSP}`;
-  // })
-
-  //  ESPACES INSÉCABLES
-  string = string
-	//espaces fines insécables avant ? ! ; :
-	.replace(REGEX_NNBSP_DOUBLE_PUNCTUATION, function (match, p1, p2, p3, p4) {
-	  console.log("espaces fines insécables avant ? ! ; :");
-	  count++;
-	  return `${p1}${NBSP}${p3}${p4}`;
-	})
-	//après «
-	.replace(/(\s|^)(«)( ?)(\w+)/gu, function (match, p1, p2, p3, p4) {
-	  console.log("//après «");
-	  count++;
-	  return `${p1}${OPENING_QUOTE}${NBSP}${p4}`;
-	})
-	//avant »
-	.replace(/(\w+[.?!]?)( ?)(»)(\s|[.,?!:]|$)/gu, function (match, p1, p2, p3, p4) {
-	  console.log("//avant »");
-	  count++;
-	  return `${p1}${NBSP}${CLOSING_QUOTE}${p4}`;
-	})
-	//avant %
-	.replace(/(\d+) ?\%/gu, function (match, p1, p2) {
-	  console.log("//avant %");
-	  count++;
-	  return `${p1}${NBSP}%`;
-	})
-	//avant $£€
-	.replace(/(\d+) ?([$£€])/gu, function (match, p1, p2, p3) {
+	.replace(/(\d+)\s?([$£€])/gu, function (match, p1, p2, p3) {
 	  console.log("/avant $£€");
 	  count++;
 	  return `${p1}${NBSP}${p2}`;
