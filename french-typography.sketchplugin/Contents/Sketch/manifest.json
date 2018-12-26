@@ -35,7 +35,7 @@
       "handler": "use_NNBSP"
     },
     {
-      "name": "Désactiver les substitutions automatiques",
+      "name": "Paramètres de typographie française",
       "identifier": "openSettings",
       "script": "command.js",
       "handler": "openSettings"
@@ -46,7 +46,7 @@
     "items": [
       "openSettings"
     ],
-    "isRoot": "true"
+    "isRoot": true
   },
   "version": "0.1.0",
   "name": "french-typography",

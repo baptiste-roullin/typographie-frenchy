@@ -388,7 +388,7 @@ exports.fixLayer = fixLayer;
 
 var sketch = __webpack_require__(9);
 var Settings = __webpack_require__(10);
-var JsDiff = __webpack_require__(11);
+var Diff = __webpack_require__(11);
 var searchAllTextLayers = __webpack_require__(14);
 var document = sketch.getSelectedDocument();
 
@@ -412,31 +412,29 @@ var DOUBLE_QUOTE_OPEN = '/(?: "(?=\w) )  | (?: (?<=\s|\A)"(?=\S) )/Sx';
 var DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
 
 var settingsList = {
-	autoReplace: {
-		ID: "autoReplace",
+	AUTO_REPLACE: {
+		ID: "AUTO_REPLACE",
 		state: true,
-		label: " Remplacement automatique"
+		label: " Automatic substitutions"
 	},
-	use_NNBSP: {
+	USE_NNBSP: {
 		ID: "USE_NNBSP",
 		state: false,
-		label: " Utiliser des espaces fines insécables"
+		label: " Enable narrow non-breakable spaces (resulting text is not compatible with Safari"
 	}
 
 	//FLAGS
 };var DEBUG = true;
 
 function initPlugin(context) {
-	if (DEBUG) {}
-	testRegex();
 
-	console.log('test');
-	if (!Settings.settingForKey("USE_NNBSP")) {
-		Settings.setSettingForKey("USE_NNBSP", false);
+	if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == undefined) {
+		Settings.setSettingForKey(settingsList.USE_NNBSP.ID, false);
 	}
-	if (!Settings.settingForKey("autoReplace")) {
-		Settings.setSettingForKey("autoReplace", true);
+	if (Settings.settingForKey(settingsList.AUTO_REPLACE.ID) == undefined) {
+		Settings.setSettingForKey(settingsList.AUTO_REPLACE.ID, true);
 	}
+	console.log('sfefezfze', Settings.settingForKey("fefezfze"));
 }
 
 function replaceNNBSPbyWNBSP(context) {
@@ -468,7 +466,7 @@ function testRegex() {
 	if (fixedString == referenceString) {
 		console.log('test : succès');
 	} else {
-		console.log("\n\n test : erreur \n", JsDiff.diffChars(fixedString, referenceString));
+		console.log("\n\n test : erreur \n", JSON.stringify(Diff.diffChars(fixedString, referenceString), null, '\t'));
 	}
 }
 
@@ -477,6 +475,8 @@ function createCheckbox(setting, frame) {
 	checkbox.setButtonType(NSSwitchButton);
 	checkbox.setBezelStyle(0);
 	checkbox.setTitle(setting.label);
+	console.log(setting.ID, Settings.settingForKey(setting.ID));
+
 	if (Settings.settingForKey(setting.ID) == true) {
 		checkbox.setState(NSOnState);
 	} else {
@@ -489,6 +489,7 @@ function createCheckbox(setting, frame) {
 function saveSettings(setting, checkbox) {
 	setting.state = checkbox.state() == true;
 	Settings.setSettingForKey(setting.ID, setting.state);
+	console.log(setting.ID, Settings.settingForKey(setting.ID));
 }
 
 // fonction qui ouvre un menu de paramètres depuis le menu.
@@ -499,19 +500,18 @@ function openSettings(context) {
 	dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
 	dialogWindow.setMessageText("Paramètres");
 
-	var checkboxAutoReplace = createCheckbox(settingsList.autoReplace, NSMakeRect(0, 0, 250, 23));
-	var checkboxUseNNBSP = createCheckbox(settingsList.use_NNBSP, NSMakeRect(25, 0, 250, 23));
+	var checkboxAutoReplace = createCheckbox(settingsList.AUTO_REPLACE, NSMakeRect(0, 0, 250, 23));
+	var checkboxUseNNBSP = createCheckbox(settingsList.USE_NNBSP, NSMakeRect(25, 0, 250, 23));
 	dialogWindow.addAccessoryView(checkboxAutoReplace);
 	dialogWindow.addAccessoryView(checkboxUseNNBSP);
 
-	dialogWindow.addButtonWithTitle("Valider");
-	dialogWindow.addButtonWithTitle("Annuler");
+	dialogWindow.addButtonWithTitle("OK");
+	dialogWindow.addButtonWithTitle("Cancel");
 
 	var response = dialogWindow.runModal();
-
 	if (response == "1000") {
-		saveSettings(settingsList.autoReplace, checkboxAutoReplace);
-		saveSettings(settingsList.autoReplace, checkboxUseNNBSP);
+		saveSettings(settingsList.AUTO_REPLACE, checkboxAutoReplace);
+		saveSettings(settingsList.USE_NNBSP, checkboxUseNNBSP);
 
 		return;
 	} else {
@@ -530,24 +530,24 @@ function use_NNBSP(context) {
 
 	if (selection[1] == "0") {
 		// s'il répond oui (première réponse dans l'array)
-		Settings.setSettingForKey("USE_NNBSP", true);
+		Settings.setSettingForKey(settingsList.USE_NNBSP.ID, true);
 		var _NBSP = NNBSP;
-		console.log(Settings.settingForKey("USE_NNBSP"), _NBSP);
+		console.log(Settings.settingForKey(settingsList.USE_NNBSP.ID), _NBSP);
 
 		replaceWNBSPbyNNBSP();
 	} else {
-		Settings.setSettingForKey("USE_NNBSP", false);
+		Settings.setSettingForKey(settingsList.USE_NNBSP.ID, false);
 		var _NBSP2 = WNBSP;
-		console.log(Settings.settingForKey("USE_NNBSP"), _NBSP2);
+		console.log(Settings.settingForKey(settingsList.USE_NNBSP.ID), _NBSP2);
 
 		replaceNNBSPbyWNBSP();
 	}
-	//console.log("param :", Settings.settingForKey("USE_NNBSP"));
+	//console.log("param :", Settings.settingForKey(settingsList.USE_NNBSP.ID));
 }
 
 function replaceString(string) {
 	var count = 0;
-	//console.log(Settings.settingForKey("USE_NNBSP"), NBSP);
+	//console.log(Settings.settingForKey(settingsList.USE_NNBSP.ID), NBSP);
 
 	// REMPLACEMENTS
 	string = string
@@ -687,8 +687,10 @@ function replaceString(string) {
 
 //fonction qui prend le texte du calque sélectionné,invoque replaceString() et compte le temps écoulé. Invocable lors de textChanged
 function fixLayer(context) {
+	console.log(Settings.settingForKey(settingsList.AUTO_REPLACE.ID));
+
 	// Si le remplacement automatique est désactivé dans les paramètres, on quitte la fonction
-	var autoReplaceActivated = Settings.settingForKey("autoReplace");
+	var autoReplaceActivated = Settings.settingForKey(settingsList.AUTO_REPLACE.ID);
 
 	if (autoReplaceActivated == false) {
 		return;
@@ -706,13 +708,13 @@ function fixLayer(context) {
 		var endDate = new Date();
 		var duration = (endDate.getTime() - startDate.getTime()) / 1000;
 		if (count > 0 && DEBUG) {
-			sketch.UI.message(String(count) + " remplacement effectu\xE9 en  " + duration, document);
+			sketch.UI.message(String(count) + " substitution(s) done in " + duration, document);
 		}
 
-		if (Settings.settingForKey("USE_NNBSP") == true && RegExp(NNBSP).test(selection)) {
+		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true && RegExp(NNBSP).test(selection)) {
 			console.log("replaceWNBSPbyNNBSP n'a pas marché");
 		}
-		if (Settings.settingForKey("USE_NNBSP") == false && RegExp(WNBSP).test(selection)) {
+		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == false && RegExp(WNBSP).test(selection)) {
 			console.log("replaceNNBSPbyWNBSP n'a pas marché");
 		}
 	} else {
