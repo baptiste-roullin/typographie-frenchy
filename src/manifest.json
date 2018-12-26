@@ -40,7 +40,7 @@
       },
 
     {
-      "name": "Désactiver les substitutions automatiques",
+      "name": "Paramètres de typographie française",
       "identifier": "openSettings",
       "script": "./command.js",
       "handler":  "openSettings"
@@ -50,6 +50,6 @@
   "menu": {
     "title": "Typographie française",
     "items": ["openSettings"],
-    "isRoot": "true"
+    "isRoot": true
   }
 }
