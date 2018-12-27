@@ -1,13 +1,10 @@
 // todo : rendre compatible que le param système de quote intelligent soit activé ou non.
-// inspiration :  https://github.com/mathieudutour/git-sketch-plugin/blob/master/src/preferences.js
-// vraie UI  pour les dialogs
 
-// déplacer les tests de init() à 'run script'
+//REGEX
+// " --> «
+// «\s? --> NBSP
 
-//installer
-// désactiver : plist pas supprimé
-//réactiver
-//réinstaller
+
 
 
 const sketch = require("sketch");

@@ -374,15 +374,10 @@ exports.openSettings = openSettings;
 exports.replaceString = replaceString;
 exports.fixLayer = fixLayer;
 // todo : rendre compatible que le param système de quote intelligent soit activé ou non.
-// inspiration :  https://github.com/mathieudutour/git-sketch-plugin/blob/master/src/preferences.js
-// vraie UI  pour les dialogs
 
-// déplacer les tests de init() à 'run script'
-
-//installer
-// désactiver : plist pas supprimé
-//réactiver
-//réinstaller
+//REGEX
+// " --> «
+// «\s? --> NBSP
 
 
 var sketch = __webpack_require__(9);
