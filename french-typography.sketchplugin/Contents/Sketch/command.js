@@ -375,10 +375,6 @@ exports.replaceString = replaceString;
 exports.fixLayer = fixLayer;
 // todo : rendre compatible que le param système de quote intelligent soit activé ou non.
 
-//REGEX
-// " --> «
-// «\s? --> NBSP
-
 
 var sketch = __webpack_require__(9);
 var Settings = __webpack_require__(10);
@@ -398,7 +394,7 @@ var OPENING_QUOTE = "«";
 var CLOSING_QUOTE = "»";
 
 // REGEXs
-var REGEX_NNBSP_DOUBLE_PUNCTUATION = /([0-9A-Z_a-z]+(?:[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?\xBB)?)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)([!:;\?])([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|$)/g;
+var REGEX_NNBSP_DOUBLE_PUNCTUATION = /(\w+(?:\s?»)?)(\s?)([?!;:])(\s|$)/g;
 var REGEX_ELLIPSIS = /\.{2,5}|\. \. \./g;
 var ANY_NUMBER_EXCEPT_ONE = "(?!1\b)d+"; // positive lookahed or some weird-ass regex witchery
 var DOUBLE_QUOTE_OPEN = '/(?: "(?=\w) )  | (?: (?<=\s|\A)"(?=\S) )/Sx';
@@ -447,7 +443,7 @@ function replaceWNBSPbyNNBSP(context) {
 }
 
 function spaceInUnicode(str) {
-	var newstring = str.replace(/(\xA0|\u202F)/g, function (match, p1) {
+	var newstring = str.replace(/(\u00A0|\u202F)/g, function (match, p1) {
 		return "" + String(p1.charCodeAt().toString(16));
 	});
 	return newstring;
@@ -542,33 +538,33 @@ function replaceString(string) {
 		return ELLIPSIS;
 	})
 	//incises intelligentes
-	.replace(/((?:[\0-\/:-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])\x2D\x2D?([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?(?:[\0-\/:-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))/g, function (match, p1, p2, p3) {
+	.replace(/([^0-9]\s)--?(\s?[^0-9])/g, function (match, p1, p2, p3) {
 		console.log("incises intelligentes");
 		count++;
 		return String(p1) + "\u2013" + String(p2);
 	})
 	// puces en début de ligne
-	.replace(/(^|\n|\r)\x2D\x2D?/g, function (match, p1) {
+	.replace(/(^|\n|\r)--?/g, function (match, p1) {
 		console.log("puces en début de ligne");
 		count++;
 		return "–";
 	})
 	//  n° --> №
-	.replace(/n\xB0/g, function (match, p1, p2, p3) {
+	.replace(/n°/g, function (match, p1, p2, p3) {
 		count++;
 		console.log("n°");
 		return "№";
 	})
 	// 1/2, 1/3, 1/4 --> caractères dédiés pour ces fractions
-	.replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|^)1\/2([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|$)/g, function (match, p1, p2) {
+	.replace(/(\s|\w|^)1\/2(\s|\w|$)/g, function (match, p1, p2) {
 		count++;
 		console.log("1/2");
 		return String(p1) + "\xBD" + String(p2);
-	}).replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|^)1\/3([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|$)/g, function (match, p1, p2) {
+	}).replace(/(\s|\w|^)1\/3(\s|\w|$)/g, function (match, p1, p2) {
 		count++;
 		console.log("1/3");
 		return String(p1) + "\u2153" + String(p2);
-	}).replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|^)1\/4([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[0-9A-Z_a-z]|$)/g, function (match, p1, p2) {
+	}).replace(/(\s|\w|^)1\/4(\s|\w|$)/g, function (match, p1, p2) {
 		count++;
 		console.log("1/4");
 		return String(p1) + "\xBC" + String(p2);
@@ -580,7 +576,7 @@ function replaceString(string) {
 		return "1\u1D49\u02B3";
 	})
 	//2e --> ordinal en exposant
-	.replace(/(?!1\b)([0-9]+)e\b/g, function (match, p1, p2) {
+	.replace(/(?!1\b)(\d+)e\b/g, function (match, p1, p2) {
 		count++;
 		console.log("2e --> ordinal en exposant");
 		return String(p1) + "\u1D49";
@@ -595,30 +591,30 @@ function replaceString(string) {
 		return "" + String(p1) + NBSP + String(p3) + String(p4);
 	})
 	//après «
-	.replace(/([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|^)(\xAB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)([0-9A-Z_a-z]+)/g, function (match, p1, p2, p3, p4) {
+	.replace(/(\s|^)(«)(\s?)(\w+)/g, function (match, p1, p2, p3, p4) {
 		console.log("//après «");
 		count++;
 		return "" + String(p1) + OPENING_QUOTE + NBSP + String(p4);
 	})
 	//avant »
-	.replace(/([0-9A-Z_a-z]+[!\.\?]?)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)(\xBB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[!,\.:\?]|$)/g, function (match, p1, p2, p3, p4) {
+	.replace(/(\w+[.?!]?)(\s?)(»)(\s|[.,?!:]|$)/g, function (match, p1, p2, p3, p4) {
 		console.log("//avant »");
 		count++;
 		return "" + String(p1) + NBSP + CLOSING_QUOTE + String(p4);
 	})
 	//avant %
-	.replace(/([0-9]+)[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?%/g, function (match, p1, p2) {
+	.replace(/(\d+)\s?\%/g, function (match, p1, p2) {
 		console.log("//avant %");
 		count++;
 		return "" + String(p1) + NBSP + "%";
 	})
 	//avant $£€
-	.replace(/([0-9]+)[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?([\$\xA3\u20AC])/g, function (match, p1, p2, p3) {
+	.replace(/(\d+)\s?([$£€])/g, function (match, p1, p2, p3) {
 		console.log("/avant $£€");
 		count++;
 		return "" + String(p1) + NBSP + String(p2);
 	});
-	// .replace(/(\d{3})( |\D|$)/gu, function (match, p1, p2) {
+	// .replace(/(\d{3})( |\D|$)/g, function (match, p1, p2) {
 	//     console.log('milliers')
 	//     count++;
 	//     return `${p1}${NNBSP}`;

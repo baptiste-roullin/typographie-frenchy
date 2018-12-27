@@ -1,8 +1,6 @@
 // todo : rendre compatible que le param système de quote intelligent soit activé ou non.
 
-//REGEX
-// " --> «
-// «\s? --> NBSP
+
 
 
 
@@ -25,8 +23,8 @@ const OPENING_QUOTE = "«";
 const CLOSING_QUOTE = "»";
 
 // REGEXs
-const REGEX_NNBSP_DOUBLE_PUNCTUATION = /(\w+(?:\s?»)?)(\s?)([?!;:])(\s|$)/gu;
-const REGEX_ELLIPSIS = /\.{2,5}|\. \. \./gu;
+const REGEX_NNBSP_DOUBLE_PUNCTUATION = /(\w+(?:\s?»)?)(\s?)([?!;:])(\s|$)/g;
+const REGEX_ELLIPSIS = /\.{2,5}|\. \. \./g;
 const ANY_NUMBER_EXCEPT_ONE = "(?!1\b)d+"; // positive lookahed or some weird-ass regex witchery
 const DOUBLE_QUOTE_OPEN = '/(?: "(?=\w) )  | (?: (?<=\s|\A)"(?=\S) )/Sx';
 const DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
@@ -81,7 +79,7 @@ export function replaceWNBSPbyNNBSP(context) {
 }
 
 function spaceInUnicode(str) {
-	let newstring = str.replace(/(\u00A0|\u202F)/gu, function (match, p1) {
+	let newstring = str.replace(/(\u00A0|\u202F)/g, function (match, p1) {
 		return `${p1.charCodeAt().toString(16)}`;
 	})
 	return newstring
@@ -184,47 +182,47 @@ export function replaceString(string) {
 	  return ELLIPSIS;
 	})
 	//incises intelligentes
-	.replace(/([^0-9]\s)--?(\s?[^0-9])/gu, function (match, p1, p2, p3) {
+	.replace(/([^0-9]\s)--?(\s?[^0-9])/g, function (match, p1, p2, p3) {
 	  console.log("incises intelligentes");
 	  count++;
 	  return `${p1}–${p2}`;
 	})
 	// puces en début de ligne
-	.replace(/(^|\n|\r)--?/gu, function (match, p1) {
+	.replace(/(^|\n|\r)--?/g, function (match, p1) {
 	  console.log("puces en début de ligne");
 	  count++;
 	  return "–";
 	})
 	//  n° --> №
-	.replace(/n°/gu, function (match, p1, p2, p3) {
+	.replace(/n°/g, function (match, p1, p2, p3) {
 	  count++;
 	  console.log("n°");
 	  return "№";
 	})
 	// 1/2, 1/3, 1/4 --> caractères dédiés pour ces fractions
-	.replace(/(\s|\w|^)1\/2(\s|\w|$)/gu, function (match, p1, p2) {
+	.replace(/(\s|\w|^)1\/2(\s|\w|$)/g, function (match, p1, p2) {
 	  count++;
 	  console.log("1/2");
 	  return `${p1}½${p2}`;
 	})
-	.replace(/(\s|\w|^)1\/3(\s|\w|$)/gu, function (match, p1, p2) {
+	.replace(/(\s|\w|^)1\/3(\s|\w|$)/g, function (match, p1, p2) {
 	  count++;
 	  console.log("1/3");
 	  return `${p1}⅓${p2}`;
 	})
-	.replace(/(\s|\w|^)1\/4(\s|\w|$)/gu, function (match, p1, p2) {
+	.replace(/(\s|\w|^)1\/4(\s|\w|$)/g, function (match, p1, p2) {
 	  count++;
 	  console.log("1/4");
 	  return `${p1}¼${p2}`;
 	})
 	// 1er --> ordinal en exposant
-	.replace(/\b1er?\b/gu, function (match, p1, p2) {
+	.replace(/\b1er?\b/g, function (match, p1, p2) {
 	  count++;
 	  console.log("1er --> ordinal en exposant");
 	  return `1ᵉʳ`;
 	})
 	//2e --> ordinal en exposant
-	.replace(/(?!1\b)(\d+)e\b/gu, function (match, p1, p2) {
+	.replace(/(?!1\b)(\d+)e\b/g, function (match, p1, p2) {
 	  count++;
 	  console.log("2e --> ordinal en exposant");
 	  return `${p1}ᵉ`;
@@ -239,30 +237,30 @@ export function replaceString(string) {
 	  return `${p1}${NBSP}${p3}${p4}`;
 	})
 	//après «
-	.replace(/(\s|^)(«)(\s?)(\w+)/gu, function (match, p1, p2, p3, p4) {
+	.replace(/(\s|^)(«)(\s?)(\w+)/g, function (match, p1, p2, p3, p4) {
 	  console.log("//après «");
 	  count++;
 	  return `${p1}${OPENING_QUOTE}${NBSP}${p4}`;
 	})
 	//avant »
-	.replace(/(\w+[.?!]?)(\s?)(»)(\s|[.,?!:]|$)/gu, function (match, p1, p2, p3, p4) {
+	.replace(/(\w+[.?!]?)(\s?)(»)(\s|[.,?!:]|$)/g, function (match, p1, p2, p3, p4) {
 	  console.log("//avant »");
 	  count++;
 	  return `${p1}${NBSP}${CLOSING_QUOTE}${p4}`;
 	})
 	//avant %
-	.replace(/(\d+)\s?\%/gu, function (match, p1, p2) {
+	.replace(/(\d+)\s?\%/g, function (match, p1, p2) {
 	  console.log("//avant %");
 	  count++;
 	  return `${p1}${NBSP}%`;
 	})
 	//avant $£€
-	.replace(/(\d+)\s?([$£€])/gu, function (match, p1, p2, p3) {
+	.replace(/(\d+)\s?([$£€])/g, function (match, p1, p2, p3) {
 	  console.log("/avant $£€");
 	  count++;
 	  return `${p1}${NBSP}${p2}`;
 	});
-  // .replace(/(\d{3})( |\D|$)/gu, function (match, p1, p2) {
+  // .replace(/(\d{3})( |\D|$)/g, function (match, p1, p2) {
   //     console.log('milliers')
   //     count++;
   //     return `${p1}${NNBSP}`;

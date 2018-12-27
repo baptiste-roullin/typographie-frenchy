@@ -16,6 +16,7 @@
     "build": "skpm-build",
     "watch": "skpm-build --watch",
     "start": "skpm-build --watch --run",
+    "test": "skpm-build && /Applications/Sketch.app/Contents/Resources/sketchtool/bin/sketchtool run ~/Library/Application\\ Support/com.bohemiancoding.sketch3/Plugins/french-typography/french-typography.sketchplugin testRegex --without-activating",
     "postinstall": "npm run build && skpm-link",
     "lint-staged": "lint-staged",
     "prettier:base": "prettier --single-quote --trailing-comma es5 --no-semi --write",
@@ -44,6 +45,7 @@
     ]
   },
   "dependencies": {
+    "babel-plugin-transform-modern-regexp": "0.0.6",
     "diff": "^3.5.0",
     "sketch-utils": "file:sketch-utils"
   }
