@@ -380,7 +380,7 @@ var sketch = __webpack_require__(9);
 var Settings = __webpack_require__(10);
 var Diff = __webpack_require__(11);
 var searchAllTextLayers = __webpack_require__(14);
-var XRegExp = __webpack_require__(15);
+var Xregexp = __webpack_require__(15);
 var document = sketch.getSelectedDocument();
 
 //const toArray = require('sketch-utils/to-array');
@@ -395,7 +395,8 @@ var OPENING_QUOTE = "«";
 var CLOSING_QUOTE = "»";
 
 // REGEXs
-var REGEX_NNBSP_DOUBLE_PUNCTUATION = XRegExp("\xA0\n(w+ \t#un ou plusieurs mots\n(?:s?\xBB)?)  #un espace \n(s?)\n([?!;:])\n(s|$)", g);
+var REGEX_NNBSP_DOUBLE_PUNCTUATION = Xregexp("(\\w+(?:\\s?\xBB)?)(\\s?)([?!;:])(\\s|$)", 'xg');
+console.log(Xregexp.replace('test? test !', REGEX_NNBSP_DOUBLE_PUNCTUATION, '$1 $3$4', 'all'));
 
 var REGEX_ELLIPSIS = /\.{2,5}|\. \. \./g;
 var ANY_NUMBER_EXCEPT_ONE = "(?!1\b)d+"; // positive lookahed or some weird-ass regex witchery

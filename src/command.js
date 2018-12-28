@@ -9,7 +9,7 @@ const sketch = require("sketch");
 const Settings = require("sketch/settings");
 const Diff = require("diff");
 const searchAllTextLayers = require("./utils.js");
-const XRegExp = require('xregexp');
+const Xregexp = require('xregexp');
 const document = sketch.getSelectedDocument();
 
 //const toArray = require('sketch-utils/to-array');
@@ -24,12 +24,9 @@ const OPENING_QUOTE = "«";
 const CLOSING_QUOTE = "»";
 
 // REGEXs
-const REGEX_NNBSP_DOUBLE_PUNCTUATION = XRegExp(` 
-(\w+ 	#un ou plusieurs mots
-(?:\s?»)?)  #un espace 
-(\s?)
-([?!;:])
-(\s|$)` , g);
+const REGEX_NNBSP_DOUBLE_PUNCTUATION = Xregexp(`(\\w+(?:\\s?»)?)(\\s?)([?!;:])(\\s|$)` , 'xg');
+console.log(Xregexp.replace('test? test !',REGEX_NNBSP_DOUBLE_PUNCTUATION, '$1 $3$4', 'all'))
+
 
 const REGEX_ELLIPSIS = /\.{2,5}|\. \. \./g;
 const ANY_NUMBER_EXCEPT_ONE = "(?!1\b)d+"; // positive lookahed or some weird-ass regex witchery
