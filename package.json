@@ -45,8 +45,8 @@
     ]
   },
   "dependencies": {
-    "babel-plugin-transform-modern-regexp": "0.0.6",
     "diff": "^3.5.0",
-    "sketch-utils": "file:sketch-utils"
+    "sketch-utils": "file:sketch-utils",
+    "xregexp": "^4.2.0"
   }
 }
