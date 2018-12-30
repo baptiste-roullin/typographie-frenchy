@@ -386,16 +386,16 @@ var document = sketch.getSelectedDocument();
 //const utils = require('sketch-utils');
 
 // CHARECTHER CONSTANTS
-var ELLIPSIS = "\u2026";
-var SPACE = " "; // Good ol' space
-var WNBSP = "\xA0"; // wide non breakable space
-var NNBSP = "\u202F"; // narrow non breakable space
+var ELLIPSIS = Xregexp("\\u{2026}", 'gxu');
+var SPACE = Xregexp("\\u{0020}", 'gxu'); // Good ol' space
+var WNBSP = Xregexp("\\u{00A0}", 'gxu'); // wide non breakable space
+var NNBSP = Xregexp("\\u{202F}", 'gxu'); // narrow non breakable space
 var OPENING_QUOTE = "«";
 var CLOSING_QUOTE = "»";
 
 // REGEXs
-var NBSP_DOUBLE_PUNCTUATION = Xregexp("(\\w+(?:\\s?\xBB)?)(\\s?)([?!;:])(\\s|$)", 'gx');
-var REGEX_ELLIPSIS = Xregexp('(\\.{2,5})|(\\. \\. \\.)', 'gx');
+var NBSP_DOUBLE_PUNCTUATION = Xregexp("(\\w+(?:\\s?\xBB)?)(\\s?)([?!;:])(\\s|$)", 'gxu');
+var REGEX_ELLIPSIS = Xregexp('(\\.{2,5})|(\\. \\. \\.)', 'gxu');
 
 // const DOUBLE_QUOTE_OPEN     = Xregexp(
 // 	`( "(?=\\w) ) 						# guillemet suivi d'un mot
@@ -405,10 +405,10 @@ var REGEX_ELLIPSIS = Xregexp('(\\.{2,5})|(\\. \\. \\.)', 'gx');
 // , 'x');
 // const DOUBLE_QUOTE_CLOSE    = Xregexp('(?: (?<=\\w)" ) | (?: (?<=\\S)"(?=\\s|$ )', 'x');
 
-var DOUBLE_QUOTE_OPEN = Xregexp('"(\\S)', 'xg');
-var DOUBLE_QUOTE_CLOSE = Xregexp('(\\S)"', 'xg');
-var NBSP_AFTER_QUOTE = Xregexp("(\\s|^|\\'|\\‘)(«)(\\s?)(\\w+)", 'xg');
-var NBSP_BEFORE_QUOTE = Xregexp('(\\w+[.?!]?)(\\s?)(»)(\\s|[.,?!:]|$)', 'xg');
+var DOUBLE_QUOTE_OPEN = Xregexp('"(\\S)', 'xgu');
+var DOUBLE_QUOTE_CLOSE = Xregexp('(\\S)"', 'xgu');
+var NBSP_AFTER_QUOTE = Xregexp("(\\s|^|\\'|\\‘|\\’)(«)(\\s?)(\\w+)", 'xgu');
+var NBSP_BEFORE_QUOTE = Xregexp('(\\w+[.?!]?)(\\s?)(»)(\\s|[.,?!:]|$)', 'xgu');
 var ANY_NUMBER_EXCEPT_ONE = "(?!1\\b)d+";
 
 // SETTINGS
@@ -453,12 +453,12 @@ function replaceWNBSPbyNNBSP(context) {
 	});
 }
 
-function spaceInUnicode(str) {
-	var newstring = str.replace(/(\u00A0|\u202F)/, function (match, p1) {
-		return "" + String(p1.charCodeAt().toString(16));
-	});
-	return newstring;
-}
+// function spaceInUnicode(str) {
+// 	let newstring = str.replace(/({u}00A0|{u}202F)/, function (match, p1) {
+// 		return `${p1.charCodeAt().toString(16)}`;
+// 	})
+// 	return newstring
+// }
 
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
 function testRegex() {
@@ -627,7 +627,7 @@ function replaceString(string) {
 	[NBSP_DOUBLE_PUNCTUATION, function (match, $1, $2, $3, $4) {
 		console.log("espaces fines insécables avant ? ! ; :");
 		count++;
-		return "" + String($1) + NBSP + String($3) + String($4);
+		return "" + String($1) + String(NBSP) + String($3) + String($4);
 	}, 'all'],
 
 	//ajoute espace avant »
@@ -641,14 +641,14 @@ function replaceString(string) {
 	["(\\d+)\\s?\\%", function (match, $1, $2) {
 		console.log("//avant %");
 		count++;
-		return "" + String($1) + NBSP + "%";
+		return "" + String($1) + String(NBSP) + "%";
 	}, 'all'],
 
 	//avant $£€
 	["(\\d+)\\s?([$£€])", function (match, $1, $2, $3) {
 		console.log("/avant $£€");
 		count++;
-		return "" + String($1) + NBSP + String($2);
+		return "" + String($1) + String(NBSP) + String($2);
 	}, 'all']
 	// /(\d{3})( |\D|$)", function (match, p1, p2) {
 	//     console.log('milliers')

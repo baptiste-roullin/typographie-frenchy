@@ -11,16 +11,16 @@ const document = sketch.getSelectedDocument();
 //const utils = require('sketch-utils');
 
 // CHARECTHER CONSTANTS
-const ELLIPSIS = "\u2026";
-const SPACE = "\u0020";		// Good ol' space
-const WNBSP = "\u00A0";   // wide non breakable space
-const NNBSP = "\u202F";   // narrow non breakable space
+const ELLIPSIS = Xregexp("\\u{2026}", 'gxu');
+const SPACE = Xregexp("\\u{0020}", 'gxu');		// Good ol' space
+const WNBSP = Xregexp("\\u{00A0}", 'gxu');   // wide non breakable space
+const NNBSP = Xregexp("\\u{202F}", 'gxu');   // narrow non breakable space
 const OPENING_QUOTE = "«";
 const CLOSING_QUOTE = "»";
 
 // REGEXs
-const NBSP_DOUBLE_PUNCTUATION = Xregexp(`(\\w+(?:\\s?»)?)(\\s?)([?!;:])(\\s|$)` , 'gx');
-const REGEX_ELLIPSIS = Xregexp('(\\.{2,5})|(\\. \\. \\.)', 'gx');
+const NBSP_DOUBLE_PUNCTUATION = Xregexp(`(\\w+(?:\\s?»)?)(\\s?)([?!;:])(\\s|$)` , 'gxu');
+const REGEX_ELLIPSIS = Xregexp('(\\.{2,5})|(\\. \\. \\.)', 'gxu');
 
 // const DOUBLE_QUOTE_OPEN     = Xregexp(
 // 	`( "(?=\\w) ) 						# guillemet suivi d'un mot
@@ -30,10 +30,10 @@ const REGEX_ELLIPSIS = Xregexp('(\\.{2,5})|(\\. \\. \\.)', 'gx');
 // , 'x');
 // const DOUBLE_QUOTE_CLOSE    = Xregexp('(?: (?<=\\w)" ) | (?: (?<=\\S)"(?=\\s|$ )', 'x');
 
-const DOUBLE_QUOTE_OPEN = Xregexp('"(\\S)', 'xg');
-const DOUBLE_QUOTE_CLOSE = Xregexp('(\\S)"', 'xg')
-const NBSP_AFTER_QUOTE = Xregexp(" (\\s|^|\\'|\\‘)(«)(\\s?)(\\w+) ", 'xg') 
-const NBSP_BEFORE_QUOTE = Xregexp(' (\\w+[.?!]?)(\\s?)(»)(\\s|[.,?!:]|$) ', 'xg') 
+const DOUBLE_QUOTE_OPEN = Xregexp('"(\\S)', 'xgu');
+const DOUBLE_QUOTE_CLOSE = Xregexp('(\\S)"', 'xgu')
+const NBSP_AFTER_QUOTE = Xregexp("(\\s|^|\\'|\\‘|\\’)(«)(\\s?)(\\w+)", 'xgu') 
+const NBSP_BEFORE_QUOTE = Xregexp('(\\w+[.?!]?)(\\s?)(»)(\\s|[.,?!:]|$)', 'xgu') 
 const ANY_NUMBER_EXCEPT_ONE = "(?!1\\b)d+"; 
 
 // SETTINGS
@@ -79,12 +79,12 @@ export function replaceWNBSPbyNNBSP(context) {
   });
 }
 
-function spaceInUnicode(str) {
-	let newstring = str.replace(/(\u00A0|\u202F)/, function (match, p1) {
-		return `${p1.charCodeAt().toString(16)}`;
-	})
-	return newstring
-}
+// function spaceInUnicode(str) {
+// 	let newstring = str.replace(/({u}00A0|{u}202F)/, function (match, p1) {
+// 		return `${p1.charCodeAt().toString(16)}`;
+// 	})
+// 	return newstring
+// }
 
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
 export function testRegex() {
