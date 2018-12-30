@@ -373,9 +373,6 @@ exports.saveSettings = saveSettings;
 exports.openSettings = openSettings;
 exports.replaceString = replaceString;
 exports.fixLayer = fixLayer;
-// todo : rendre compatible que le param système de quote intelligent soit activé ou non.
-
-
 var sketch = __webpack_require__(9);
 var Settings = __webpack_require__(10);
 var Diff = __webpack_require__(11);
@@ -390,7 +387,7 @@ var document = sketch.getSelectedDocument();
 
 // CHARECTHER CONSTANTS
 var ELLIPSIS = "\u2026";
-var SPACE = " ";
+var SPACE = " "; // Good ol' space
 var WNBSP = "\xA0"; // wide non breakable space
 var NNBSP = "\u202F"; // narrow non breakable space
 var OPENING_QUOTE = "«";
@@ -410,10 +407,9 @@ var REGEX_ELLIPSIS = Xregexp('(\\.{2,5})|(\\. \\. \\.)', 'gx');
 
 var DOUBLE_QUOTE_OPEN = Xregexp('"(\\S)', 'xg');
 var DOUBLE_QUOTE_CLOSE = Xregexp('(\\S)"', 'xg');
-var NBSP_AFTER_QUOTE = Xregexp('(\\s|^)(«)(\s?)(\w+)', 'xg');
+var NBSP_AFTER_QUOTE = Xregexp("(\\s|^|\\'|\\‘)(«)(\\s?)(\\w+)", 'xg');
 var NBSP_BEFORE_QUOTE = Xregexp('(\\w+[.?!]?)(\\s?)(»)(\\s|[.,?!:]|$)', 'xg');
-var ANY_NUMBER_EXCEPT_ONE = "(?!1\\b)d+"; // positive lookahed or some weird-ass regex witchery
-
+var ANY_NUMBER_EXCEPT_ONE = "(?!1\\b)d+";
 
 // SETTINGS
 var DEBUG = true;
@@ -427,7 +423,7 @@ var settingsList = {
 	USE_NNBSP: {
 		ID: "USE_NNBSP",
 		state: false,
-		label: " Enable narrow non-breakable spaces (resulting text is not compatible with Safari"
+		label: " Enable narrow non-breakable spaces \n Resulting text is not compatible with Safari"
 	}
 };
 
@@ -495,7 +491,6 @@ function createCheckbox(setting, frame) {
 	} else {
 		checkbox.setState(NSOffState);
 	}
-
 	return checkbox;
 }
 
@@ -514,7 +509,7 @@ function openSettings(context) {
 	dialogWindow.setMessageText("French typography settings");
 
 	var checkboxAutoReplace = createCheckbox(settingsList.AUTO_REPLACE, NSMakeRect(0, 0, 250, 23));
-	var checkboxUseNNBSP = createCheckbox(settingsList.USE_NNBSP, NSMakeRect(25, 0, 250, 23));
+	var checkboxUseNNBSP = createCheckbox(settingsList.USE_NNBSP, NSMakeRect(25, 0, 300, 56));
 	dialogWindow.addAccessoryView(checkboxAutoReplace);
 	dialogWindow.addAccessoryView(checkboxUseNNBSP);
 

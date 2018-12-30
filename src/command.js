@@ -1,8 +1,3 @@
-// todo : rendre compatible que le param système de quote intelligent soit activé ou non.
-
-
-
-
 const sketch = require("sketch");
 const Settings = require("sketch/settings");
 const Diff = require("diff");
@@ -17,12 +12,12 @@ const document = sketch.getSelectedDocument();
 
 // CHARECTHER CONSTANTS
 const ELLIPSIS = "\u2026";
-const SPACE = "\u0020";
+const SPACE = "\u0020";		// Good ol' space
 const WNBSP = "\u00A0";   // wide non breakable space
 const NNBSP = "\u202F";   // narrow non breakable space
 const OPENING_QUOTE = "«";
 const CLOSING_QUOTE = "»";
-	
+
 // REGEXs
 const NBSP_DOUBLE_PUNCTUATION = Xregexp(`(\\w+(?:\\s?»)?)(\\s?)([?!;:])(\\s|$)` , 'gx');
 const REGEX_ELLIPSIS = Xregexp('(\\.{2,5})|(\\. \\. \\.)', 'gx');
@@ -37,10 +32,9 @@ const REGEX_ELLIPSIS = Xregexp('(\\.{2,5})|(\\. \\. \\.)', 'gx');
 
 const DOUBLE_QUOTE_OPEN = Xregexp('"(\\S)', 'xg');
 const DOUBLE_QUOTE_CLOSE = Xregexp('(\\S)"', 'xg')
-const NBSP_AFTER_QUOTE = Xregexp( '(\\s|^)(«)(\s?)(\w+)', 'xg') 
-const NBSP_BEFORE_QUOTE = Xregexp( '(\\w+[.?!]?)(\\s?)(»)(\\s|[.,?!:]|$)', 'xg') 
-const ANY_NUMBER_EXCEPT_ONE = "(?!1\\b)d+"; // positive lookahed or some weird-ass regex witchery
-
+const NBSP_AFTER_QUOTE = Xregexp(" (\\s|^|\\'|\\‘)(«)(\\s?)(\\w+) ", 'xg') 
+const NBSP_BEFORE_QUOTE = Xregexp(' (\\w+[.?!]?)(\\s?)(»)(\\s|[.,?!:]|$) ', 'xg') 
+const ANY_NUMBER_EXCEPT_ONE = "(?!1\\b)d+"; 
 
 // SETTINGS
 let DEBUG = true;
@@ -54,24 +48,19 @@ const settingsList = {
 	USE_NNBSP : {
 		ID : "USE_NNBSP",
 		state : false,
-		label : " Enable narrow non-breakable spaces (resulting text is not compatible with Safari"
+		label : " Enable narrow non-breakable spaces \n Resulting text is not compatible with Safari"
   }
 }
-
-
 
 
 export function initPlugin(context) {
 
   if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == undefined  ) {
 		Settings.setSettingForKey(settingsList.USE_NNBSP.ID, false);
-
   }
   if (Settings.settingForKey(settingsList.AUTO_REPLACE.ID) == undefined ) {
 		Settings.setSettingForKey(settingsList.AUTO_REPLACE.ID, true);
-
   }
-
 }
 
 export function replaceNNBSPbyWNBSP(context) {
@@ -118,7 +107,6 @@ export function testRegex() {
   }
 }
 
-  
 export function createCheckbox(setting, frame) {
 	let checkbox = NSButton.alloc().initWithFrame(frame);
 	checkbox.setButtonType(NSSwitchButton);
@@ -132,7 +120,6 @@ export function createCheckbox(setting, frame) {
 	else {
 		checkbox.setState(NSOffState);
 	}
-
 	return checkbox;
   }
 
@@ -151,7 +138,7 @@ export function openSettings(context) {
   dialogWindow.setMessageText("French typography settings");
   
   let checkboxAutoReplace = 	createCheckbox(settingsList.AUTO_REPLACE, NSMakeRect(0, 0, 250, 23) );
-  let checkboxUseNNBSP = 			createCheckbox(settingsList.USE_NNBSP, NSMakeRect(25, 0, 250, 23) );
+  let checkboxUseNNBSP = 			createCheckbox(settingsList.USE_NNBSP, NSMakeRect(25, 0, 300, 56) );
   dialogWindow.addAccessoryView(checkboxAutoReplace);
   dialogWindow.addAccessoryView(checkboxUseNNBSP);
 
