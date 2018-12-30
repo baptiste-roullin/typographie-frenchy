@@ -3,13 +3,13 @@
 
 
 
-
-
 const sketch = require("sketch");
 const Settings = require("sketch/settings");
 const Diff = require("diff");
 const searchAllTextLayers = require("./utils.js");
 const Xregexp = require('xregexp');
+var merge = require('lodash.merge');
+merge(Xregexp.XRegExp, require('xregexp-lookbehind'));
 const document = sketch.getSelectedDocument();
 
 //const toArray = require('sketch-utils/to-array');
@@ -22,16 +22,24 @@ const WNBSP = "\u00A0";   // wide non breakable space
 const NNBSP = "\u202F";   // narrow non breakable space
 const OPENING_QUOTE = "«";
 const CLOSING_QUOTE = "»";
-
+	
 // REGEXs
-const REGEX_NNBSP_DOUBLE_PUNCTUATION = Xregexp(`(\\w+(?:\\s?»)?)(\\s?)([?!;:])(\\s|$)` , 'xg');
-console.log(Xregexp.replace('test? test !',REGEX_NNBSP_DOUBLE_PUNCTUATION, '$1 $3$4', 'all'))
+const NBSP_DOUBLE_PUNCTUATION = Xregexp(`(\\w+(?:\\s?»)?)(\\s?)([?!;:])(\\s|$)` , 'gx');
+const REGEX_ELLIPSIS = Xregexp('(\\.{2,5})|(\\. \\. \\.)', 'gx');
 
+// const DOUBLE_QUOTE_OPEN     = Xregexp(
+// 	`( "(?=\\w) ) 						# guillemet suivi d'un mot
+// 	|													# ou bien
+// 	 ( (?<=\\s|^)"(?=\\S) ) # espace ou début de texte, guillemet, tout sauf espace
+// 	 `
+// , 'x');
+// const DOUBLE_QUOTE_CLOSE    = Xregexp('(?: (?<=\\w)" ) | (?: (?<=\\S)"(?=\\s|$ )', 'x');
 
-const REGEX_ELLIPSIS = /\.{2,5}|\. \. \./g;
-const ANY_NUMBER_EXCEPT_ONE = "(?!1\b)d+"; // positive lookahed or some weird-ass regex witchery
-const DOUBLE_QUOTE_OPEN = '/(?: "(?=\w) )  | (?: (?<=\s|\A)"(?=\S) )/Sx';
-const DOUBLE_QUOTE_CLOSE = '/(?: (?<=\w)" ) | (?: (?<=\S)"(?=\s|\Z) )/Sx';
+const DOUBLE_QUOTE_OPEN = Xregexp('"(\\S)', 'xg');
+const DOUBLE_QUOTE_CLOSE = Xregexp('(\\S)"', 'xg')
+const NBSP_AFTER_QUOTE = Xregexp( '(\\s|^)(«)(\s?)(\w+)', 'xg') 
+const NBSP_BEFORE_QUOTE = Xregexp( '(\\w+[.?!]?)(\\s?)(»)(\\s|[.,?!:]|$)', 'xg') 
+const ANY_NUMBER_EXCEPT_ONE = "(?!1\\b)d+"; // positive lookahed or some weird-ass regex witchery
 
 
 // SETTINGS
@@ -83,7 +91,7 @@ export function replaceWNBSPbyNNBSP(context) {
 }
 
 function spaceInUnicode(str) {
-	let newstring = str.replace(/(\u00A0|\u202F)/g, function (match, p1) {
+	let newstring = str.replace(/(\u00A0|\u202F)/, function (match, p1) {
 		return `${p1.charCodeAt().toString(16)}`;
 	})
 	return newstring
@@ -172,104 +180,134 @@ export function openSettings(context) {
 }
  
 
-
 export function replaceString(string) {
-  let count = 0;
-  //console.log(Settings.settingForKey(settingsList.USE_NNBSP.ID), NBSP);
 
-  // REMPLACEMENTS
-  string = string
+let count = 0;
+string = Xregexp.replaceEach(string, [
+
+									 // REMPLACEMENTS
+
+				 
 	// points de suspension
-	.replace(REGEX_ELLIPSIS, function () {
-	  console.log("points de suspension");
-	  count++;
-	  return ELLIPSIS;
-	})
-	//incises intelligentes
-	.replace(/([^0-9]\s)--?(\s?[^0-9])/g, function (match, p1, p2, p3) {
-	  console.log("incises intelligentes");
-	  count++;
-	  return `${p1}–${p2}`;
-	})
-	// puces en début de ligne
-	.replace(/(^|\n|\r)--?/g, function (match, p1) {
-	  console.log("puces en début de ligne");
-	  count++;
-	  return "–";
-	})
-	//  n° --> №
-	.replace(/n°/g, function (match, p1, p2, p3) {
-	  count++;
-	  console.log("n°");
-	  return "№";
-	})
-	// 1/2, 1/3, 1/4 --> caractères dédiés pour ces fractions
-	.replace(/(\s|\w|^)1\/2(\s|\w|$)/g, function (match, p1, p2) {
-	  count++;
-	  console.log("1/2");
-	  return `${p1}½${p2}`;
-	})
-	.replace(/(\s|\w|^)1\/3(\s|\w|$)/g, function (match, p1, p2) {
-	  count++;
-	  console.log("1/3");
-	  return `${p1}⅓${p2}`;
-	})
-	.replace(/(\s|\w|^)1\/4(\s|\w|$)/g, function (match, p1, p2) {
-	  count++;
-	  console.log("1/4");
-	  return `${p1}¼${p2}`;
-	})
-	// 1er --> ordinal en exposant
-	.replace(/\b1er?\b/g, function (match, p1, p2) {
-	  count++;
-	  console.log("1er --> ordinal en exposant");
-	  return `1ᵉʳ`;
-	})
-	//2e --> ordinal en exposant
-	.replace(/(?!1\b)(\d+)e\b/g, function (match, p1, p2) {
-	  count++;
-	  console.log("2e --> ordinal en exposant");
-	  return `${p1}ᵉ`;
-	});
 
-  //  ESPACES INSÉCABLES
-  string = string
-	//espaces fines insécables avant ? ! ; :
-	.replace(REGEX_NNBSP_DOUBLE_PUNCTUATION, function (match, p1, p2, p3, p4) {
-	  console.log("espaces fines insécables avant ? ! ; :");
-	  count++;
-	  return `${p1}${NBSP}${p3}${p4}`;
-	})
-	//après «
-	.replace(/(\s|^)(«)(\s?)(\w+)/g, function (match, p1, p2, p3, p4) {
-	  console.log("//après «");
-	  count++;
-	  return `${p1}${OPENING_QUOTE}${NBSP}${p4}`;
-	})
-	//avant »
-	.replace(/(\w+[.?!]?)(\s?)(»)(\s|[.,?!:]|$)/g, function (match, p1, p2, p3, p4) {
-	  console.log("//avant »");
-	  count++;
-	  return `${p1}${NBSP}${CLOSING_QUOTE}${p4}`;
-	})
-	//avant %
-	.replace(/(\d+)\s?\%/g, function (match, p1, p2) {
-	  console.log("//avant %");
-	  count++;
-	  return `${p1}${NBSP}%`;
-	})
-	//avant $£€
-	.replace(/(\d+)\s?([$£€])/g, function (match, p1, p2, p3) {
-	  console.log("/avant $£€");
-	  count++;
-	  return `${p1}${NBSP}${p2}`;
-	});
-  // .replace(/(\d{3})( |\D|$)/g, function (match, p1, p2) {
-  //     console.log('milliers')
-  //     count++;
-  //     return `${p1}${NNBSP}`;
-  // })
+		[REGEX_ELLIPSIS, function(match) {
+			console.log("points de suspension");
+			count++;
+			return ELLIPSIS;		
+		},  'all'],	
 
+		//incises intelligentes
+		["([^0-9]\\s)--?(\\s?[^0-9])", function ( match, $1, $2, $3) {
+			console.log("incises intelligentes");
+			count++;
+			return `${p1}–${p2}`;
+		},  'all'],
+
+		// puces en début de ligne
+		["(^|\\n|\\r)--?", function (match, $1) {
+			console.log("puces en début de ligne");
+			count++;
+			return "–";
+		},  'all'],
+
+		//  n° --> №
+		["n°", function (match, $1, $2, $3) {
+			count++;
+			console.log("n°");
+			return "№";
+		},  'all'],
+
+		// 1/2, 1/3, 1/4 --> caractères dédiés pour ces fractions
+		["(\\s|\\w|^)1\\/2(\\s|\\w|$)", function ( match, $1, $2) {
+			count++;
+			console.log("1/2");
+			return `${$1}½${$2}`;
+		},  'all'],
+
+		["(\\s|\\w|^)1\\/3(\\s|\\w|$)", function ( match, $1, $2) {
+			count++;
+			console.log("1/3");
+			return `${$1}⅓${$2}`;
+		},  'all'],
+
+		["(\\s|\\w|^)1\\/4(\\s|\\w|$)", function ( match, $1, $2) {
+			count++;
+			console.log("1/4");
+			return `${$1}¼${$2}`;
+		},  'all'],
+
+		// 1er --> ordinal en exposant
+		["\\b1er?\\b", function ( match, $1, $2) {
+			count++;
+			console.log("1er --> ordinal en exposant");
+			return `1ᵉʳ`;
+		},  'all'],
+
+		//2e --> ordinal en exposant
+		["(?!1\\b)(\\d+)e\\b", function ( match, $1, $2) {
+			count++;
+			console.log("2e --> ordinal en exposant");
+			return `${$1}ᵉ`;
+		},  'all'],
+
+
+//  ESPACES INSÉCABLES
+
+	
+
+		// remplace " par «
+		[DOUBLE_QUOTE_OPEN, function( match, $1) {
+			count++
+			return OPENING_QUOTE + $1;
+		}, 'all'],
+
+		//remplace " par »
+		[DOUBLE_QUOTE_CLOSE, function( match, $1) {
+			count++
+			return $1 + CLOSING_QUOTE;
+		}, 'all'],
+
+		//ajoute espace après «
+		[NBSP_AFTER_QUOTE, function ( match, $1, $2, $3, $4) {
+			console.log("//après «");
+			count++;
+			return  $1 + $2 + NBSP + $4;;
+		},  'all'],
+
+		//espaces fines insécables avant ? ! ; :
+		[NBSP_DOUBLE_PUNCTUATION, function ( match, $1, $2, $3, $4) {
+			console.log("espaces fines insécables avant ? ! ; :");
+			count++;
+			return `${$1}${NBSP}${$3}${$4}`;
+		},  'all'],
+
+		//ajoute espace avant »
+		[NBSP_BEFORE_QUOTE, function ( match, $1, $2, $3, $4) {
+			console.log("//avant »");
+			count++;
+			return $1 + NBSP + $3 + $4;
+		},  'all'],
+
+		//avant %
+		["(\\d+)\\s?\\%", function ( match, $1, $2) {
+			console.log("//avant %");
+			count++;
+			return `${$1}${NBSP}%`;
+		},  'all'],
+
+		//avant $£€
+		["(\\d+)\\s?([$£€])", function ( match, $1, $2, $3) {
+			console.log("/avant $£€");
+			count++;
+			return `${$1}${NBSP}${$2}`;
+		},  'all']
+		// /(\d{3})( |\D|$)", function (match, p1, p2) {
+		//     console.log('milliers')
+		//     count++;
+		//     return `${p1}${NNBSP}`;
+		// })
+
+]);
 
   return {
 	string: string,
@@ -279,7 +317,6 @@ export function replaceString(string) {
 
 //fonction qui prend le texte du calque sélectionné,invoque replaceString() et compte le temps écoulé. Invocable lors de textChanged
 export function fixLayer(context) {
-	console.log(Settings.settingForKey(settingsList.AUTO_REPLACE.ID));
 
   // Si le remplacement automatique est désactivé dans les paramètres, on quitte la fonction
   let autoReplaceActivated = Settings.settingForKey(settingsList.AUTO_REPLACE.ID);
