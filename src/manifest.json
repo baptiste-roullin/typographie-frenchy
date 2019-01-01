@@ -10,7 +10,6 @@
       "handlers": {
         "actions": {
           "TextChanged.finish": "fixLayer"
-          
         }
       }
     },
@@ -29,7 +28,7 @@
     {
       "name": "Tester les regex",
       "identifier": "testRegex",
-      "script": "./command.js",
+      "script": "./test.js",
       "handler": "testRegex"
        },
     {
