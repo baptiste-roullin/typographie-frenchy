@@ -1,3 +1,8 @@
+//TODO
+// mettre en place versioning et maj
+// mettre en place publication sur repos officiels et tierces
+// mettre debug à false lors de la publi
+
 const sketch = require("sketch");
 const Settings = require("sketch/settings");
 const searchAllTextLayers = require("./utils.js");
