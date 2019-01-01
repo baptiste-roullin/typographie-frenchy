@@ -53,14 +53,14 @@ Ce plugin n'a pas vocation à traiter les cas suivants :
 * Les erreurs genre double espace.
 
 
-## build
-Follow SKPM instructions
+## build from source
+Follow SKPM instructions : [1](https://skpm.io/help/) and [2](https://developer.sketchapp.com/guides/)
 
 ## tests
 
-To check for errors in regex, run :
-[sketchTool path] run [plugin path] testRegex
+To check for errors in regex, in the plugin folder run :
 
-Which gives in a normal installation:
+`npm test`
 
-/Applications/Sketch.app/Contents/Resources/sketchtool/bin/sketchtool run ~/Library/Application\ Support/com.bohemiancoding.sketch3/Plugins/french-typography/french-typography.sketchplugin testRegex --without-activating
+It's a shorcut for : 
+build && [sketchTool path] run [plugin path] testRegex
