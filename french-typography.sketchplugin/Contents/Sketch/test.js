@@ -384,15 +384,15 @@ var document = sketch.getSelectedDocument();
 var replaceString = __webpack_require__(14).replaceString;
 
 function spaceInUnicode(str) {
-	var newstring = str.replace(/(\u00A0|\u202F)/, function (match, p1) {
+	var newstring = str.replace(/(\u00A0|\u202F)/g, function (match, p1) {
 		return "" + String(p1.charCodeAt().toString(16));
 	});
 	return newstring;
 }
 
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
-function testRegex(context) {
-	var referenceString = "L’Histoire ne fait rien, elle ne « possède » pas de « richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme – et rien que de l'homme – poursuivant ses fins… Y a-t-il une suite à ce texte ?\n";
+function testRegex() {
+	var referenceString = "L’Histoire ne fait rien, elle ne « possède » pas de « richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme – et rien que de l'homme – poursuivant ses fins… Y a-t-il une suite à ce texte ?\n";
 
 	var toFixString = "L’Histoire ne fait rien, elle ne « possède» pas de «richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme - et rien que de l'homme -- poursuivant ses fins… Y a-t-il une suite à ce texte?\n";
 
@@ -2594,6 +2594,11 @@ exports.saveSettings = saveSettings;
 exports.openSettings = openSettings;
 exports.replaceString = replaceString;
 exports.fixLayer = fixLayer;
+//TODO
+// mettre en place versioning et maj
+// mettre en place publication sur repos officiels et tierces
+// mettre debug à false lors de la publi
+
 var sketch = __webpack_require__(3);
 var Settings = __webpack_require__(4);
 var searchAllTextLayers = __webpack_require__(15);
@@ -2717,6 +2722,7 @@ function openSettings(context) {
 	}
 }
 
+console.log(/\s/.test(" "), /\s/.test(WNBSP));
 function replaceString(string) {
 
 	var count = 0;

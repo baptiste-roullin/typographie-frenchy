@@ -131,7 +131,7 @@ export function openSettings(context) {
 
 }
  
-
+console.log(/\s/.test(" "), /\s/.test(WNBSP))
 export function replaceString(string) {
 
 let count = 0;
@@ -142,61 +142,61 @@ string = string.replace(
 				 
 	// points de suspension
 
-		REGEX_ELLIPSIS, function(match) {
+		REGEX_ELLIPSIS, (match) => {
 			console.log("points de suspension");
 			count++;
 			return ELLIPSIS;		
 		}).	
 
 		//incises intelligentes
-		replace(/([^0-9]\s)--?(\s?[^0-9])/, function ( match, $1, $2, $3) {
+		replace(/([^0-9]\s)--?(\s?[^0-9])/, ( match, $1, $2, $3) => {
 			console.log("incises intelligentes");
 			count++;
 			return `${$1}–${$1}`;
 		}).
 
 		// puces en début de ligne
-		replace(/(^|\n|\r)--?/, function (match, $1) {
+		replace(/(^|\n|\r)--?/, (match, $1) => {
 			console.log("puces en début de ligne");
 			count++;
 			return "–";
 		}).
 
 		//  n° --> №
-		replace(/n°/, function (match, $1, $2, $3) {
+		replace(/n°/, (match, $1, $2, $3) => {
 			count++;
 			console.log("n°");
 			return "№";
 		}).
 
 		// 1/2, 1/3, 1/4 --> caractères dédiés pour ces fractions
-		replace(/(\s|\w|^)1\/2(\s|\w|$)/, function ( match, $1, $2) {
+		replace(/(\s|\w|^)1\/2(\s|\w|$)/, ( match, $1, $2) => {
 			count++;
 			console.log("1/2");
 			return `${$1}½${$2}`;
 		}).
 
-		replace(/(\s|\w|^)1\/3(\s|\w|$)/, function ( match, $1, $2) {
+		replace(/(\s|\w|^)1\/3(\s|\w|$)/, ( match, $1, $2) => {
 			count++;
 			console.log("1/3");
 			return `${$1}⅓${$2}`;
 		}).
 
-		replace(/(\s|\w|^)1\/4(\s|\w|$)/, function ( match, $1, $2) {
+		replace(/(\s|\w|^)1\/4(\s|\w|$)/, ( match, $1, $2) => {
 			count++;
 			console.log("1/4");
 			return `${$1}¼${$2}`;
 		}).
 
 		// 1er --> ordinal en exposant
-		replace(/\b1er?\b/, function ( match, $1, $2) {
+		replace(/\b1er?\b/, ( match, $1, $2) => {
 			count++;
 			console.log("1er --> ordinal en exposant");
 			return `1ᵉʳ`;
 		}).
 
 		//2e --> ordinal en exposant
-		replace(/(?!1\b)(\d+)e\b/, function ( match, $1, $2) {
+		replace(/(?!1\b)(\d+)e\b/, ( match, $1, $2) => {
 			count++;
 			console.log("2e --> ordinal en exposant");
 			return `${$1}ᵉ`;
@@ -207,47 +207,47 @@ string = string.replace(
 	
 
 		// remplace " par «
-		replace(DOUBLE_QUOTE_OPEN, function( match, $1) {
+		replace(DOUBLE_QUOTE_OPEN,( match, $1) => {
 			count++
 			return OPENING_QUOTE + $1;
 		}).
 
 		//remplace " par »
-		replace(DOUBLE_QUOTE_CLOSE, function( match, $1) {
+		replace(DOUBLE_QUOTE_CLOSE,( match, $1) => {
 			count++
 			return $1 + CLOSING_QUOTE;
 		}).
 
 		//ajoute espace après «
-		replace(NBSP_AFTER_QUOTE, function ( match, $1, $2, $3, $4) {
+		replace(NBSP_AFTER_QUOTE, ( match, $1, $2, $3, $4) => {
 			console.log("//après «");
 			count++;
 			return  $1 + $2 + NBSP + $4;;
 		}).
 
 		//espaces fines insécables avant ? ! ; :
-		replace(NBSP_DOUBLE_PUNCTUATION, function ( match, $1, $2, $3, $4) {
+		replace(NBSP_DOUBLE_PUNCTUATION, ( match, $1, $2, $3, $4) => {
 			console.log("espaces fines insécables avant ? ! ; :");
 			count++;
 			return `${$1}${NBSP}${$3}${$4}`;
 		}).
 
 		//ajoute espace avant »
-		replace(NBSP_BEFORE_QUOTE, function ( match, $1, $2, $3, $4) {
+		replace(NBSP_BEFORE_QUOTE, ( match, $1, $2, $3, $4) => {
 			console.log("//avant »");
 			count++;
 			return $1 + NBSP + $3 + $4;
 		}).
 
 		//avant %
-		replace(/(\d+)\s?\%/, function ( match, $1, $2) {
+		replace(/(\d+)\s?\%/, ( match, $1, $2) => {
 			console.log("//avant %");
 			count++;
 			return `${$1}${NBSP}%`;
 		}).
 
 		//avant $£€
-		replace(/(\d+)\s?([$£€])/, function ( match, $1, $2, $3) {
+		replace(/(\d+)\s?([$£€])/, ( match, $1, $2, $3) => {
 			console.log("/avant $£€");
 			count++;
 			return `${$1}${NBSP}${$2}`;

@@ -372,6 +372,11 @@ exports.saveSettings = saveSettings;
 exports.openSettings = openSettings;
 exports.replaceString = replaceString;
 exports.fixLayer = fixLayer;
+//TODO
+// mettre en place versioning et maj
+// mettre en place publication sur repos officiels et tierces
+// mettre debug à false lors de la publi
+
 var sketch = __webpack_require__(9);
 var Settings = __webpack_require__(10);
 var searchAllTextLayers = __webpack_require__(11);
@@ -495,6 +500,7 @@ function openSettings(context) {
 	}
 }
 
+console.log(/\s/.test(" "), /\s/.test(WNBSP));
 function replaceString(string) {
 
 	var count = 0;
