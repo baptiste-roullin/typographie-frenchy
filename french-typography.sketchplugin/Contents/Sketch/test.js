@@ -65,7 +65,7 @@ var exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -75,9 +75,9 @@ var exports =
 /* WEBPACK VAR INJECTION */(function(console) {/* globals log */
 
 if (true) {
-  var sketchUtils = __webpack_require__(6)
-  var sketchDebugger = __webpack_require__(8)
-  var actions = __webpack_require__(10)
+  var sketchUtils = __webpack_require__(7)
+  var sketchDebugger = __webpack_require__(9)
+  var actions = __webpack_require__(11)
 
   function getStack() {
     return sketchUtils.prepareStackTrace(new Error().stack)
@@ -376,12 +376,325 @@ module.exports = require("sketch/settings");
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.initPlugin = initPlugin;
+exports.replaceNNBSPbyWNBSP = replaceNNBSPbyWNBSP;
+exports.replaceWNBSPbyNNBSP = replaceWNBSPbyNNBSP;
+exports.createCheckbox = createCheckbox;
+exports.saveSettings = saveSettings;
+exports.openSettings = openSettings;
+exports.replaceString = replaceString;
+exports.fixLayer = fixLayer;
+//TODO
+// mettre en place versioning et maj
+// mettre en place publication sur repos officiels et tierces
+// mettre debug à false lors de la publi
+
+var sketch = __webpack_require__(3);
+var Settings = __webpack_require__(4);
+var searchAllTextLayers = __webpack_require__(15);
+var document = sketch.getSelectedDocument();
+
+//const toArray = require('sketch-utils/to-array');
+//const utils = require('sketch-utils');
+
+// CHARACTER CONSTANTS
+var U = exports.U = {
+	ELLIPSIS: "\u2026",
+	SPACE: " ", // Good ol' space
+	WNBSP: "\xA0", // wide non breakable space
+	NNBSP: "\u202F", // narrow non breakable space
+	OPENING_QUOTE: "«",
+	CLOSING_QUOTE: "»"
+	// REGEXs
+};var NBSP_DOUBLE_PUNCTUATION = /([0-9A-Z_a-z]+(?:[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?\xBB)?)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)([!:;\?])([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|$)/g;
+var REGEX_ELLIPSIS = /(\.{2,5})|(\. \. \.)/g;
+var DOUBLE_QUOTE_OPEN = /"((?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))/g;
+var DOUBLE_QUOTE_CLOSE = /((?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))"/g;
+var NBSP_AFTER_QUOTE = /([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|^|'|\u2018|\u2019)(\xAB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)([0-9A-Z_a-z]+)/g;
+var NBSP_BEFORE_QUOTE = /([0-9A-Z_a-z]+[!\.\?]?)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)(\xBB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[!,\.:\?]|$)/g;
+var ANY_NUMBER_EXCEPT_ONE = /(?!1\b)d+/g;
+
+// SETTINGS
+var DEBUG = true;
+var NBSP = U.WNBSP; // Non breakable space as chosen by the user. Default : U.WNBSP
+var settingsList = {
+	AUTO_REPLACE: {
+		ID: "AUTO_REPLACE",
+		state: true,
+		label: " Automatic substitutions"
+	},
+	USE_NNBSP: {
+		ID: "USE_NNBSP",
+		state: false,
+		label: " Enable narrow non-breakable spaces \n Resulting text is not compatible with Safari"
+	}
+};
+
+function initPlugin(context) {
+
+	if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == undefined) {
+		Settings.setSettingForKey(settingsList.USE_NNBSP.ID, false);
+	}
+	if (Settings.settingForKey(settingsList.AUTO_REPLACE.ID) == undefined) {
+		Settings.setSettingForKey(settingsList.AUTO_REPLACE.ID, true);
+	}
+}
+
+function replaceNNBSPbyWNBSP(context) {
+	var textLayers = searchAllTextLayers.searchInLayer(document, true);
+	textLayers.forEach(function (layer) {
+		var newText = layer.text.replace(RegExp(U.NNBSP, 'gu'), U.WNBSP);
+		layer.text = newText;
+	});
+}
+
+function replaceWNBSPbyNNBSP(context) {
+	var textLayers = searchAllTextLayers.searchInLayer(document, true);
+	textLayers.forEach(function (layer) {
+		var newText = layer.text.replace(RegExp(U.WNBSP, 'gu'), U.NNBSP);
+		layer.text = newText;
+	});
+}
+
+function createCheckbox(setting, frame) {
+	var checkbox = NSButton.alloc().initWithFrame(frame);
+	checkbox.setButtonType(NSSwitchButton);
+	checkbox.setBezelStyle(0);
+	checkbox.setTitle(setting.label);
+	console.log(setting.ID, Settings.settingForKey(setting.ID));
+
+	if (Settings.settingForKey(setting.ID) == true) {
+		checkbox.setState(NSOnState);
+	} else {
+		checkbox.setState(NSOffState);
+	}
+	return checkbox;
+}
+
+function saveSettings(setting, checkbox) {
+	setting.state = checkbox.state() == true;
+	Settings.setSettingForKey(setting.ID, setting.state);
+	console.log(setting.ID, Settings.settingForKey(setting.ID));
+}
+
+// fonction qui ouvre un menu de paramètres depuis le menu.
+function openSettings(context) {
+
+	var dialogWindow = COSAlertWindow.alloc().init();
+	var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
+	dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
+	dialogWindow.setMessageText("French typography settings");
+
+	var checkboxAutoReplace = createCheckbox(settingsList.AUTO_REPLACE, NSMakeRect(0, 0, 250, 23));
+	var checkboxUseNNBSP = createCheckbox(settingsList.USE_NNBSP, NSMakeRect(25, 0, 300, 56));
+	dialogWindow.addAccessoryView(checkboxAutoReplace);
+	dialogWindow.addAccessoryView(checkboxUseNNBSP);
+
+	dialogWindow.addButtonWithTitle("OK");
+	dialogWindow.addButtonWithTitle("Cancel");
+
+	var response = dialogWindow.runModal();
+	if (response == "1000") {
+		saveSettings(settingsList.AUTO_REPLACE, checkboxAutoReplace);
+		saveSettings(settingsList.USE_NNBSP, checkboxUseNNBSP);
+
+		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true) {
+			NBSP = U.NNBSP;
+			replaceWNBSPbyNNBSP();
+		} else {
+			NBSP = U.WNBSP;
+			replaceNNBSPbyWNBSP();
+		}
+
+		return;
+	} else {
+		return;
+	}
+}
+
+console.log(/\s/.test(" "), /\s/.test(U.WNBSP));
+function replaceString(string) {
+
+	var count = 0;
+	string = string.replace(
+
+	// REMPLACEMENTS
+
+
+	// points de suspension
+
+	REGEX_ELLIPSIS, function (match) {
+		console.log("points de suspension");
+		count++;
+		return U.ELLIPSIS;
+	}).
+
+	//incises intelligentes
+	replace(/([^0-9]\s)--?(\s?[^0-9])/, function (match, $1, $2, $3) {
+		console.log("incises intelligentes");
+		count++;
+		return String($1) + "\u2013" + String($1);
+	}).
+
+	// puces en début de ligne
+	replace(/(^|\n|\r)--?/, function (match, $1) {
+		console.log("puces en début de ligne");
+		count++;
+		return "–";
+	}).
+
+	//  n° --> №
+	replace(/n°/, function (match, $1, $2, $3) {
+		count++;
+		console.log("n°");
+		return "№";
+	}).
+
+	// 1/2, 1/3, 1/4 --> caractères dédiés pour ces fractions
+	replace(/(\s|\w|^)1\/2(\s|\w|$)/, function (match, $1, $2) {
+		count++;
+		console.log("1/2");
+		return String($1) + "\xBD" + String($2);
+	}).replace(/(\s|\w|^)1\/3(\s|\w|$)/, function (match, $1, $2) {
+		count++;
+		console.log("1/3");
+		return String($1) + "\u2153" + String($2);
+	}).replace(/(\s|\w|^)1\/4(\s|\w|$)/, function (match, $1, $2) {
+		count++;
+		console.log("1/4");
+		return String($1) + "\xBC" + String($2);
+	}).
+
+	// 1er --> ordinal en exposant
+	replace(/\b1er?\b/, function (match, $1, $2) {
+		count++;
+		console.log("1er --> ordinal en exposant");
+		return "1\u1D49\u02B3";
+	}).
+
+	//2e --> ordinal en exposant
+	replace(/(?!1\b)(\d+)e\b/, function (match, $1, $2) {
+		count++;
+		console.log("2e --> ordinal en exposant");
+		return String($1) + "\u1D49";
+	}).
+
+	//  ESPACES INSÉCABLES
+
+
+	// remplace " par «
+	replace(DOUBLE_QUOTE_OPEN, function (match, $1) {
+		count++;
+		return U.OPENING_QUOTE + $1;
+	}).
+
+	//remplace " par »
+	replace(DOUBLE_QUOTE_CLOSE, function (match, $1) {
+		count++;
+		return $1 + U.CLOSING_QUOTE;
+	}).
+
+	//ajoute espace après «
+	replace(NBSP_AFTER_QUOTE, function (match, $1, $2, $3, $4) {
+		console.log("//après «");
+		count++;
+		return $1 + $2 + NBSP + $4;;
+	}).
+
+	//espaces fines insécables avant ? ! ; :
+	replace(NBSP_DOUBLE_PUNCTUATION, function (match, $1, $2, $3, $4) {
+		console.log("espaces fines insécables avant ? ! ; :");
+		count++;
+		return "" + String($1) + String(NBSP) + String($3) + String($4);
+	}).
+
+	//ajoute espace avant »
+	replace(NBSP_BEFORE_QUOTE, function (match, $1, $2, $3, $4) {
+		console.log("//avant »");
+		count++;
+		return $1 + NBSP + $3 + $4;
+	}).
+
+	//avant %
+	replace(/(\d+)\s?\%/, function (match, $1, $2) {
+		console.log("//avant %");
+		count++;
+		return "" + String($1) + String(NBSP) + "%";
+	}).
+
+	//avant $£€
+	replace(/(\d+)\s?([$£€])/, function (match, $1, $2, $3) {
+		console.log("/avant $£€");
+		count++;
+		return "" + String($1) + String(NBSP) + String($2);
+	});
+	// /(\d{3})( |\D|$)", function (match, p1, p2) {
+	//     console.log('milliers')
+	//     count++;
+	//     return `${p1}${U.NNBSP}`;
+	// })
+
+
+	return {
+		string: string,
+		count: count
+	};
+}
+
+//fonction qui prend le texte du calque sélectionné,invoque replaceString() et compte le temps écoulé. Invocable lors de textChanged
+function fixLayer(context) {
+
+	// Si le remplacement automatique est désactivé dans les paramètres, on quitte la fonction
+	var autoReplaceActivated = Settings.settingForKey(settingsList.AUTO_REPLACE.ID);
+
+	if (autoReplaceActivated == false) {
+		return;
+	}
+
+	var startDate = new Date();
+
+	if (context.actionContext.old) {
+		var selection = sketch.fromNative(context.actionContext.layer);
+
+		var newText = replaceString(selection.text);
+		selection.text = newText.string;
+
+		var count = newText.count;
+		var endDate = new Date();
+		var duration = (endDate.getTime() - startDate.getTime()) / 1000;
+		if (count > 0 && DEBUG) {
+			sketch.UI.message(String(count) + " substitution(s) done in " + duration, document);
+		}
+
+		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true && RegExp(NNBSP).test(selection)) {
+			console.log("replaceWNBSPbyNNBSP n'a pas marché");
+		}
+		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == false && RegExp(U.WNBSP).test(selection)) {
+			console.log("replaceNNBSPbyWNBSP n'a pas marché");
+		}
+	} else {
+		throw new Error("unable to access selection");
+	}
+}
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(console) {
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 exports.testRegex = testRegex;
 var sketch = __webpack_require__(3);
 var Settings = __webpack_require__(4);
-var Diff = __webpack_require__(11);
+var Diff = __webpack_require__(12);
 var document = sketch.getSelectedDocument();
-var replaceString = __webpack_require__(14).replaceString;
+var replaceString = __webpack_require__(5).replaceString;
+var U = __webpack_require__(5).U;
 
 function spaceInUnicode(str) {
 	var newstring = str.replace(/(\u00A0|\u202F)/g, function (match, p1) {
@@ -392,10 +705,8 @@ function spaceInUnicode(str) {
 
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
 function testRegex() {
-	var referenceString = "L’Histoire ne fait rien, elle ne « possède » pas de « richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme – et rien que de l'homme – poursuivant ses fins… Y a-t-il une suite à ce texte ?\n";
-
-	var toFixString = "L’Histoire ne fait rien, elle ne « possède» pas de «richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme - et rien que de l'homme -- poursuivant ses fins… Y a-t-il une suite à ce texte?\n";
-
+	var toFixString = "\n\t\"tester\",\t\xAB tester \xBB! \xAB" + String(U.NNBSP) + "tester" + String(U.NNBSP) + "\xBB\tl'\"histoire\"?\n\tl'\xABhistoire...\t\".tester.\" . \xAB tester \xBB.\n\t.\xAB tester. \xBB\n\t";
+	var referenceString = "\n\t\xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB,\t\xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB! \xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB\tl'" + String(U.NBSP) + "histoire" + String(U.NBSP) + "\xBB?\n\tl'\xAB" + String(U.NBSP) + "histoire...\t\xAB" + String(U.NBSP) + ".tester." + String(U.NBSP) + "\xBB . \xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB.\n\t.\xAB" + String(U.NBSP) + "tester." + String(U.NBSP) + "\xBB\n\t";
 	//const referenceString = "Y a-t-il une suite à ce texte ?";
 	//const toFixString ="Y a-t-il une suite à ce texte ?";
 
@@ -411,13 +722,13 @@ function testRegex() {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var prepareValue = __webpack_require__(7);
+var prepareValue = __webpack_require__(8);
 
 module.exports.toArray = __webpack_require__(2);
 module.exports.prepareStackTrace = __webpack_require__(1);
@@ -426,7 +737,7 @@ module.exports.prepareObject = prepareValue.prepareObject;
 module.exports.prepareArray = prepareValue.prepareArray;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -582,11 +893,11 @@ module.exports.prepareObject = prepareObject;
 module.exports.prepareArray = prepareArray;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* eslint-disable no-not-accumulator-reassign/no-not-accumulator-reassign, no-var, vars-on-top, prefer-template, prefer-arrow-callback, func-names, prefer-destructuring, object-shorthand */
-var remoteWebview = __webpack_require__(9)
+var remoteWebview = __webpack_require__(10)
 
 module.exports.identifier = 'skpm.debugger'
 
@@ -609,7 +920,7 @@ module.exports.sendToDebugger = function sendToDebugger(name, payload) {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 /* globals NSThread */
@@ -635,7 +946,7 @@ module.exports.sendToWebview = function sendToWebview (identifier, evalString) {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 module.exports.SET_TREE = 'elements/SET_TREE'
@@ -654,7 +965,7 @@ module.exports.SET_SCRIPT_RESULT = 'playground/SET_SCRIPT_RESULT'
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(setTimeout) {/*!
@@ -2500,14 +2811,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(12)["setTimeout"]))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)["setTimeout"]))
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* globals coscript, sketch */
-var fiberAvailable = __webpack_require__(13)
+var fiberAvailable = __webpack_require__(14)
 
 var setTimeout
 var clearTimeout
@@ -2568,325 +2879,13 @@ module.exports = {
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 module.exports = function () {
   return typeof coscript !== 'undefined' && coscript.createFiber
 }
 
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(console) {
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports.initPlugin = initPlugin;
-exports.replaceNNBSPbyWNBSP = replaceNNBSPbyWNBSP;
-exports.replaceWNBSPbyNNBSP = replaceWNBSPbyNNBSP;
-exports.createCheckbox = createCheckbox;
-exports.saveSettings = saveSettings;
-exports.openSettings = openSettings;
-exports.replaceString = replaceString;
-exports.fixLayer = fixLayer;
-//TODO
-// mettre en place versioning et maj
-// mettre en place publication sur repos officiels et tierces
-// mettre debug à false lors de la publi
-
-var sketch = __webpack_require__(3);
-var Settings = __webpack_require__(4);
-var searchAllTextLayers = __webpack_require__(15);
-var document = sketch.getSelectedDocument();
-
-//const toArray = require('sketch-utils/to-array');
-//const utils = require('sketch-utils');
-
-// CHARACTER CONSTANTS
-var ELLIPSIS = "\u2026";
-var SPACE = " "; // Good ol' space
-var WNBSP = "\xA0"; // wide non breakable space
-var NNBSP = "\u202F"; // narrow non breakable space
-var OPENING_QUOTE = "«";
-var CLOSING_QUOTE = "»";
-
-// REGEXs
-var NBSP_DOUBLE_PUNCTUATION = /([0-9A-Z_a-z]+(?:[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?\xBB)?)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)([!:;\?])([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|$)/g;
-var REGEX_ELLIPSIS = /(\.{2,5})|(\. \. \.)/g;
-var DOUBLE_QUOTE_OPEN = /"((?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))/g;
-var DOUBLE_QUOTE_CLOSE = /((?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))"/g;
-var NBSP_AFTER_QUOTE = /([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|^|'|\u2018|\u2019)(\xAB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)([0-9A-Z_a-z]+)/g;
-var NBSP_BEFORE_QUOTE = /([0-9A-Z_a-z]+[!\.\?]?)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)(\xBB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[!,\.:\?]|$)/g;
-var ANY_NUMBER_EXCEPT_ONE = /(?!1\b)d+/g;
-
-// SETTINGS
-var DEBUG = true;
-var NBSP = WNBSP; // Non breakable space as chosen by the user. Default : WNBSP
-var settingsList = {
-	AUTO_REPLACE: {
-		ID: "AUTO_REPLACE",
-		state: true,
-		label: " Automatic substitutions"
-	},
-	USE_NNBSP: {
-		ID: "USE_NNBSP",
-		state: false,
-		label: " Enable narrow non-breakable spaces \n Resulting text is not compatible with Safari"
-	}
-};
-
-function initPlugin(context) {
-
-	if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == undefined) {
-		Settings.setSettingForKey(settingsList.USE_NNBSP.ID, false);
-	}
-	if (Settings.settingForKey(settingsList.AUTO_REPLACE.ID) == undefined) {
-		Settings.setSettingForKey(settingsList.AUTO_REPLACE.ID, true);
-	}
-}
-
-function replaceNNBSPbyWNBSP(context) {
-	var textLayers = searchAllTextLayers.searchInLayer(document, true);
-	textLayers.forEach(function (layer) {
-		var newText = layer.text.replace(RegExp(NNBSP, 'gu'), WNBSP);
-		layer.text = newText;
-	});
-}
-
-function replaceWNBSPbyNNBSP(context) {
-	var textLayers = searchAllTextLayers.searchInLayer(document, true);
-	textLayers.forEach(function (layer) {
-		var newText = layer.text.replace(RegExp(WNBSP, 'gu'), NNBSP);
-		layer.text = newText;
-	});
-}
-
-function createCheckbox(setting, frame) {
-	var checkbox = NSButton.alloc().initWithFrame(frame);
-	checkbox.setButtonType(NSSwitchButton);
-	checkbox.setBezelStyle(0);
-	checkbox.setTitle(setting.label);
-	console.log(setting.ID, Settings.settingForKey(setting.ID));
-
-	if (Settings.settingForKey(setting.ID) == true) {
-		checkbox.setState(NSOnState);
-	} else {
-		checkbox.setState(NSOffState);
-	}
-	return checkbox;
-}
-
-function saveSettings(setting, checkbox) {
-	setting.state = checkbox.state() == true;
-	Settings.setSettingForKey(setting.ID, setting.state);
-	console.log(setting.ID, Settings.settingForKey(setting.ID));
-}
-
-// fonction qui ouvre un menu de paramètres depuis le menu.
-function openSettings(context) {
-
-	var dialogWindow = COSAlertWindow.alloc().init();
-	var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
-	dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
-	dialogWindow.setMessageText("French typography settings");
-
-	var checkboxAutoReplace = createCheckbox(settingsList.AUTO_REPLACE, NSMakeRect(0, 0, 250, 23));
-	var checkboxUseNNBSP = createCheckbox(settingsList.USE_NNBSP, NSMakeRect(25, 0, 300, 56));
-	dialogWindow.addAccessoryView(checkboxAutoReplace);
-	dialogWindow.addAccessoryView(checkboxUseNNBSP);
-
-	dialogWindow.addButtonWithTitle("OK");
-	dialogWindow.addButtonWithTitle("Cancel");
-
-	var response = dialogWindow.runModal();
-	if (response == "1000") {
-		saveSettings(settingsList.AUTO_REPLACE, checkboxAutoReplace);
-		saveSettings(settingsList.USE_NNBSP, checkboxUseNNBSP);
-
-		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true) {
-			NBSP = NNBSP;
-			replaceWNBSPbyNNBSP();
-		} else {
-			NBSP = WNBSP;
-			replaceNNBSPbyWNBSP();
-		}
-
-		return;
-	} else {
-		return;
-	}
-}
-
-console.log(/\s/.test(" "), /\s/.test(WNBSP));
-function replaceString(string) {
-
-	var count = 0;
-	string = string.replace(
-
-	// REMPLACEMENTS
-
-
-	// points de suspension
-
-	REGEX_ELLIPSIS, function (match) {
-		console.log("points de suspension");
-		count++;
-		return ELLIPSIS;
-	}).
-
-	//incises intelligentes
-	replace(/([^0-9]\s)--?(\s?[^0-9])/, function (match, $1, $2, $3) {
-		console.log("incises intelligentes");
-		count++;
-		return String($1) + "\u2013" + String($1);
-	}).
-
-	// puces en début de ligne
-	replace(/(^|\n|\r)--?/, function (match, $1) {
-		console.log("puces en début de ligne");
-		count++;
-		return "–";
-	}).
-
-	//  n° --> №
-	replace(/n°/, function (match, $1, $2, $3) {
-		count++;
-		console.log("n°");
-		return "№";
-	}).
-
-	// 1/2, 1/3, 1/4 --> caractères dédiés pour ces fractions
-	replace(/(\s|\w|^)1\/2(\s|\w|$)/, function (match, $1, $2) {
-		count++;
-		console.log("1/2");
-		return String($1) + "\xBD" + String($2);
-	}).replace(/(\s|\w|^)1\/3(\s|\w|$)/, function (match, $1, $2) {
-		count++;
-		console.log("1/3");
-		return String($1) + "\u2153" + String($2);
-	}).replace(/(\s|\w|^)1\/4(\s|\w|$)/, function (match, $1, $2) {
-		count++;
-		console.log("1/4");
-		return String($1) + "\xBC" + String($2);
-	}).
-
-	// 1er --> ordinal en exposant
-	replace(/\b1er?\b/, function (match, $1, $2) {
-		count++;
-		console.log("1er --> ordinal en exposant");
-		return "1\u1D49\u02B3";
-	}).
-
-	//2e --> ordinal en exposant
-	replace(/(?!1\b)(\d+)e\b/, function (match, $1, $2) {
-		count++;
-		console.log("2e --> ordinal en exposant");
-		return String($1) + "\u1D49";
-	}).
-
-	//  ESPACES INSÉCABLES
-
-
-	// remplace " par «
-	replace(DOUBLE_QUOTE_OPEN, function (match, $1) {
-		count++;
-		return OPENING_QUOTE + $1;
-	}).
-
-	//remplace " par »
-	replace(DOUBLE_QUOTE_CLOSE, function (match, $1) {
-		count++;
-		return $1 + CLOSING_QUOTE;
-	}).
-
-	//ajoute espace après «
-	replace(NBSP_AFTER_QUOTE, function (match, $1, $2, $3, $4) {
-		console.log("//après «");
-		count++;
-		return $1 + $2 + NBSP + $4;;
-	}).
-
-	//espaces fines insécables avant ? ! ; :
-	replace(NBSP_DOUBLE_PUNCTUATION, function (match, $1, $2, $3, $4) {
-		console.log("espaces fines insécables avant ? ! ; :");
-		count++;
-		return "" + String($1) + NBSP + String($3) + String($4);
-	}).
-
-	//ajoute espace avant »
-	replace(NBSP_BEFORE_QUOTE, function (match, $1, $2, $3, $4) {
-		console.log("//avant »");
-		count++;
-		return $1 + NBSP + $3 + $4;
-	}).
-
-	//avant %
-	replace(/(\d+)\s?\%/, function (match, $1, $2) {
-		console.log("//avant %");
-		count++;
-		return "" + String($1) + NBSP + "%";
-	}).
-
-	//avant $£€
-	replace(/(\d+)\s?([$£€])/, function (match, $1, $2, $3) {
-		console.log("/avant $£€");
-		count++;
-		return "" + String($1) + NBSP + String($2);
-	});
-	// /(\d{3})( |\D|$)", function (match, p1, p2) {
-	//     console.log('milliers')
-	//     count++;
-	//     return `${p1}${NNBSP}`;
-	// })
-
-
-	return {
-		string: string,
-		count: count
-	};
-}
-
-//fonction qui prend le texte du calque sélectionné,invoque replaceString() et compte le temps écoulé. Invocable lors de textChanged
-function fixLayer(context) {
-
-	// Si le remplacement automatique est désactivé dans les paramètres, on quitte la fonction
-	var autoReplaceActivated = Settings.settingForKey(settingsList.AUTO_REPLACE.ID);
-
-	if (autoReplaceActivated == false) {
-		return;
-	}
-
-	var startDate = new Date();
-
-	if (context.actionContext.old) {
-		var selection = sketch.fromNative(context.actionContext.layer);
-
-		var newText = replaceString(selection.text);
-		selection.text = newText.string;
-
-		var count = newText.count;
-		var endDate = new Date();
-		var duration = (endDate.getTime() - startDate.getTime()) / 1000;
-		if (count > 0 && DEBUG) {
-			sketch.UI.message(String(count) + " substitution(s) done in " + duration, document);
-		}
-
-		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true && RegExp(NNBSP).test(selection)) {
-			console.log("replaceWNBSPbyNNBSP n'a pas marché");
-		}
-		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == false && RegExp(WNBSP).test(selection)) {
-			console.log("replaceNNBSPbyWNBSP n'a pas marché");
-		}
-	} else {
-		throw new Error("unable to access selection");
-	}
-}
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 15 */

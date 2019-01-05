@@ -386,15 +386,15 @@ var document = sketch.getSelectedDocument();
 //const utils = require('sketch-utils');
 
 // CHARACTER CONSTANTS
-var ELLIPSIS = "\u2026";
-var SPACE = " "; // Good ol' space
-var WNBSP = "\xA0"; // wide non breakable space
-var NNBSP = "\u202F"; // narrow non breakable space
-var OPENING_QUOTE = "«";
-var CLOSING_QUOTE = "»";
-
-// REGEXs
-var NBSP_DOUBLE_PUNCTUATION = /([0-9A-Z_a-z]+(?:[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?\xBB)?)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)([!:;\?])([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|$)/g;
+var U = exports.U = {
+	ELLIPSIS: "\u2026",
+	SPACE: " ", // Good ol' space
+	WNBSP: "\xA0", // wide non breakable space
+	NNBSP: "\u202F", // narrow non breakable space
+	OPENING_QUOTE: "«",
+	CLOSING_QUOTE: "»"
+	// REGEXs
+};var NBSP_DOUBLE_PUNCTUATION = /([0-9A-Z_a-z]+(?:[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?\xBB)?)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)([!:;\?])([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|$)/g;
 var REGEX_ELLIPSIS = /(\.{2,5})|(\. \. \.)/g;
 var DOUBLE_QUOTE_OPEN = /"((?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))/g;
 var DOUBLE_QUOTE_CLOSE = /((?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))"/g;
@@ -404,7 +404,7 @@ var ANY_NUMBER_EXCEPT_ONE = /(?!1\b)d+/g;
 
 // SETTINGS
 var DEBUG = true;
-var NBSP = WNBSP; // Non breakable space as chosen by the user. Default : WNBSP
+var NBSP = U.WNBSP; // Non breakable space as chosen by the user. Default : U.WNBSP
 var settingsList = {
 	AUTO_REPLACE: {
 		ID: "AUTO_REPLACE",
@@ -431,7 +431,7 @@ function initPlugin(context) {
 function replaceNNBSPbyWNBSP(context) {
 	var textLayers = searchAllTextLayers.searchInLayer(document, true);
 	textLayers.forEach(function (layer) {
-		var newText = layer.text.replace(RegExp(NNBSP, 'gu'), WNBSP);
+		var newText = layer.text.replace(RegExp(U.NNBSP, 'gu'), U.WNBSP);
 		layer.text = newText;
 	});
 }
@@ -439,7 +439,7 @@ function replaceNNBSPbyWNBSP(context) {
 function replaceWNBSPbyNNBSP(context) {
 	var textLayers = searchAllTextLayers.searchInLayer(document, true);
 	textLayers.forEach(function (layer) {
-		var newText = layer.text.replace(RegExp(WNBSP, 'gu'), NNBSP);
+		var newText = layer.text.replace(RegExp(U.WNBSP, 'gu'), U.NNBSP);
 		layer.text = newText;
 	});
 }
@@ -487,10 +487,10 @@ function openSettings(context) {
 		saveSettings(settingsList.USE_NNBSP, checkboxUseNNBSP);
 
 		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true) {
-			NBSP = NNBSP;
+			NBSP = U.NNBSP;
 			replaceWNBSPbyNNBSP();
 		} else {
-			NBSP = WNBSP;
+			NBSP = U.WNBSP;
 			replaceNNBSPbyWNBSP();
 		}
 
@@ -500,7 +500,7 @@ function openSettings(context) {
 	}
 }
 
-console.log(/\s/.test(" "), /\s/.test(WNBSP));
+console.log(/\s/.test(" "), /\s/.test(U.WNBSP));
 function replaceString(string) {
 
 	var count = 0;
@@ -514,7 +514,7 @@ function replaceString(string) {
 	REGEX_ELLIPSIS, function (match) {
 		console.log("points de suspension");
 		count++;
-		return ELLIPSIS;
+		return U.ELLIPSIS;
 	}).
 
 	//incises intelligentes
@@ -573,13 +573,13 @@ function replaceString(string) {
 	// remplace " par «
 	replace(DOUBLE_QUOTE_OPEN, function (match, $1) {
 		count++;
-		return OPENING_QUOTE + $1;
+		return U.OPENING_QUOTE + $1;
 	}).
 
 	//remplace " par »
 	replace(DOUBLE_QUOTE_CLOSE, function (match, $1) {
 		count++;
-		return $1 + CLOSING_QUOTE;
+		return $1 + U.CLOSING_QUOTE;
 	}).
 
 	//ajoute espace après «
@@ -593,7 +593,7 @@ function replaceString(string) {
 	replace(NBSP_DOUBLE_PUNCTUATION, function (match, $1, $2, $3, $4) {
 		console.log("espaces fines insécables avant ? ! ; :");
 		count++;
-		return "" + String($1) + NBSP + String($3) + String($4);
+		return "" + String($1) + String(NBSP) + String($3) + String($4);
 	}).
 
 	//ajoute espace avant »
@@ -607,19 +607,19 @@ function replaceString(string) {
 	replace(/(\d+)\s?\%/, function (match, $1, $2) {
 		console.log("//avant %");
 		count++;
-		return "" + String($1) + NBSP + "%";
+		return "" + String($1) + String(NBSP) + "%";
 	}).
 
 	//avant $£€
 	replace(/(\d+)\s?([$£€])/, function (match, $1, $2, $3) {
 		console.log("/avant $£€");
 		count++;
-		return "" + String($1) + NBSP + String($2);
+		return "" + String($1) + String(NBSP) + String($2);
 	});
 	// /(\d{3})( |\D|$)", function (match, p1, p2) {
 	//     console.log('milliers')
 	//     count++;
-	//     return `${p1}${NNBSP}`;
+	//     return `${p1}${U.NNBSP}`;
 	// })
 
 
@@ -657,7 +657,7 @@ function fixLayer(context) {
 		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true && RegExp(NNBSP).test(selection)) {
 			console.log("replaceWNBSPbyNNBSP n'a pas marché");
 		}
-		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == false && RegExp(WNBSP).test(selection)) {
+		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == false && RegExp(U.WNBSP).test(selection)) {
 			console.log("replaceNNBSPbyWNBSP n'a pas marché");
 		}
 	} else {

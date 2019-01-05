@@ -3,6 +3,7 @@ const Settings = require("sketch/settings");
 const Diff = require("diff");
 const document = sketch.getSelectedDocument();
 const replaceString = require("./command.js").replaceString;
+const U = require("./command.js").U;
 
 
 function spaceInUnicode(str) {
@@ -14,12 +15,18 @@ function spaceInUnicode(str) {
 
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
 export function testRegex() {
-  const referenceString =
-	"L’Histoire ne fait rien, elle ne « possède » pas de « richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme – et rien que de l'homme – poursuivant ses fins… Y a-t-il une suite à ce texte ?\n";
-
   const toFixString =
-	"L’Histoire ne fait rien, elle ne « possède» pas de «richesse immense », elle « ne livre point de combats » ! C’est plutôt l’homme, l’homme réel et vivant, qui fait tout cela, qui possède et combat. Ce n’est certes pas l’« Histoire » qui se sert de l’homme comme moyen pour œuvrer et parvenir – comme si elle était un personnage à part – à ses propres fins ; au contraire, elle n'est rien d’autre que l’activité de l'homme - et rien que de l'homme -- poursuivant ses fins… Y a-t-il une suite à ce texte?\n";
-
+	`
+	"tester",	« tester »! «${U.NNBSP}tester${U.NNBSP}»	l'"histoire"?
+	l'«histoire...	".tester." . « tester ».
+	.« tester. »
+	`;
+  const referenceString =
+	`
+	«${U.NBSP}tester${U.NBSP}»,	«${U.NBSP}tester${U.NBSP}»! «${U.NBSP}tester${U.NBSP}»	l'${U.NBSP}histoire${U.NBSP}»?
+	l'«${U.NBSP}histoire...	«${U.NBSP}.tester.${U.NBSP}» . «${U.NBSP}tester${U.NBSP}».
+	.«${U.NBSP}tester.${U.NBSP}»
+	`;
   //const referenceString = "Y a-t-il une suite à ce texte ?";
   //const toFixString ="Y a-t-il une suite à ce texte ?";
 

@@ -12,13 +12,14 @@ const document = sketch.getSelectedDocument();
 //const utils = require('sketch-utils');
 
 // CHARACTER CONSTANTS
-const ELLIPSIS = "\u2026";
-const SPACE = "\u0020";		// Good ol' space
-const WNBSP = "\u00A0";   // wide non breakable space
-const NNBSP = "\u202F";   // narrow non breakable space
-const OPENING_QUOTE = "«";
-const CLOSING_QUOTE = "»";
-
+export const U =  {
+ELLIPSIS : "\u2026",
+SPACE : "\u0020",		// Good ol' space
+WNBSP : "\u00A0",   // wide non breakable space
+NNBSP : "\u202F",   // narrow non breakable space
+OPENING_QUOTE : "«",
+CLOSING_QUOTE : "»"
+}
 // REGEXs
 const NBSP_DOUBLE_PUNCTUATION = /(\w+(?:\s?»)?)(\s?)([?!;:])(\s|$)/gu;
 const REGEX_ELLIPSIS = /(\.{2,5})|(\. \. \.)/gu;
@@ -30,7 +31,7 @@ const ANY_NUMBER_EXCEPT_ONE = /(?!1\b)d+/gu;
 
 // SETTINGS
 let DEBUG = true;
-let NBSP = WNBSP;       // Non breakable space as chosen by the user. Default : WNBSP
+let NBSP = U.WNBSP;       // Non breakable space as chosen by the user. Default : U.WNBSP
 const settingsList = {
   AUTO_REPLACE : {
 		ID : "AUTO_REPLACE",
@@ -58,7 +59,7 @@ export function initPlugin(context) {
 export function replaceNNBSPbyWNBSP(context) {
   let textLayers = searchAllTextLayers.searchInLayer(document, true);
   textLayers.forEach(function (layer) {
-	let newText = layer.text.replace(RegExp(NNBSP, 'gu'), WNBSP);
+	let newText = layer.text.replace(RegExp(U.NNBSP, 'gu'), U.WNBSP);
 	layer.text = newText;
   });
 }
@@ -66,7 +67,7 @@ export function replaceNNBSPbyWNBSP(context) {
 export function replaceWNBSPbyNNBSP(context) {
   let textLayers = searchAllTextLayers.searchInLayer(document, true);
   textLayers.forEach(function (layer) {
-	let newText = layer.text.replace(RegExp(WNBSP, 'gu'), NNBSP);
+	let newText = layer.text.replace(RegExp(U.WNBSP, 'gu'), U.NNBSP);
 	layer.text = newText;
   });
 }
@@ -116,10 +117,10 @@ export function openSettings(context) {
 		saveSettings(settingsList.USE_NNBSP, checkboxUseNNBSP);
 
 		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true ) {
-		NBSP = NNBSP;	
+		NBSP = U.NNBSP;	
 		replaceWNBSPbyNNBSP();
 		} else {
-		NBSP = WNBSP;	
+		NBSP = U.WNBSP;	
 		replaceNNBSPbyWNBSP();		
 		}
 
@@ -131,7 +132,7 @@ export function openSettings(context) {
 
 }
  
-console.log(/\s/.test(" "), /\s/.test(WNBSP))
+console.log(/\s/.test(" "), /\s/.test(U.WNBSP))
 export function replaceString(string) {
 
 let count = 0;
@@ -145,7 +146,7 @@ string = string.replace(
 		REGEX_ELLIPSIS, (match) => {
 			console.log("points de suspension");
 			count++;
-			return ELLIPSIS;		
+			return U.ELLIPSIS;		
 		}).	
 
 		//incises intelligentes
@@ -209,13 +210,13 @@ string = string.replace(
 		// remplace " par «
 		replace(DOUBLE_QUOTE_OPEN,( match, $1) => {
 			count++
-			return OPENING_QUOTE + $1;
+			return U.OPENING_QUOTE + $1;
 		}).
 
 		//remplace " par »
 		replace(DOUBLE_QUOTE_CLOSE,( match, $1) => {
 			count++
-			return $1 + CLOSING_QUOTE;
+			return $1 + U.CLOSING_QUOTE;
 		}).
 
 		//ajoute espace après «
@@ -255,7 +256,7 @@ string = string.replace(
 		// /(\d{3})( |\D|$)", function (match, p1, p2) {
 		//     console.log('milliers')
 		//     count++;
-		//     return `${p1}${NNBSP}`;
+		//     return `${p1}${U.NNBSP}`;
 		// })
 
 
@@ -302,7 +303,7 @@ export function fixLayer(context) {
 	}
 	if (
 	  Settings.settingForKey(settingsList.USE_NNBSP.ID) == false &&
-	  RegExp(WNBSP).test(selection)
+	  RegExp(U.WNBSP).test(selection)
 	) {
 	  console.log("replaceNNBSPbyWNBSP n'a pas marché");
 	}
