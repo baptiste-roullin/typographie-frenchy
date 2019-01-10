@@ -403,20 +403,22 @@ var U = exports.U = {
 	SPACE: " ", // Good ol' space
 	WNBSP: "\xA0", // wide non breakable space
 	NNBSP: "\u202F", // narrow non breakable space
+	NBSP: "", // Non breakable space as chosen by the user. Default : U.WNBSP
 	OPENING_QUOTE: "«",
 	CLOSING_QUOTE: "»"
 	// REGEXs
 };var NBSP_DOUBLE_PUNCTUATION = /([0-9A-Z_a-z]+(?:[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?\xBB)?)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)([!:;\?])([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|$)/g;
 var REGEX_ELLIPSIS = /(\.{2,5})|(\. \. \.)/g;
-var DOUBLE_QUOTE_OPEN = /"((?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))/g;
-var DOUBLE_QUOTE_CLOSE = /((?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))"/g;
+var DOUBLE_QUOTE_OPEN = /("(?=[0-9A-Z_a-z]))|((?:[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|\^)"(?=(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])))/g;
+var DOUBLE_QUOTE_CLOSE = /(?:([0-9A-Z_a-z])")|(?:((?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))"(?=[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|$))/g;
 var NBSP_AFTER_QUOTE = /([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|^|'|\u2018|\u2019)(\xAB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)([0-9A-Z_a-z]+)/g;
-var NBSP_BEFORE_QUOTE = /([0-9A-Z_a-z]+[!\.\?]?)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)(\xBB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|[!,\.:\?]|$)/g;
+var NBSP_BEFORE_QUOTE = /(?:([0-9A-Z_a-z])\xBB)|(?:((?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))\xBB(?=[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|$) )/g;
 var ANY_NUMBER_EXCEPT_ONE = /(?!1\b)d+/g;
 
 // SETTINGS
+U.NBSP = U.WNBSP;
 var DEBUG = true;
-var NBSP = U.WNBSP; // Non breakable space as chosen by the user. Default : U.WNBSP
+
 var settingsList = {
 	AUTO_REPLACE: {
 		ID: "AUTO_REPLACE",
@@ -499,10 +501,10 @@ function openSettings(context) {
 		saveSettings(settingsList.USE_NNBSP, checkboxUseNNBSP);
 
 		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true) {
-			NBSP = U.NNBSP;
+			U.NBSP = U.NNBSP;
 			replaceWNBSPbyNNBSP();
 		} else {
-			NBSP = U.WNBSP;
+			U.NBSP = U.WNBSP;
 			replaceNNBSPbyWNBSP();
 		}
 
@@ -512,7 +514,6 @@ function openSettings(context) {
 	}
 }
 
-console.log(/\s/.test(" "), /\s/.test(U.WNBSP));
 function replaceString(string) {
 
 	var count = 0;
@@ -583,50 +584,56 @@ function replaceString(string) {
 
 
 	// remplace " par «
-	replace(DOUBLE_QUOTE_OPEN, function (match, $1) {
+	replace(DOUBLE_QUOTE_OPEN, function (match, $1, $2) {
 		count++;
-		return U.OPENING_QUOTE + $1;
+
+		var adj = $2 || "";
+		//console.log(adj)
+		return U.OPENING_QUOTE + adj;
 	}).
 
 	//remplace " par »
-	replace(DOUBLE_QUOTE_CLOSE, function (match, $1) {
+	replace(DOUBLE_QUOTE_CLOSE, function (match, $1, $2) {
 		count++;
-		return $1 + U.CLOSING_QUOTE;
+		var adj = $1 || $2 || "";
+		return adj + U.CLOSING_QUOTE;
 	}).
 
 	//ajoute espace après «
 	replace(NBSP_AFTER_QUOTE, function (match, $1, $2, $3, $4) {
 		console.log("//après «");
 		count++;
-		return $1 + $2 + NBSP + $4;;
+		return $1 + $2 + U.NBSP + $4;;
 	}).
 
 	//espaces fines insécables avant ? ! ; :
 	replace(NBSP_DOUBLE_PUNCTUATION, function (match, $1, $2, $3, $4) {
 		console.log("espaces fines insécables avant ? ! ; :");
 		count++;
-		return "" + String($1) + String(NBSP) + String($3) + String($4);
+		return "" + String($1) + String(U.NBSP) + String($3) + String($4);
 	}).
 
 	//ajoute espace avant »
-	replace(NBSP_BEFORE_QUOTE, function (match, $1, $2, $3, $4) {
+	replace(NBSP_BEFORE_QUOTE, function (match, $1, $2) {
 		console.log("//avant »");
 		count++;
-		return $1 + NBSP + $3 + $4;
+		var adj = $1 || $2 || "";
+		console.log(adj);
+		return adj + U.NBSP + U.CLOSING_QUOTE;
 	}).
 
 	//avant %
 	replace(/(\d+)\s?\%/, function (match, $1, $2) {
 		console.log("//avant %");
 		count++;
-		return "" + String($1) + String(NBSP) + "%";
+		return "" + String($1) + String(U.NBSP) + "%";
 	}).
 
 	//avant $£€
 	replace(/(\d+)\s?([$£€])/, function (match, $1, $2, $3) {
 		console.log("/avant $£€");
 		count++;
-		return "" + String($1) + String(NBSP) + String($2);
+		return "" + String($1) + String(U.NBSP) + String($2);
 	});
 	// /(\d{3})( |\D|$)", function (match, p1, p2) {
 	//     console.log('milliers')
@@ -666,7 +673,7 @@ function fixLayer(context) {
 			sketch.UI.message(String(count) + " substitution(s) done in " + duration, document);
 		}
 
-		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true && RegExp(NNBSP).test(selection)) {
+		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true && RegExp(U.NNBSP).test(selection)) {
 			console.log("replaceWNBSPbyNNBSP n'a pas marché");
 		}
 		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == false && RegExp(U.WNBSP).test(selection)) {
@@ -705,10 +712,10 @@ function spaceInUnicode(str) {
 
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
 function testRegex() {
-	var toFixString = "\n\t\"tester\",\t\xAB tester \xBB! \xAB" + String(U.NNBSP) + "tester" + String(U.NNBSP) + "\xBB\tl'\"histoire\"?\n\tl'\xABhistoire...\t\".tester.\" . \xAB tester \xBB.\n\t.\xAB tester. \xBB\n\t";
-	var referenceString = "\n\t\xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB,\t\xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB! \xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB\tl'" + String(U.NBSP) + "histoire" + String(U.NBSP) + "\xBB?\n\tl'\xAB" + String(U.NBSP) + "histoire...\t\xAB" + String(U.NBSP) + ".tester." + String(U.NBSP) + "\xBB . \xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB.\n\t.\xAB" + String(U.NBSP) + "tester." + String(U.NBSP) + "\xBB\n\t";
-	//const referenceString = "Y a-t-il une suite à ce texte ?";
-	//const toFixString ="Y a-t-il une suite à ce texte ?";
+
+	var toFixString = "\"tester\",\t\xAB tester \xBB! \xAB" + String(U.NNBSP) + "tester" + String(U.NNBSP) + "\xBB\tl'\"histoire\"?\nl'\xABhistoire...\"\t\".tester.\" . \xAB tester \xBB.";
+
+	var referenceString = "\xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB,\t\xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB! \xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB\tl'" + String(U.NBSP) + "histoire" + String(U.NBSP) + "\xBB?\nl'\xAB" + String(U.NBSP) + "histoire..." + String(U.NBSP) + "\xBB\t\xAB" + String(U.NBSP) + ".tester." + String(U.NBSP) + "\xBB . \xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB.";
 
 	var fixedString = replaceString(toFixString).string;
 	if (fixedString == referenceString) {

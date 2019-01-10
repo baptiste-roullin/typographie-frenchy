@@ -17,21 +17,24 @@ ELLIPSIS : "\u2026",
 SPACE : "\u0020",		// Good ol' space
 WNBSP : "\u00A0",   // wide non breakable space
 NNBSP : "\u202F",   // narrow non breakable space
+NBSP :"",       // Non breakable space as chosen by the user. Default : U.WNBSP
 OPENING_QUOTE : "«",
 CLOSING_QUOTE : "»"
+
 }
 // REGEXs
 const NBSP_DOUBLE_PUNCTUATION = /(\w+(?:\s?»)?)(\s?)([?!;:])(\s|$)/gu;
-const REGEX_ELLIPSIS = /(\.{2,5})|(\. \. \.)/gu;
-const DOUBLE_QUOTE_OPEN = /"(\S)/gu;
-const DOUBLE_QUOTE_CLOSE = /(\S)"/gu;
-const NBSP_AFTER_QUOTE = /(\s|^|\'|\‘|\’)(«)(\s?)(\w+)/gu; 
-const NBSP_BEFORE_QUOTE = /(\w+[.?!]?)(\s?)(»)(\s|[.,?!:]|$)/gu ;
-const ANY_NUMBER_EXCEPT_ONE = /(?!1\b)d+/gu; 
+const REGEX_ELLIPSIS 					= /(\.{2,5})|(\. \. \.)/gu;
+const DOUBLE_QUOTE_OPEN    		= /("(?=\w))|((?:\s|\^)"(?=\S))/gu;
+const DOUBLE_QUOTE_CLOSE    	= /(?:(\w)")|(?:(\S)"(?=\s|$))/gu;
+const NBSP_AFTER_QUOTE 				= /(\s|^|\'|\‘|\’)(«)(\s?)(\w+)/gu; 
+const NBSP_BEFORE_QUOTE 			= /(?:(\w)»)|(?:(\S)»(?=\s|$) )/gu ;
+const ANY_NUMBER_EXCEPT_ONE 	= /(?!1\b)d+/gu; 
 
 // SETTINGS
+U.NBSP = U.WNBSP;
 let DEBUG = true;
-let NBSP = U.WNBSP;       // Non breakable space as chosen by the user. Default : U.WNBSP
+
 const settingsList = {
   AUTO_REPLACE : {
 		ID : "AUTO_REPLACE",
@@ -117,10 +120,10 @@ export function openSettings(context) {
 		saveSettings(settingsList.USE_NNBSP, checkboxUseNNBSP);
 
 		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true ) {
-		NBSP = U.NNBSP;	
+		U.NBSP = U.NNBSP;	
 		replaceWNBSPbyNNBSP();
 		} else {
-		NBSP = U.WNBSP;	
+		U.NBSP = U.WNBSP;	
 		replaceNNBSPbyWNBSP();		
 		}
 
@@ -131,15 +134,15 @@ export function openSettings(context) {
 	}
 
 }
- 
-console.log(/\s/.test(" "), /\s/.test(U.WNBSP))
+     
+
 export function replaceString(string) {
 
 let count = 0;
 string = string.replace(
 
 									 // REMPLACEMENTS
-
+  
 				 
 	// points de suspension
 
@@ -208,50 +211,56 @@ string = string.replace(
 	
 
 		// remplace " par «
-		replace(DOUBLE_QUOTE_OPEN,( match, $1) => {
+		replace(DOUBLE_QUOTE_OPEN,( match, $1, $2) => {
 			count++
-			return U.OPENING_QUOTE + $1;
+			
+			let adj =  $2 || "";
+			//console.log(adj)
+			return U.OPENING_QUOTE + adj;
 		}).
 
 		//remplace " par »
-		replace(DOUBLE_QUOTE_CLOSE,( match, $1) => {
+		replace(DOUBLE_QUOTE_CLOSE,( match, $1, $2) => {
 			count++
-			return $1 + U.CLOSING_QUOTE;
+			let adj = $1 || $2 || "";
+			return adj + U.CLOSING_QUOTE;
 		}).
 
 		//ajoute espace après «
 		replace(NBSP_AFTER_QUOTE, ( match, $1, $2, $3, $4) => {
 			console.log("//après «");
 			count++;
-			return  $1 + $2 + NBSP + $4;;
+			return  $1 + $2 + U.NBSP + $4;;
 		}).
 
 		//espaces fines insécables avant ? ! ; :
 		replace(NBSP_DOUBLE_PUNCTUATION, ( match, $1, $2, $3, $4) => {
 			console.log("espaces fines insécables avant ? ! ; :");
 			count++;
-			return `${$1}${NBSP}${$3}${$4}`;
+			return `${$1}${U.NBSP}${$3}${$4}`;
 		}).
 
 		//ajoute espace avant »
-		replace(NBSP_BEFORE_QUOTE, ( match, $1, $2, $3, $4) => {
+		replace(NBSP_BEFORE_QUOTE, ( match, $1, $2) => {
 			console.log("//avant »");
 			count++;
-			return $1 + NBSP + $3 + $4;
+			let adj = $1 || $2 || "";
+			console.log(adj);
+			return adj +  U.NBSP + U.CLOSING_QUOTE ;
 		}).
 
 		//avant %
 		replace(/(\d+)\s?\%/, ( match, $1, $2) => {
 			console.log("//avant %");
 			count++;
-			return `${$1}${NBSP}%`;
+			return `${$1}${U.NBSP}%`;
 		}).
 
 		//avant $£€
 		replace(/(\d+)\s?([$£€])/, ( match, $1, $2, $3) => {
 			console.log("/avant $£€");
 			count++;
-			return `${$1}${NBSP}${$2}`;
+			return `${$1}${U.NBSP}${$2}`;
 		});
 		// /(\d{3})( |\D|$)", function (match, p1, p2) {
 		//     console.log('milliers')
@@ -297,7 +306,7 @@ export function fixLayer(context) {
 
 	if (
 	  Settings.settingForKey(settingsList.USE_NNBSP.ID) == true &&
-	  RegExp(NNBSP).test(selection)
+	  RegExp(U.NNBSP).test(selection)
 	) {
 	  console.log("replaceWNBSPbyNNBSP n'a pas marché");
 	}

@@ -15,20 +15,15 @@ function spaceInUnicode(str) {
 
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
 export function testRegex() {
-  const toFixString =
-	`
-	"tester",	« tester »! «${U.NNBSP}tester${U.NNBSP}»	l'"histoire"?
-	l'«histoire...	".tester." . « tester ».
-	.« tester. »
-	`;
-  const referenceString =
-	`
-	«${U.NBSP}tester${U.NBSP}»,	«${U.NBSP}tester${U.NBSP}»! «${U.NBSP}tester${U.NBSP}»	l'${U.NBSP}histoire${U.NBSP}»?
-	l'«${U.NBSP}histoire...	«${U.NBSP}.tester.${U.NBSP}» . «${U.NBSP}tester${U.NBSP}».
-	.«${U.NBSP}tester.${U.NBSP}»
-	`;
-  //const referenceString = "Y a-t-il une suite à ce texte ?";
-  //const toFixString ="Y a-t-il une suite à ce texte ?";
+	
+	const toFixString =
+`"tester",	« tester »! «${U.NNBSP}tester${U.NNBSP}»	l'"histoire"?
+l'«histoire..."	".tester." . « tester ».`;
+	
+const referenceString =
+`«${U.NBSP}tester${U.NBSP}»,	«${U.NBSP}tester${U.NBSP}»! «${U.NBSP}tester${U.NBSP}»	l'${U.NBSP}histoire${U.NBSP}»?
+l'«${U.NBSP}histoire...${U.NBSP}»	«${U.NBSP}.tester.${U.NBSP}» . «${U.NBSP}tester${U.NBSP}».`;
+ 
 
 	const fixedString = replaceString(toFixString).string;
   if (fixedString == referenceString) {
