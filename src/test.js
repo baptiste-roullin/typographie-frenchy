@@ -18,11 +18,11 @@ export function testRegex() {
 
 const toFixString =
 `"tester", «${U.NBSP}tester »! « tester » l'"histoire"?
-l'«histoire..." . « tester ».`;
+l'«histoire..." . « tester ». Et pourtant... je suis`;
 
 const referenceString =
 `«${U.NBSP}tester${U.NBSP}», «${U.NBSP}tester${U.NBSP}»${U.NBSP}! «${U.NBSP}tester${U.NBSP}» l'«${U.NBSP}histoire${U.NBSP}»${U.NBSP}?
-l'«${U.NBSP}histoire${U.ELLIPSIS}${U.NBSP}» . «${U.NBSP}tester${U.NBSP}».`;
+l'«${U.NBSP}histoire${U.ELLIPSIS}${U.NBSP}» . «${U.NBSP}tester${U.NBSP}». Et pourtant${U.ELLIPSIS} je suis`;
 
 
 	const fixedString = replaceString(toFixString).string;

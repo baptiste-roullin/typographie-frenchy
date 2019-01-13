@@ -376,14 +376,18 @@ exports.fixLayer = fixLayer;
 // mettre en place versioning et maj
 // mettre en place publication sur repos officiels et tierces
 // mettre debug à false lors de la publi
+// que signifie prerelease
 
 var sketch = __webpack_require__(9);
 var Settings = __webpack_require__(10);
 var searchAllTextLayers = __webpack_require__(11);
 var document = sketch.getSelectedDocument();
 
-//const toArray = require('sketch-utils/to-array');
-//const utils = require('sketch-utils');
+console.log("test");
+// LABELS
+var LABEL_AUTO_REPLACE = " Automatic substitutions after unselecting text layers";
+var LABEL_USE_NNBSP = " Enable narrow non-breakable spaces \n Resulting text is not compatible with Safari";
+var LABEL_POPIN_TITLE = "French typography settings";
 
 // CHARACTER CONSTANTS
 var U = exports.U = {
@@ -411,12 +415,12 @@ var settingsList = {
 	AUTO_REPLACE: {
 		ID: "AUTO_REPLACE",
 		state: true,
-		label: " Automatic substitutions"
+		label: LABEL_AUTO_REPLACE
 	},
 	USE_NNBSP: {
 		ID: "USE_NNBSP",
 		state: false,
-		label: " Enable narrow non-breakable spaces \n Resulting text is not compatible with Safari"
+		label: LABEL_USE_NNBSP
 	}
 };
 
@@ -473,13 +477,14 @@ function openSettings(context) {
 	var dialogWindow = COSAlertWindow.alloc().init();
 	var pluginIconPath = context.plugin.urlForResourceNamed("icon.png").path();
 	dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
-	dialogWindow.setMessageText("French typography settings");
+	dialogWindow.setMessageText(LABEL_POPIN_TITLE);
 
 	var checkboxAutoReplace = createCheckbox(settingsList.AUTO_REPLACE, NSMakeRect(0, 0, 250, 23));
 	var checkboxUseNNBSP = createCheckbox(settingsList.USE_NNBSP, NSMakeRect(25, 0, 300, 56));
 	dialogWindow.addAccessoryView(checkboxAutoReplace);
 	dialogWindow.addAccessoryView(checkboxUseNNBSP);
 
+	// labels seem hardcoded: shortcuts like ESC don't seem to work with any other labels.
 	dialogWindow.addButtonWithTitle("OK");
 	dialogWindow.addButtonWithTitle("Cancel");
 

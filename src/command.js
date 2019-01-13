@@ -2,14 +2,19 @@
 // mettre en place versioning et maj
 // mettre en place publication sur repos officiels et tierces
 // mettre debug à false lors de la publi
+// que signifie prerelease
 
 const sketch = require("sketch");
 const Settings = require("sketch/settings");
 const searchAllTextLayers = require("./utils.js");
 const document = sketch.getSelectedDocument();
 
-//const toArray = require('sketch-utils/to-array');
-//const utils = require('sketch-utils');
+console.log("test");
+// LABELS
+const LABEL_AUTO_REPLACE = " Automatic substitutions after unselecting text layers";
+const LABEL_USE_NNBSP = " Enable narrow non-breakable spaces \n Resulting text is not compatible with Safari";
+const LABEL_POPIN_TITLE = "French typography settings";
+
 
 // CHARACTER CONSTANTS
 export const U =  {
@@ -39,14 +44,16 @@ const settingsList = {
   AUTO_REPLACE : {
 		ID : "AUTO_REPLACE",
 		state : true,
-		label : " Automatic substitutions"
+		label : LABEL_AUTO_REPLACE
   },
 	USE_NNBSP : {
 		ID : "USE_NNBSP",
 		state : false,
-		label : " Enable narrow non-breakable spaces \n Resulting text is not compatible with Safari"
+		label : LABEL_USE_NNBSP
   }
 }
+
+
 
 
 export function initPlugin(context) {
@@ -104,13 +111,14 @@ export function openSettings(context) {
   let dialogWindow = 		COSAlertWindow.alloc().init();
   let pluginIconPath = 	context.plugin.urlForResourceNamed("icon.png").path();
   dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
-  dialogWindow.setMessageText("French typography settings");
+  dialogWindow.setMessageText(LABEL_POPIN_TITLE);
   
   let checkboxAutoReplace = 	createCheckbox(settingsList.AUTO_REPLACE, NSMakeRect(0, 0, 250, 23) );
   let checkboxUseNNBSP = 			createCheckbox(settingsList.USE_NNBSP, NSMakeRect(25, 0, 300, 56) );
   dialogWindow.addAccessoryView(checkboxAutoReplace);
   dialogWindow.addAccessoryView(checkboxUseNNBSP);
 
+	// labels seem hardcoded: shortcuts like ESC don't seem to work with any other labels.
   dialogWindow.addButtonWithTitle("OK");
   dialogWindow.addButtonWithTitle("Cancel");
 

@@ -1,4 +1,10 @@
 {
+  "name": "French Typography",
+  "version": "0.8",
+  "description": "Provides french typographic conventions and non-breaking spaces",
+  "author": "Baptiste Roullin",
+  "authorEmail": "baptiste@roullin.net",
+  "homepage": "https://github.com/Saint-loup/french-typography/",
   "icon": "icon.png",
   "identifier": "com.saint_loup.sketch.french-typography",
   "commands": [
@@ -18,7 +24,7 @@
       "script": "command.js",
       "handlers": {
         "actions": {
-          "OpenDocument": "initPlugin"
+          "Startup": "initPlugin"
         }
       }
     },
@@ -42,14 +48,12 @@
     }
   ],
   "menu": {
-    "title": "Typographie française",
+    "title": "French typography settings",
     "items": [
       "openSettings"
     ],
     "isRoot": true
   },
-  "version": "0.1.0",
-  "name": "french-typography",
   "disableCocoaScriptPreprocessor": true,
-  "appcast": "https://raw.githubusercontent.com//master/.appcast.xml"
+  "appcast": "https://raw.githubusercontent.com/Saint-loup/french-typography//master/.appcast.xml"
 }
