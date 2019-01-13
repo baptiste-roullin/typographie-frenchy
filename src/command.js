@@ -28,7 +28,7 @@ const REGEX_ELLIPSIS 					= /(\.{2,5})|(\. \. \.)/gu;
 const DOUBLE_QUOTE_OPEN    		= /("(?=\w))|((?:\s|\^)"(?=\S))/gu;
 const DOUBLE_QUOTE_CLOSE    	= /(?:(\w)")|(?:(\S)"(?=\s|$))/gu;
 const NBSP_AFTER_QUOTE 				= /(\s|^|\'|\‘|\’)(«)(\s?)(\w+)/gu; 
-const NBSP_BEFORE_QUOTE 			= /(?:(\w)»)|(?:(\S)»(?=\s|$) )/gu ;
+const NBSP_BEFORE_QUOTE 			= /(?:(\w)»)|(?:(\S)»(?=\s|$))|(?:(\w|\s)»)/gu ;
 const ANY_NUMBER_EXCEPT_ONE 	= /(?!1\b)d+/gu; 
 
 // SETTINGS
@@ -237,7 +237,7 @@ string = string.replace(
 		replace(NBSP_DOUBLE_PUNCTUATION, ( match, $1, $2, $3, $4) => {
 			console.log("espaces fines insécables avant ? ! ; :");
 			count++;
-			return `${$1}${U.NBSP}${$3}${$4}`;
+			return $1 + U.NBSP + $3 + $4;
 		}).
 
 		//ajoute espace avant »
@@ -245,7 +245,7 @@ string = string.replace(
 			console.log("//avant »");
 			count++;
 			let adj = $1 || $2 || "";
-			console.log(adj);
+			console.log("adj : ", adj);
 			return adj +  U.NBSP + U.CLOSING_QUOTE ;
 		}).
 

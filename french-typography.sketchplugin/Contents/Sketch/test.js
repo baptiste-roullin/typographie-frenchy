@@ -412,7 +412,7 @@ var REGEX_ELLIPSIS = /(\.{2,5})|(\. \. \.)/g;
 var DOUBLE_QUOTE_OPEN = /("(?=[0-9A-Z_a-z]))|((?:[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|\^)"(?=(?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF])))/g;
 var DOUBLE_QUOTE_CLOSE = /(?:([0-9A-Z_a-z])")|(?:((?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))"(?=[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|$))/g;
 var NBSP_AFTER_QUOTE = /([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|^|'|\u2018|\u2019)(\xAB)([\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]?)([0-9A-Z_a-z]+)/g;
-var NBSP_BEFORE_QUOTE = /(?:([0-9A-Z_a-z])\xBB)|(?:((?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))\xBB(?=[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|$) )/g;
+var NBSP_BEFORE_QUOTE = /(?:([0-9A-Z_a-z])\xBB)|(?:((?:[\0-\x08\x0E-\x1F!-\x9F\xA1-\u167F\u1681-\u1FFF\u200B-\u2027\u202A-\u202E\u2030-\u205E\u2060-\u2FFF\u3001-\uD7FF\uE000-\uFEFE\uFF00-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))\xBB(?=[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF]|$))|(?:([0-9A-Z_a-z]|[\t-\r \xA0\u1680\u2000-\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF])\xBB)/g;
 var ANY_NUMBER_EXCEPT_ONE = /(?!1\b)d+/g;
 
 // SETTINGS
@@ -610,7 +610,7 @@ function replaceString(string) {
 	replace(NBSP_DOUBLE_PUNCTUATION, function (match, $1, $2, $3, $4) {
 		console.log("espaces fines insécables avant ? ! ; :");
 		count++;
-		return "" + String($1) + String(U.NBSP) + String($3) + String($4);
+		return $1 + U.NBSP + $3 + $4;
 	}).
 
 	//ajoute espace avant »
@@ -618,7 +618,7 @@ function replaceString(string) {
 		console.log("//avant »");
 		count++;
 		var adj = $1 || $2 || "";
-		console.log(adj);
+		console.log("adj : ", adj);
 		return adj + U.NBSP + U.CLOSING_QUOTE;
 	}).
 
@@ -704,7 +704,7 @@ var replaceString = __webpack_require__(5).replaceString;
 var U = __webpack_require__(5).U;
 
 function spaceInUnicode(str) {
-	var newstring = str.replace(/(\u00A0|\u202F)/g, function (match, p1) {
+	var newstring = str.replace(/(\u00A0|\u202F|\u0020)/g, function (match, p1) {
 		return "" + String(p1.charCodeAt().toString(16));
 	});
 	return newstring;
@@ -713,9 +713,9 @@ function spaceInUnicode(str) {
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
 function testRegex() {
 
-	var toFixString = "\"tester\",\t\xAB tester \xBB! \xAB" + String(U.NNBSP) + "tester" + String(U.NNBSP) + "\xBB\tl'\"histoire\"?\nl'\xABhistoire...\"\t\".tester.\" . \xAB tester \xBB.";
+	var toFixString = "\"tester\", \xAB" + String(U.NBSP) + "tester \xBB! \xAB tester \xBB l'\"histoire\"?\nl'\xABhistoire...\" . \xAB tester \xBB.";
 
-	var referenceString = "\xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB,\t\xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB! \xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB\tl'" + String(U.NBSP) + "histoire" + String(U.NBSP) + "\xBB?\nl'\xAB" + String(U.NBSP) + "histoire..." + String(U.NBSP) + "\xBB\t\xAB" + String(U.NBSP) + ".tester." + String(U.NBSP) + "\xBB . \xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB.";
+	var referenceString = "\xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB, \xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB" + String(U.NBSP) + "! \xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB l'\xAB" + String(U.NBSP) + "histoire" + String(U.NBSP) + "\xBB" + String(U.NBSP) + "?\nl'\xAB" + String(U.NBSP) + "histoire" + String(U.ELLIPSIS) + String(U.NBSP) + "\xBB . \xAB" + String(U.NBSP) + "tester" + String(U.NBSP) + "\xBB.";
 
 	var fixedString = replaceString(toFixString).string;
 	if (fixedString == referenceString) {
