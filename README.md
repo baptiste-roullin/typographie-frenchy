@@ -43,7 +43,7 @@ When you unselect a text layer, it replaces characters with their proper equival
 
 * Inserting non-breaking spaces in complex cases (eg. latitudes), listed [here](https://www.btb.termiumplus.gc.ca/tpv2guides/guides/chroniq/index-fra.html?lang=fra&lettr=indx_autr8cDRJ-6fjpl0&page=9ouqyIer24Kc.html) or [there](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style#Non-breaking_spaces).
 * Accents on capital letters. There's no way to automatically tell SALE and SALÉ apart.
-* Things better handled with dedicated markup. For instance support and rendering of [fractions and exposants].(https://en.wikipedia.org/wiki/Unicode_subscripts_and_superscripts#Superscripts_and_subscripts_block) in Unicode is really spotty.
+* Things better handled with dedicated markup. For instance support and rendering of [fractions and exposants](https://en.wikipedia.org/wiki/Unicode_subscripts_and_superscripts#Superscripts_and_subscripts_block) in Unicode is really spotty.
 * Typos like double spaces.
 
 
