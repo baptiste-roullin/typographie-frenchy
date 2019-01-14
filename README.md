@@ -1,23 +1,19 @@
 # Le french typography
 
-*****
-## Work In Progress. Not Ready For Production Purposes. Or Testing Purposes. Or Any Kind Of Purposes Really. Stay Tuned. 
-*****
-
-Sketch plugin to automatically add typographical french conventions and give a nice touch to UIs. Like the oh so important thinner spaces.
+Sketch plugin to automatically add typographical french conventions and give a nice touch to UIs. Things like nonbreakable spaces or better fractions.
 
 
-## Ce que ça fait
+##  What it does
+When you unselect a text layer, it replaces characters with their proper equivalents. 
 
-### Général 
+* It works whether you enable smart quotes substitutions at the system level (System > Keyboard > Text), since this Mac OS feature doesn't use non-breakable space.
+* There's a setting to enable narrow non-breakable space.Toggling it replaces back and forth narrow and normal spaces in all the current Sketch document. The setting is closer to french conventions but off by default. The reason is a bug in Safari: resulting spaces will be displayed as zero-width, for instance if you copy & paste the text or export it with Craft. Sorry. The choice between compatibility and typographic correctness is yours to make.
+* The plugin is called "french" but may work in some francophone contexts. Emphasis on *may*. No official support.
 
-Paramètres pour 
-* désactiver le remplacement automatique
-* choisir entre espace normale insécable et espace fine insécable. Utile, puisqu'un bug de Safari affiche ces dernières comme des espaces de largeur nulle (oui, ça existe en Unicode), ce qui peut être gênant si on veut exporter le texte (à la main ou depuis Invision dans l'onglet Inspect).
 
-### Insertion d'espaces insécables
+### Insertion of non-breaking spaces
 
-| Symbole               | Statut |
+| Symbol                 | Statut |
 | --------------------- | ------- |
 | :                     |    ✔️   |
 | «                     |    ✔️   |
@@ -26,41 +22,42 @@ Paramètres pour
 | ?                     |    ✔️   |
 | ;                     |    ✔️   |
 | %                     |    ✔️   |
-| Tirets d'incise       |         |
-| Monnaie :  $ €        |     ✔️    |
-| Espaces entre centaines, milliers...              |         |
-
+| Em-dash/ tiret demi-quadratin      |         |
+| Currency :  $ €        |     ✔️    |
+| Space between hundreds, thousands  |         |
 
 
 ### Remplacement de caractères
 
 | Symbole                      | Statut |
 | ---------------------------- | ------ |
-| Tirets demi-quadratins       |  ✔️    |
-| Certaines fractions (½, ⅓, ¼ ) | ✔️   |
-| Suffixes ordinaux (1er, 2e...)|  ✔️️   |
-| Points de suspension (…) :   |   ✔️   |
+| double dash --> em-dash       |  ✔️    |
+| Some fractions (½, ⅓, ¼ ) | ✔️   |
+| Ordinal suffixes (1er, 2e…)|  ✔️️   |
+| Ellipsis…   |   ✔️   |
 | N° ==> №                     |    ✔️️️  |
-| Guillemets hauts => guillemets bas<br />(pour l'instant on suppose que le paramètre système correspondant est activé                       |        |
+| " --> «                |        |
 
-## Ce que ça ne fait pas
-
-Ce plugin n'a pas vocation à traiter les cas suivants :
-
-* Des insertions d'espaces insécables dans des cas plus complexes (latitudes, groupes comprenant mot et chiffre, etc.), répertoriés [[ici]](https://www.btb.termiumplus.gc.ca/tpv2guides/guides/chroniq/index-fra.html?lang=fra&lettr=indx_autr8cDRJ-6fjpl0&page=9ouqyIer24Kc.html) ou [[là]](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style#Non-breaking_spaces).
-* L'accentuation des lettres capitales (pas de moyen simple pour déterminer si l'utilisateur veut dire SALE ou SALÉ).
-* Les choses dont le rendu et le support sont complexes et imparfaits en unicode et beaucoup mieux traités avec un balisage HTML ou spécialisé. Exemple : la gestion des [fractions et exposants].(https://en.wikipedia.org/wiki/Unicode_subscripts_and_superscripts#Superscripts_and_subscripts_block).
-* Les erreurs genre double espace.
+## What it does not
 
 
-## build from source
+* Inserting non-breaking spaces in complex cases (eg. latitudes), listed [here](https://www.btb.termiumplus.gc.ca/tpv2guides/guides/chroniq/index-fra.html?lang=fra&lettr=indx_autr8cDRJ-6fjpl0&page=9ouqyIer24Kc.html) or [there](https://en.wikipedia.org/wiki/Wikipedia:Manual_of_Style#Non-breaking_spaces).
+* Accents on capital letters. There's no way to automatically tell SALE and SALÉ apart.
+* Things better handled with dedicated markup. For instance support and rendering of [fractions and exposants].(https://en.wikipedia.org/wiki/Unicode_subscripts_and_superscripts#Superscripts_and_subscripts_block) in Unicode is really spotty.
+* Typos like double spaces.
+
+
+## Boring stuff
+
+### Build from source
+
 Follow SKPM instructions : [1](https://skpm.io/help/) and [2](https://developer.sketchapp.com/guides/)
 
-## tests
+### Tests
 
 To check for errors in regex, in the plugin folder run :
 
 `npm test`
 
 It's a shorcut for : 
-build && [sketchTool path] run [plugin path] testRegex
+build && <sketchTool path> run <plugin path> testRegex
