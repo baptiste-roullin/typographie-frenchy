@@ -385,7 +385,6 @@ exports.openSettings = openSettings;
 exports.replaceString = replaceString;
 exports.fixLayer = fixLayer;
 //TODO
-// mettre en place versioning et maj
 // mettre en place publication sur repos officiels et tierces
 // mettre debug à false lors de la publi
 // que signifie prerelease
@@ -705,8 +704,12 @@ var sketch = __webpack_require__(3);
 var Settings = __webpack_require__(4);
 var Diff = __webpack_require__(12);
 var document = sketch.getSelectedDocument();
-var replaceString = __webpack_require__(5).replaceString;
-var U = __webpack_require__(5).U;
+
+var _require = __webpack_require__(5),
+    replaceString = _require.replaceString;
+
+var _require2 = __webpack_require__(5),
+    U = _require2.U;
 
 function spaceInUnicode(str) {
 	var newstring = str.replace(/(\u00A0|\u202F|\u0020)/g, function (match, p1) {

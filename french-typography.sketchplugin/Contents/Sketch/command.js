@@ -373,7 +373,6 @@ exports.openSettings = openSettings;
 exports.replaceString = replaceString;
 exports.fixLayer = fixLayer;
 //TODO
-// mettre en place versioning et maj
 // mettre en place publication sur repos officiels et tierces
 // mettre debug à false lors de la publi
 // que signifie prerelease

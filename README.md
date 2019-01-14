@@ -31,12 +31,13 @@ When you unselect a text layer, it replaces characters with their proper equival
 
 | Symbole                      | Statut |
 | ---------------------------- | ------ |
+| " --> «                |     ✔️️️    |
 | double dash --> em-dash       |  ✔️    |
 | Some fractions (½, ⅓, ¼ ) | ✔️   |
 | Ordinal suffixes (1er, 2e…)|  ✔️️   |
 | Ellipsis…   |   ✔️   |
 | N° ==> №                     |    ✔️️️  |
-| " --> «                |        |
+
 
 ## What it does not
 

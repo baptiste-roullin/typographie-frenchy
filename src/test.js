@@ -2,8 +2,8 @@ const sketch = require("sketch");
 const Settings = require("sketch/settings");
 const Diff = require("diff");	
 const document = sketch.getSelectedDocument();
-const replaceString = require("./command.js").replaceString;
-const U = require("./command.js").U;
+const {replaceString} = require("./command.js");
+const {U} = require("./command.js");
 
 
 function spaceInUnicode(str) {

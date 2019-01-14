@@ -1,7 +1,0 @@
-{
-    "plugins": [
-        ["transform-modern-regexp", 
-        {"useRe":true}
-        ]
-    ]
-}   
