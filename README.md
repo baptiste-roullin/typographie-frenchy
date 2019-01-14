@@ -49,7 +49,7 @@ When you unselect a text layer, it replaces characters with their proper equival
 
 ## Boring stuff
 
-### Build from source
+### Build from source
 
 Follow SKPM instructions : [1](https://skpm.io/help/) and [2](https://developer.sketchapp.com/guides/)
 
