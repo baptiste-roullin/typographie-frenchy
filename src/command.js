@@ -38,6 +38,7 @@ const ANY_NUMBER_EXCEPT_ONE 	= /(?!1\b)d+/gu;
 // SETTINGS
 U.NBSP = U.WNBSP;
 let DEBUG = true;
+console.log(U.NBSP);
 
 const settingsList = {
   AUTO_REPLACE : {

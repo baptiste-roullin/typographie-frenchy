@@ -1,6 +1,5 @@
 {
   "name": "French Typography",
-  "version": "0.8.0",
   "description": "Provides french typographic conventions and non-breaking spaces",
   "author": "Baptiste Roullin",
   "authorEmail": "baptiste@roullin.net",
@@ -54,6 +53,7 @@
     ],
     "isRoot": true
   },
+  "version": "0.8.1-0",
   "disableCocoaScriptPreprocessor": true,
   "appcast": "https://raw.githubusercontent.com/Saint-loup/french-typography/master/.appcast.xml"
 }

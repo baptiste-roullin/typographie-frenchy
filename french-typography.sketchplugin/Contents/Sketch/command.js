@@ -409,6 +409,7 @@ var ANY_NUMBER_EXCEPT_ONE = /(?!1\b)d+/g;
 // SETTINGS
 U.NBSP = U.WNBSP;
 var DEBUG = true;
+console.log(U.NBSP);
 
 var settingsList = {
 	AUTO_REPLACE: {
