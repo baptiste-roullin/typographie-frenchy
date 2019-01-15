@@ -13,7 +13,7 @@ When you unselect a text layer, it replaces characters with their proper equival
 * The plugin is called "french" but may work in some francophone contexts. Emphasis on *may*. No official support.
 
 
-### Insertion of non-breaking spaces
+##### Insertion of non-breaking spaces
 
 | Symbol                 | Statut |
 | --------------------- | ------- |
@@ -29,7 +29,7 @@ When you unselect a text layer, it replaces characters with their proper equival
 | Space between hundreds, thousands  |         |
 
 
-### Remplacement de caractères
+#### Remplacement de caractères
 
 | Symbole                      | Statut |
 | ---------------------------- | ------ |
@@ -52,11 +52,11 @@ When you unselect a text layer, it replaces characters with their proper equival
 
 ## Boring stuff
 
-### Build from source
+#### Build from source
 
 Follow SKPM instructions : [1](https://skpm.io/help/) and [2](https://developer.sketchapp.com/guides/)
 
-### Tests
+#### Tests
 
 To check for errors in regex, in the plugin folder run :
 
