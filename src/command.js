@@ -1,7 +1,6 @@
 //TODO
-// mettre en place publication sur repos officiels et tierces
+// mettre en place publication sur repo  et tierces
 // mettre debug à false lors de la publi
-// que signifie prerelease
 
 const sketch = require("sketch");
 const Settings = require("sketch/settings");
@@ -21,7 +20,6 @@ ELLIPSIS : "\u2026",
 SPACE : "\u0020",		// Good ol' space
 WNBSP : "\u00A0",   // wide non breakable space
 NNBSP : "\u202F",   // narrow non breakable space
-NBSP :"",       // Non breakable space as chosen by the user. Default : U.WNBSP
 OPENING_QUOTE : "«",
 CLOSING_QUOTE : "»"
 
@@ -36,25 +34,18 @@ const NBSP_BEFORE_QUOTE 			= /(?:(\w)»)|(?:(\S)»(?=\s|$))|(?:(\w|\s)»)/gu ;
 const ANY_NUMBER_EXCEPT_ONE 	= /(?!1\b)d+/gu; 
 
 // SETTINGS
-U.NBSP = U.WNBSP;
 let DEBUG = true;
-console.log(U.NBSP);
 
 const settingsList = {
   AUTO_REPLACE : {
 		ID : "AUTO_REPLACE",
-		state : true,
 		label : LABEL_AUTO_REPLACE
   },
 	USE_NNBSP : {
 		ID : "USE_NNBSP",
-		state : false,
 		label : LABEL_USE_NNBSP
   }
 }
-
-
-
 
 export function initPlugin(context) {
 
@@ -146,7 +137,12 @@ export function openSettings(context) {
 
 export function replaceString(string) {
 
+
+
 let count = 0;
+U.NBSP = (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true ? U.NNBSP : U.WNBSP );
+
+
 string = string.replace(
 
 									 // REMPLACEMENTS

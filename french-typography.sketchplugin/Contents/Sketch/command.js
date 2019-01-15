@@ -373,9 +373,8 @@ exports.openSettings = openSettings;
 exports.replaceString = replaceString;
 exports.fixLayer = fixLayer;
 //TODO
-// mettre en place publication sur repos officiels et tierces
+// mettre en place publication sur repo  et tierces
 // mettre debug à false lors de la publi
-// que signifie prerelease
 
 var sketch = __webpack_require__(9);
 var Settings = __webpack_require__(10);
@@ -394,7 +393,6 @@ var U = exports.U = {
 	SPACE: " ", // Good ol' space
 	WNBSP: "\xA0", // wide non breakable space
 	NNBSP: "\u202F", // narrow non breakable space
-	NBSP: "", // Non breakable space as chosen by the user. Default : U.WNBSP
 	OPENING_QUOTE: "«",
 	CLOSING_QUOTE: "»"
 	// REGEXs
@@ -407,19 +405,15 @@ var NBSP_BEFORE_QUOTE = /(?:([0-9A-Z_a-z])\xBB)|(?:((?:[\0-\x08\x0E-\x1F!-\x9F\x
 var ANY_NUMBER_EXCEPT_ONE = /(?!1\b)d+/g;
 
 // SETTINGS
-U.NBSP = U.WNBSP;
 var DEBUG = true;
-console.log(U.NBSP);
 
 var settingsList = {
 	AUTO_REPLACE: {
 		ID: "AUTO_REPLACE",
-		state: true,
 		label: LABEL_AUTO_REPLACE
 	},
 	USE_NNBSP: {
 		ID: "USE_NNBSP",
-		state: false,
 		label: LABEL_USE_NNBSP
 	}
 };
@@ -510,6 +504,8 @@ function openSettings(context) {
 function replaceString(string) {
 
 	var count = 0;
+	U.NBSP = Settings.settingForKey(settingsList.USE_NNBSP.ID) == true ? U.NNBSP : U.WNBSP;
+
 	string = string.replace(
 
 	// REMPLACEMENTS
