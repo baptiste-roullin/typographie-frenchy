@@ -1,8 +1,9 @@
 {
   "repository": {
     "type" : "git",
-    "url" : "https://github.com/Saint-loup/french-typography/"
+    "url" : "git+https://github.com/Saint-loup/french-typography.git"
   },
+  "version": "0.8.0",
   "engines": {
     "sketch": ">=3.0"
   },
