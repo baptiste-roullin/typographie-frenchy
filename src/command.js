@@ -7,9 +7,9 @@ const Settings = require("sketch/settings");
 const searchAllTextLayers = require("./utils.js");
 const document = sketch.getSelectedDocument();
 
-console.log("test");
+
 // LABELS
-const LABEL_AUTO_REPLACE = " Automatic substitutions after unselecting text layers";
+const LABEL_AUTO_REPLACE = " Automatic substitutions";
 const LABEL_USE_NNBSP = " Enable narrow non-breakable spaces \n Resulting text is not compatible with Safari";
 const LABEL_POPIN_TITLE = "French typography settings";
 

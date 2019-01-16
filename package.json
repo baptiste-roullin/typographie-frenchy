@@ -48,7 +48,6 @@
     ]
   },
   "dependencies": {
-    "diff": "^3.5.0",
-    "sketch-utils": "file:sketch-utils"
+    "diff": "^3.5.0"
   }
 }
