@@ -34,7 +34,7 @@ const NBSP_BEFORE_QUOTE 			= /(?:(\w)»)|(?:(\S)»(?=\s|$))|(?:(\w|\s)»)/gu ;
 const ANY_NUMBER_EXCEPT_ONE 	= /(?!1\b)d+/gu; 
 
 // SETTINGS
-let DEBUG = true;
+
 
 const settingsList = {
   AUTO_REPLACE : {
@@ -48,6 +48,19 @@ const settingsList = {
 }
 
 export function initPlugin(context) {
+
+	try {
+		if (NSFileManager.defaultManager().fileExistsAtPath( context.plugin.urlForResourceNamed("debug").path()) == 1) {
+			Settings.setSettingForKey(settingsList.DEBUG, true);
+		}
+		else {
+			Settings.setSettingForKey(settingsList.DEBUG, false);
+		}
+		}
+	catch(error) {
+		console.error(error);
+	}
+
 
   if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == undefined  ) {
 		Settings.setSettingForKey(settingsList.USE_NNBSP.ID, false);
@@ -79,9 +92,8 @@ export function createCheckbox(setting, frame) {
 	checkbox.setButtonType(NSSwitchButton);
 	checkbox.setBezelStyle(0);
 	checkbox.setTitle(setting.label);
-	console.log(setting.ID, Settings.settingForKey(setting.ID));
 
-	if (Settings.settingForKey(setting.ID) == true) {
+	if (Settings.settingForKey(setting.ID)) {
 		checkbox.setState(NSOnState);
 	  }
 	else {
@@ -93,7 +105,6 @@ export function createCheckbox(setting, frame) {
 export function saveSettings(setting, checkbox) {
 	setting.state = (checkbox.state() == true); 
 	Settings.setSettingForKey(setting.ID, setting.state);
-	console.log(setting.ID, Settings.settingForKey(setting.ID));
 	}
 
 // fonction qui ouvre un menu de paramètres depuis le menu.
@@ -118,7 +129,7 @@ export function openSettings(context) {
 		saveSettings(settingsList.AUTO_REPLACE, checkboxAutoReplace );
 		saveSettings(settingsList.USE_NNBSP, checkboxUseNNBSP);
 
-		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true ) {
+		if (Settings.settingForKey(settingsList.USE_NNBSP.ID) ) {
 		U.NBSP = U.NNBSP;	
 		replaceWNBSPbyNNBSP();
 		} else {
@@ -137,11 +148,9 @@ export function openSettings(context) {
 
 export function replaceString(string) {
 
-
-
 let count = 0;
+//On vérifie le charactère choisi par l'utilisateur comme espace et on l'affecte
 U.NBSP = (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true ? U.NNBSP : U.WNBSP );
-
 
 string = string.replace(
 
@@ -286,7 +295,7 @@ export function fixLayer(context) {
   // Si le remplacement automatique est désactivé dans les paramètres, on quitte la fonction
   let autoReplaceActivated = Settings.settingForKey(settingsList.AUTO_REPLACE.ID);
 
-  if (autoReplaceActivated == false) {
+  if (!autoReplaceActivated) {
 	return;
   }
 
@@ -301,23 +310,14 @@ export function fixLayer(context) {
 	let count = newText.count;
 	const endDate = new Date();
 	const duration = (endDate.getTime() - startDate.getTime()) / 1000;
-	if (count > 0 && DEBUG) {
-	  sketch.UI.message(
-		`${count} substitution(s) done in ${duration}`,
-		document
-	  );
+	if (	count > 0 &&	Settings.settingForKey(settingsList.DEBUG)	) {
+	  sketch.UI.message(`${count} substitution(s) done in ${duration}`,document	  );
 	}
 
-	if (
-	  Settings.settingForKey(settingsList.USE_NNBSP.ID) == true &&
-	  RegExp(U.NNBSP).test(selection)
-	) {
+	if (	  Settings.settingForKey(settingsList.USE_NNBSP.ID) &&  RegExp(U.NNBSP).test(selection)	) {
 	  console.log("replaceWNBSPbyNNBSP n'a pas marché");
 	}
-	if (
-	  Settings.settingForKey(settingsList.USE_NNBSP.ID) == false &&
-	  RegExp(U.WNBSP).test(selection)
-	) {
+	if (	  !Settings.settingForKey(settingsList.USE_NNBSP.ID) &&	  RegExp(U.WNBSP).test(selection)	) {
 	  console.log("replaceNNBSPbyWNBSP n'a pas marché");
 	}
   } else {

@@ -65,3 +65,7 @@ To check for errors in regex, in the plugin folder run:
 
 It's a shorcut for : 
 build && <sketchTool path> run <plugin path> testRegex
+
+#### Debuging
+
+There's a little debug mode, enabled by placed a file named "debug" in the assets folder. The result is some more in the console and in SKetch, when using the plugin. 
