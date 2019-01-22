@@ -74,4 +74,4 @@ build && <sketchTool path> run <plugin path> testRegex
 
 #### Debuging
 
-There's a little debug mode, enabled by placed a file named "debug" in the assets folder. The result is some more in the console and in SKetch, when using the plugin. 
+There's a little debug mode, enabled by placed a file named "debug" in the assets folder. It results in logs in the console and in Sketch, when using the plugin. 
