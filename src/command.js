@@ -1,6 +1,14 @@
 //TODO
-// mettre en place publication sur repo  et tierces
-// mettre debug à false lors de la publi
+// mettre en place publication sur sketchpacks
+
+// Scénario de test
+// J'installe le plugin depuis le repo officiel
+// J'insère t", le guillemet est bien remplacé
+// j'ouvre les settings. setting 1 : activé, setting 2 : désactivé. 
+//je crée du texte dans plusieurs pages. je change le setting 2. tous les espaces sont bien remplacés.
+// je ferme  rouvre les settings, ils sont bien conservés.
+// je ferme sketch et les reouvre, idem
+// Aucun message n'apparait en bas de l'écran lors des remplacements.
 
 const sketch = require("sketch");
 const Settings = require("sketch/settings");
@@ -9,9 +17,9 @@ const document = sketch.getSelectedDocument();
 
 
 // LABELS
+const LABEL_POPIN_TITLE = "French typography settings";
 const LABEL_AUTO_REPLACE = " Automatic substitutions";
 const LABEL_USE_NNBSP = " Enable narrow non-breakable spaces \n Resulting text is not compatible with Safari";
-const LABEL_POPIN_TITLE = "French typography settings";
 
 
 // CHARACTER CONSTANTS
