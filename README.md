@@ -2,6 +2,8 @@
 
 Sketch plugin to automatically add typographical French conventions and give a nice touch to UIs. Things like nonbreakable spaces or better fractions.
 
+Feedbacks and bug reports are welcome.
+
 Install with the plugin manager Sketchpacks or by downloading
 [the latest release](https://github.com/Saint-loup/french-typography/releases/latest) and opening the sketchplugin file.
 
