@@ -5,7 +5,7 @@ Sketch plugin to automatically add typographical French conventions and give a n
 Install with the plugin manager Sketchpacks or by downloading
 [the latest release](https://github.com/Saint-loup/french-typography/releases/latest) and opening the sketchplugin file.
 
-[![Install PLUGIN NAME with Sketchpacks](french-typography/assets/sketchpacks-badge-install.png?raw=true "Install French Typography with Sketchpacks")](https://www.sketchpacks.com/Saint-loup/french-typography)
+[![Install PLUGIN NAME with Sketchpacks](french-typography/assets/sketchpacks-badge-install.png "Install French Typography with Sketchpacks")](https://www.sketchpacks.com/Saint-loup/french-typography)
 
 
 ##  What it does
