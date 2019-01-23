@@ -21,7 +21,7 @@ When you unselect a text layer, it replaces some characters with their proper eq
 | Symbol                      | Status |
 | ---------------------------- | ------ |
 | From " to «                |  ✔️  |
-| From double dash to em-dash       |  ✔️  |
+| From double dash to en-dash       |  ✔️  |
 | Some fractions (½, ⅓, ¼ )           |  ✔️  |
 | Ordinal suffixes (1er, 2e…)|  ✔️  |
 | Ellipsis…   |  ✔️  |
@@ -39,7 +39,7 @@ When you unselect a text layer, it replaces some characters with their proper eq
 | ?                     |  ✔️  |
 | ;                     |  ✔️  |
 | %                     |  ✔️  |
-| Em-dash / tiret demi-quadratin      |  ✔️  |
+| En-dash  (*tiret demi-quadratin*)      |  ✔️  |
 | Currency:  $ €        |  ✔️  |
 | Hundreds, thousands, etc.  |      |
 
