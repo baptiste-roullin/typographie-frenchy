@@ -10,11 +10,22 @@ Install with [Sketch Runner](https://sketchrunner.com/), [Sketchpacks](https://w
 
 ##  What it does
 
-When you unselect a text layer, it replaces characters with their proper equivalents. 
+When you unselect a text layer, it replaces some characters with their proper equivalents. 
 
-* It works whether you enable smart quotes substitutions at the system level (System > Keyboard > Text), since this Mac OS feature doesn't use non-breakable space.
-* There's a setting to enable narrow non-breakable space. Toggling it replaces back and forth narrow and normal spaces in all the current Sketch document. The setting is closer to French conventions but off by default. The reason is a bug in Safari: resulting spaces will be displayed as zero-width, for instance if you copy & paste the text or export it with Craft. Sorry. The choice between compatibility and typographical correctness is yours to make.
+* It works whether you enable smart quotes substitutions at the system level (System > Keyboard > Text) or not. This Mac OS feature use non-breakable spaces only for quotes.
+* There's a setting to enable narrow non-breakable space. It's closer to French conventions but off by default, because of a bug in Safari. This character (\u202F) is rendered as a zero-width space in Safari, for instance if you copy & paste the text or export it with Craft. Sorry. The choice between compatibility and typographical correctness is yours to make. Toggling the option set the desired space in the whole document.
 * The plugin is called "French" but may work in some francophone contexts. Emphasis on *may*. No official support is hereby implied.
+
+#### Character substitutions
+
+| Symbole                      | Statut |
+| ---------------------------- | ------ |
+| From " to «                |     ✔️️️    |
+| Double dash --> em-dash       |  ✔️    |
+| Some fractions (½, ⅓, ¼ ) | ✔️   |
+| Ordinal suffixes (1er, 2e…)|  ✔️️   |
+| Ellipsis…   |   ✔️   |
+| From N° to №                     |    ✔️️️  |
 
 
 ##### Insertion of non-breaking spaces
@@ -31,18 +42,6 @@ When you unselect a text layer, it replaces characters with their proper equival
 | Em-dash / tiret demi-quadratin      |    ️ ✔️   |
 | Currency :  $ €        |     ✔️    |
 | Space between hundreds, thousands  |         |
-
-
-#### Remplacement de caractères
-
-| Symbole                      | Statut |
-| ---------------------------- | ------ |
-| From " to «                |     ✔️️️    |
-| Double dash --> em-dash       |  ✔️    |
-| Some fractions (½, ⅓, ¼ ) | ✔️   |
-| Ordinal suffixes (1er, 2e…)|  ✔️️   |
-| Ellipsis…   |   ✔️   |
-| From N° to №                     |    ✔️️️  |
 
 
 ## What it doesn't do
