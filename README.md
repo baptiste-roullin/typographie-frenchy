@@ -20,28 +20,28 @@ When you unselect a text layer, it replaces some characters with their proper eq
 
 | Symbole                      | Statut |
 | ---------------------------- | ------ |
-| From " to «                |     ✔️️️    |
-| Double dash --> em-dash       |  ✔️    |
-| Some fractions (½, ⅓, ¼ )           | ✔️   |
-| Ordinal suffixes (1er, 2e…)|  ✔️️   |
-| Ellipsis…   |   ✔️   |
-| From N° to №                     |    ✔️️️  |
+| From " to «                |  ✔️  |
+| Double dash --> em-dash       |  ✔️  |
+| Some fractions (½, ⅓, ¼ )           |  ✔️  |
+| Ordinal suffixes (1er, 2e…)|  ✔️  |
+| Ellipsis…   |  ✔️  |
+| From N° to №                     |  ✔️  |
 
 
 ##### Insertion of non-breaking spaces
 
 | Symbol                 | Statut |
 | --------------------- | ------- |
-| :                     |    ✔️   |
-| «                     |    ✔️   |
-| »                     |    ✔️ ️  |
-| !                     |    ✔️   |
-| ?                     |    ✔️   |
-| ;                     |    ✔️   |
-| %                     |    ✔️   |
-| Em-dash / tiret demi-quadratin      |    ️ ✔️   |
-| Currency :  $ €        |     ✔️    |
-| Space between hundreds, thousands  |         |
+| :                     |  ✔️  |
+| «                     |  ✔️  |
+| »                     |  ✔️  |
+| !                     |  ✔️  |
+| ?                     |  ✔️  |
+| ;                     |  ✔️  |
+| %                     |  ✔️  |
+| Em-dash / tiret demi-quadratin      |  ✔️  |
+| Currency :  $ €        |  ✔️  |
+| Space between hundreds, thousands  |      |
 
 
 ## What it doesn't do
