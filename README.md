@@ -13,7 +13,7 @@ Install with [Sketch Runner](https://sketchrunner.com/), [Sketchpacks](https://w
 When you unselect a text layer, it replaces some characters with their proper equivalents. 
 
 * It works whether you enable smart quotes substitutions at the system level (System > Keyboard > Text) or not. This Mac OS feature use non-breakable spaces only for quotes.
-* There's a setting to enable narrow non-breakable space. It's closer to French conventions but off by default, because of a bug in Safari. This character (\u202F) is rendered as a zero-width space in Safari, for instance if you copy & paste the text or export it with Craft. Sorry. The choice between compatibility and typographical correctness is yours to make. Toggling the option set the desired space in the whole document.
+* There's a setting to enable narrow non-breakable space. It's closer to French conventions but off by default, because of a bug in Safari. This character (\u202F) is rendered as a zero-width space in Safari, for instance if you copy & paste the text or export it with Craft. Sorry. The choice between compatibility and typographical correctness is yours to make. Toggling the option set the desired space in existing text layers for the whole document.
 * The plugin is called "French" but may work in some francophone contexts. Emphasis on *may*. No official support is hereby implied.
 
 ##### Character substitutions
