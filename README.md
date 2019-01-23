@@ -41,7 +41,7 @@ When you unselect a text layer, it replaces some characters with their proper eq
 | %                     |  ✔️  |
 | Em-dash / tiret demi-quadratin      |  ✔️  |
 | Currency:  $ €        |  ✔️  |
-| Space between hundreds, thousands  |      |
+| Hundreds, thousands, etc.  |      |
 
 
 ## What it doesn't do
