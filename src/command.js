@@ -63,15 +63,12 @@ export function initPlugin(context) {
 	try {
 		if (NSFileManager.defaultManager().fileExistsAtPath( context.plugin.urlForResourceNamed("debug").path()) == 1) {
 			Settings.setSettingForKey(settingsList.DEBUG.ID, true);
+			console.log("debug mode : " + Settings.settingForKey(settingsList.DEBUG.ID))
 		}
-		else {
-			Settings.setSettingForKey(settingsList.DEBUG.ID, false);
-		}
-		}
-	catch(error) {
-		console.error(error);
 	}
-console.log(Settings.settingForKey(settingsList.DEBUG.ID))
+	catch(error) {
+		console.log("debug mode : " + Settings.settingForKey(settingsList.DEBUG.ID))
+		Settings.setSettingForKey(settingsList.DEBUG.ID, false);	}
 
   if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == undefined  ) {
 		Settings.setSettingForKey(settingsList.USE_NNBSP.ID, false);
