@@ -25,8 +25,7 @@
       "script": "./command.js",
       "handlers": {
         "actions": {
-          "Startup": "initPlugin"
-        }
+          "Startup": "initPlugin"        }
       }
     },
     

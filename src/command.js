@@ -33,12 +33,12 @@ CLOSING_QUOTE : "»"
 
 }
 // REGEXs
-const NBSP_DOUBLE_PUNCTUATION = /(\w+(?:\s?»)?)(\s?)([?!;:])(\s|$)/gu;
-const REGEX_ELLIPSIS 					= /(\.{2,5})|(\. \. \.)/gu;
+const NBSP_DOUBLE_PUNCTUATION 	= /(\w+(?:\s?»)?)(\s?)([?!;:])(\s|$)/gu;
+const REGEX_ELLIPSIS 			= /(\.{2,5})|(\. \. \.)/gu;
 const DOUBLE_QUOTE_OPEN    		= /("(?=\w))|((?:\s|\^)"(?=\S))/gu;
 const DOUBLE_QUOTE_CLOSE    	= /(?:(\w)")|(?:(\S)"(?=\s|$))/gu;
-const NBSP_AFTER_QUOTE 				= /(\s|^|\'|\‘|\’)(«)(\s?)(\w+)/gu; 
-const NBSP_BEFORE_QUOTE 			= /(?:(\w)»)|(?:(\S)»(?=\s|$))|(?:(\w|\s)»)/gu ;
+const NBSP_AFTER_QUOTE 			= /(\s|^|\'|\‘|\’)(«)(\s?)(\w+)/gu; 
+const NBSP_BEFORE_QUOTE 		= /(?:(\w)»)|(?:(\S)»(?=\s|$))|(?:(\w|\s)»)/gu ;
 const ANY_NUMBER_EXCEPT_ONE 	= /(?!1\b)d+/gu; 
 
 // SETTINGS
@@ -54,7 +54,7 @@ export const settingsList = {
 		label : LABEL_USE_NNBSP
 	},
 	DEBUG : {
-		ID : "USE_NNBSP"
+		ID : "DEBUG"
 	}
 }
 
@@ -68,14 +68,22 @@ export function initPlugin(context) {
 	}
 	catch(error) {
 		console.log("debug mode : " + Settings.settingForKey(settingsList.DEBUG.ID))
-		Settings.setSettingForKey(settingsList.DEBUG.ID, false);	}
+		Settings.setSettingForKey(settingsList.DEBUG.ID, false);
+	}
 
-  if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == undefined  ) {
-		Settings.setSettingForKey(settingsList.USE_NNBSP.ID, false);
-  }
-  if (Settings.settingForKey(settingsList.AUTO_REPLACE.ID) == undefined ) {
+	if (Settings.settingForKey(settingsList.AUTO_REPLACE.ID) == undefined ) {
+		console.log("test d'undef passé")
+  
 		Settings.setSettingForKey(settingsList.AUTO_REPLACE.ID, true);
-  }
+	}
+
+	if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == undefined  ) {
+			Settings.setSettingForKey(settingsList.USE_NNBSP.ID, false);
+
+	}
+	
+
+
 }
 
 export function replaceNNBSPbyWNBSP(context) {
@@ -118,7 +126,7 @@ export function saveSettings(setting, checkbox) {
 // fonction qui ouvre un menu de paramètres depuis le menu.
 export function openSettings(context) {	
 	 
-  let dialogWindow = 		COSAlertWindow.alloc().init();
+  let dialogWindow = 	COSAlertWindow.alloc().init();
   let pluginIconPath = 	context.plugin.urlForResourceNamed("icon.png").path();
   dialogWindow.setIcon(NSImage.alloc().initByReferencingFile(pluginIconPath));
   dialogWindow.setMessageText(LABEL_POPIN_TITLE);
@@ -128,7 +136,7 @@ export function openSettings(context) {
   dialogWindow.addAccessoryView(checkboxAutoReplace);
   dialogWindow.addAccessoryView(checkboxUseNNBSP);
 
-	// labels seem hardcoded: shortcuts like ESC don't seem to work with any other labels.
+	// labels seem hardcoded: shortcuts like ESC don't work with any other labels.
   dialogWindow.addButtonWithTitle("OK");
   dialogWindow.addButtonWithTitle("Cancel");
 
@@ -144,6 +152,7 @@ export function openSettings(context) {
 		U.NBSP = U.WNBSP;	
 		replaceNNBSPbyWNBSP();		
 		}
+
 
 	  return;
 	}
