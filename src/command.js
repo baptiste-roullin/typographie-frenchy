@@ -19,7 +19,7 @@ const document = sketch.getSelectedDocument();
 // LABELS
 const LABEL_POPIN_TITLE = "French typography settings";
 const LABEL_AUTO_REPLACE = " Automatic substitutions";
-const LABEL_USE_NNBSP = " Enable narrow non-breakable spaces \n Resulting text is not compatible with Safari";
+const LABEL_USE_NNBSP = " Narrow non-breakable spaces \n Resulting text is not compatible with Safari";
 
 
 // CHARACTER CONSTANTS
@@ -44,7 +44,7 @@ const ANY_NUMBER_EXCEPT_ONE 	= /(?!1\b)d+/gu;
 // SETTINGS
 
 
-const settingsList = {
+export const settingsList = {
   AUTO_REPLACE : {
 		ID : "AUTO_REPLACE",
 		label : LABEL_AUTO_REPLACE
@@ -52,23 +52,26 @@ const settingsList = {
 	USE_NNBSP : {
 		ID : "USE_NNBSP",
 		label : LABEL_USE_NNBSP
-  }
+	},
+	DEBUG : {
+		ID : "USE_NNBSP"
+	}
 }
 
 export function initPlugin(context) {
 
 	try {
 		if (NSFileManager.defaultManager().fileExistsAtPath( context.plugin.urlForResourceNamed("debug").path()) == 1) {
-			Settings.setSettingForKey(settingsList.DEBUG, true);
+			Settings.setSettingForKey(settingsList.DEBUG.ID, true);
 		}
 		else {
-			Settings.setSettingForKey(settingsList.DEBUG, false);
+			Settings.setSettingForKey(settingsList.DEBUG.ID, false);
 		}
 		}
 	catch(error) {
 		console.error(error);
 	}
-
+console.log(Settings.settingForKey(settingsList.DEBUG.ID))
 
   if (Settings.settingForKey(settingsList.USE_NNBSP.ID) == undefined  ) {
 		Settings.setSettingForKey(settingsList.USE_NNBSP.ID, false);
@@ -116,7 +119,7 @@ export function saveSettings(setting, checkbox) {
 	}
 
 // fonction qui ouvre un menu de paramètres depuis le menu.
-export function openSettings(context) {
+export function openSettings(context) {	
 	 
   let dialogWindow = 		COSAlertWindow.alloc().init();
   let pluginIconPath = 	context.plugin.urlForResourceNamed("icon.png").path();
@@ -307,27 +310,28 @@ export function fixLayer(context) {
 	return;
   }
 
-  const startDate = new Date();
 
   if (context.actionContext.old) {
-	let selection = sketch.fromNative(context.actionContext.layer);
+	
+		const startDate = new Date();
+		let selection = sketch.fromNative(context.actionContext.layer);
+		let newText = replaceString(selection.text);
+		selection.text = newText.string;
 
-	let newText = replaceString(selection.text);
-	selection.text = newText.string;
+		let count = newText.count;
+		const endDate = new Date();
+		const duration = (endDate.getTime() - startDate.getTime()) / 1000;
+		if (	count > 0 &&	Settings.settingForKey(settingsList.DEBUG.ID)	) {
+			sketch.UI.message(`${count} substitution(s) done in ${duration}`,document	  );
+		}
 
-	let count = newText.count;
-	const endDate = new Date();
-	const duration = (endDate.getTime() - startDate.getTime()) / 1000;
-	if (	count > 0 &&	Settings.settingForKey(settingsList.DEBUG)	) {
-	  sketch.UI.message(`${count} substitution(s) done in ${duration}`,document	  );
-	}
-
-	if (	  Settings.settingForKey(settingsList.USE_NNBSP.ID) &&  RegExp(U.NNBSP).test(selection)	) {
-	  console.log("replaceWNBSPbyNNBSP n'a pas marché");
-	}
-	if (	  !Settings.settingForKey(settingsList.USE_NNBSP.ID) &&	  RegExp(U.WNBSP).test(selection)	) {
-	  console.log("replaceNNBSPbyWNBSP n'a pas marché");
-	}
+		if (	  Settings.settingForKey(settingsList.USE_NNBSP.ID) &&  RegExp(U.NNBSP).test(selection)	) {
+			console.log("replaceWNBSPbyNNBSP n'a pas marché");
+		}
+		if (	  !Settings.settingForKey(settingsList.USE_NNBSP.ID) &&	  RegExp(U.WNBSP).test(selection)	) {
+			console.log("replaceNNBSPbyWNBSP n'a pas marché");
+		}
+		
   } else {
 	throw new Error("unable to access selection");
   }

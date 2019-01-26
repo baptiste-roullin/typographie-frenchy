@@ -4,6 +4,7 @@ const Diff = require("diff");
 const document = sketch.getSelectedDocument();
 const {replaceString} = require("./command.js");
 const {U} = require("./command.js");
+const {settingsList} = require("./command.js");
 
 
 function spaceInUnicode(str) {
@@ -15,6 +16,7 @@ function spaceInUnicode(str) {
 
 //fonction qui texte les regex : comparaison entre chaines après remplacement et chaines de référence
 export function testRegex() {
+U.NBSP = (Settings.settingForKey(settingsList.USE_NNBSP.ID) == true ? U.NNBSP : U.WNBSP );
 
 const toFixString =
 `"tester", «${U.NBSP}tester »! « tester » l'"histoire"?
