@@ -1,5 +1,5 @@
 //TODO
-// mettre en place publication sur sketchpacks
+// Ajouter licence
 
 // Scénario de test
 // J'installe le plugin depuis le repo officiel
