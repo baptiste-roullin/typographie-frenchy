@@ -10,12 +10,11 @@ Download [the latest release](https://github.com/Saint-loup/french-typography/re
 Feedbacks and bug reports are welcome.
 
 ##  What it does
+It replaces some characters with their proper equivalents when you deselect a text layer. 
 
-When you unselect a text layer, it replaces some characters with their proper equivalents. 
+**Interaction with Mac OS** – It works whether you enable smart quotes substitutions at the system level (System > Keyboard > Text) or not. It does more than Mac OS, which uses non-breakable spaces only for quotes.
 
-**Interaction with Mac OS** – It works whether you enable smart quotes substitutions at the system level (System > Keyboard > Text) or not. This Mac OS feature use non-breakable spaces only for quotes.
-
-**A word of caution about narrow non-breakables spaces** – It's the convention to use this character (\u202F), but it's disabled by default because of a bug in Safari which renders it as a zero-width space. For instance if you copy & paste the text into Safari or export it with Craft, you will end up with many invisible spaces. Also, some typefaces don't support this space (some only in Sketch, some everywhere).That's why there's a setting to choose between normal or narrow spaces. Toggling it will also set the correct space for existing text layers in the current document.  
+**A word of caution about narrow non-breakables spaces** –  Using this character (\u202F) is the convention, but it's disabled by default because of a bug in Safari which renders it as a zero-width space. For instance if you copy & paste the text into Safari or export it with Craft, you will end up with many invisible spaces. Also, some typefaces don't support this space (some only in Sketch, some everywhere).That's why there's a setting to choose between normal or narrow spaces. Toggling it will also set the correct space for existing text layers in the current document.  
 
 **Non-French French** – The plugin *may* work in some francophone contexts, with various limits. For instance Canadian French seems closer to english punctuation.
 
