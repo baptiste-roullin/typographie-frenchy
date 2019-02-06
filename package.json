@@ -5,7 +5,7 @@
   },
   "version": "1.1.2",
   "engines": {
-    "sketch": ">=3.0"
+    "sketch": ">=50.0"
   },
   "skpm": {
     "name": "french-typography",
