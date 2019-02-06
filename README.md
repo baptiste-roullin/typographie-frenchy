@@ -12,18 +12,20 @@ Install with [Sketch Runner](https://sketchrunner.com/), [Sketchpacks](https://w
 
 When you unselect a text layer, it replaces some characters with their proper equivalents. 
 
-* It works whether you enable smart quotes substitutions at the system level (System > Keyboard > Text) or not. This Mac OS feature use non-breakable spaces only for quotes.
-* There's a setting to enable narrow non-breakable space. It's closer to French conventions but off by default, because of a bug in Safari. This character (\u202F) is rendered as a zero-width space in Safari, for instance if you copy & paste the text or export it with Craft. Sorry. The choice between compatibility and typographical correctness is yours to make. Toggling the option set the desired space in existing text layers for the whole document.
-* The plugin is called "French" but may work in some francophone contexts. Emphasis on *may*. No official support is hereby implied.
+**Interaction with Mac OS** – It works whether you enable smart quotes substitutions at the system level (System > Keyboard > Text) or not. This Mac OS feature use non-breakable spaces only for quotes.
+
+**A word of caution about narrow non-breakables spaces** – It's the convention to use this character (\u202F), but it's disabled by default because of a bug in Safari which renders it as a zero-width space. For instance if you copy & paste the text into Safari or export it with Craft, you will end up with many invisible spaces. Also, some typefaces don't support this space (some only in Sketch, some everywhere).That's why there's a setting to choose between normal or narrow spaces. Toggling it will also set the correct space for existing text layers in the current document.  
+
+**Non-French French** – The plugin *may* work in some francophone contexts, with various limits. For instance Canadian French seems closer to english punctuation.
 
 ##### Character substitutions
 
 | Symbol                      | Status |
 | ---------------------------- | ------ |
 | From " to «                |  ✔️  |
-| From double dash to en-dash       |  ✔️  |
+| From double dash (--) to en-dash (–)       |  ✔️  |
 | Some fractions (½, ⅓, ¼ )           |  ✔️  |
-| Ordinal suffixes (1er, 2e…)|  ✔️  |
+| Ordinal suffixes: from 2e to 2ᵉ|  ✔️  |
 | Ellipsis…   |  ✔️  |
 | From N° to №                     |  ✔️  |
 
