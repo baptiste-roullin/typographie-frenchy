@@ -57,7 +57,7 @@ Il replace certains charactères par le bon équivalent quand on désélectionne
 
 ## Tambouille technique
 
-[Voir plus](#Boring-stuff)
+[Voir plus bas](#Boring-stuff)
 
 
 # Le French typography
