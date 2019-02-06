@@ -3,10 +3,11 @@
     "type": "git",
     "url": "git+https://github.com/Saint-loup/typographie-frenchy.git"
   },
-  "version": "1.1.5",
+  "version": "1.1.4",
   "engines": {
-    "sketch": ">=50.0"
+    "sketch": ">=3.0"
   },
+  "compatibleVersion": "50",
   "skpm": {
     "name": "french-typography",
     "manifest": "src/manifest.json",

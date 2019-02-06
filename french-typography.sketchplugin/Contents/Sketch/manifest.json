@@ -1,9 +1,9 @@
 {
-  "name": "French Typography",
-  "description": "Provides french typographical conventions and non-breaking spaces",
+  "name": "Typographie frenchy",
+  "description": "Conventions typographiques françaises et espaces insécables",
   "author": "Baptiste Roullin",
   "authorEmail": "baptiste@roullin.net",
-  "homepage": "https://github.com/Saint-loup/french-typography/",
+  "homepage": "https://github.com/Saint-loup/typographie-frenchy/",
   "icon": "icon.png",
   "identifier": "com.saint_loup.sketch.french-typography",
   "commands": [
@@ -53,7 +53,7 @@
     ],
     "isRoot": true
   },
-  "version": "1.1.4",
+  "version": "1.1.5",
   "disableCocoaScriptPreprocessor": true,
   "appcast": "https://raw.githubusercontent.com/Saint-loup/typographie-frenchy/master/.appcast.xml"
 }
