@@ -3,7 +3,7 @@
     "type": "git",
     "url": "git+https://github.com/Saint-loup/french-typography.git"
   },
-  "version": "1.1.2",
+  "version": "1.1.3",
   "engines": {
     "sketch": ">=50.0"
   },
