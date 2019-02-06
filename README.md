@@ -2,9 +2,7 @@
 
 # Typographie frenchy
 
-Ce plugin Sketch permet de respecter automatiquement les conventions typographiques françaises et d'ajouter un peu de vernis à vos UI. Exemples : espaces insécables ou vraies fractions.
-
-Sketch plugin to automatically add typographical French conventions and give a nice touch to UIs. Things like nonbreakable spaces or better fractions.
+Ce plugin Sketch permet de respecter automatiquement les conventions typographiques françaises et d'ajouter un peu de vernis à vos interface. Exemples : espaces insécables ou vraies fractions.
 
 ## Installation
 
@@ -20,7 +18,7 @@ Il replace certains charactères par le bon équivalent quand on désélectionne
 
 **Petit avertissement pour les espaces fines insécables** (\u202F) – C'est la convention de l'utiliser, mais il est désactivé par défaut à cause d'un bug dans Safari qui l'affiche comme une espace de largeur nulle. Par exemple si vous copiez-collez du texte dans Safari ou que vous utilisez Craft et la fonction Inspect dans Invision, vous obtiendrez des espaces invisibles. Également, certaines polices ne supportent pas cette espace (certaines dans Safari, certaines partout). Il y a donc un paramètre pour choisir entre espaces normales et  fines. L'activer ou le désactiver insère la bonne espace dans les calques de texte dans le document en cours.
 
-**Francophonie** – le plugin marche **peut-être** dans un contexte francophone, avec des limites. Par exemple le Français Canadien semble plus proche de la ponctuation anglaise.
+**Francophonie** – le plugin marche dans un contexte francophone, dans certains cas et avec des limites. Par exemple le Français Canadien semble plus proche de la ponctuation anglaise.
 
 ##### Substitutions de charactère
 
@@ -33,7 +31,7 @@ Il replace certains charactères par le bon équivalent quand on désélectionne
 | Points de suspension…                           | ✔️      |
 | De N° à №                                       | ✔️      |
 
-##### Insertion d'espaces insécabls
+##### Insertion d'espaces insécables
 
 | Symbole                   | Statut |
 | ------------------------- | ------ |
@@ -58,7 +56,6 @@ Il replace certains charactères par le bon équivalent quand on désélectionne
 ## Tambouille technique
 
 [Voir plus bas](#Boring-stuff)
-
 
 # Le French typography
 
