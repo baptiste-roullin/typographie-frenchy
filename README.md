@@ -2,7 +2,7 @@
 
 # Typographie frenchy
 
-Ce plugin Sketch permet de respecter automatiquement les conventions typographiques françaises et d'ajouter un peu de vernis à vos interface. Exemples : espaces insécables ou vraies fractions.
+Ce plugin pour Sketch permet de respecter automatiquement les conventions typographiques françaises et d'ajouter un peu de vernis à vos interface.
 
 ## Installation
 
@@ -59,7 +59,7 @@ Il replace certains charactères par le bon équivalent quand on désélectionne
 
 # Le French typography
 
-Sketch plugin to automatically add typographical French conventions and give a nice touch to UIs. Things like nonbreakable spaces or better fractions.
+Sketch plugin to automatically add typographical French conventions and give a nice touch to UIs.
 
 ## Install
 
