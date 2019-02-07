@@ -4,6 +4,10 @@
 
 Ce plugin pour Sketch permet de respecter automatiquement les conventions typographiques françaises et d'ajouter un peu de vernis à vos interface.
 
+<div align="center">
+<img src="https://raw.githubusercontent.com/Saint-loup/typographie-frenchy/master/assets/Icon_ombre.png" />
+</div>
+
 ## Installation
 
 Télécharger [la dernière version](https://github.com/Saint-loup/french-typography/releases/latest) et ouvrir le fichier. On peut aussi utiliser des gestionnaires de paquets comme [Sketch Runner](https://sketchrunner.com/) or [Sketchpacks](https://www.sketchpacks.com/Saint-loup/french-typography).
