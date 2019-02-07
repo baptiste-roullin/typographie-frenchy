@@ -1,4 +1,4 @@
-[English readme below](#Le-French-typography)
+[Readme in English below](#Le-French-typography)
 
 # Typographie frenchy
 
