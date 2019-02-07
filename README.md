@@ -114,7 +114,7 @@ It replaces some characters with their proper equivalents when you deselect a te
 
 ##### Build from source
 
-Follow SKPM instructions : [here](https://skpm.io/help/) and [there](https://developer.sketchapp.com/guides/)
+Follow instructions for SKPM, the Sketch plugin toolchain : [here](https://skpm.io/help/) and [there](https://developer.sketchapp.com/guides/)
 
 ##### Tests
 
