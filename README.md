@@ -33,6 +33,7 @@ Il replace certains charactères par le bon équivalent quand on désélectionne
 | Certaines fractions (½, ⅓, ¼ )                  | ✔️      |
 | Suffixes ordinaux : de 2e à 2ᵉ                  | ✔️      |
 | Points de suspension…                           | ✔️      |
+| Apostrophe droite > apostrophe courbe           | ✔️      |
 | De N° à №                                       | ✔️      |
 
 ##### Insertion d'espaces insécables
