@@ -53,7 +53,7 @@
     ],
     "isRoot": true
   },
-  "version": "1.2.0",
+  "version": "1.2.1",
   "disableCocoaScriptPreprocessor": true,
   "appcast": "https://raw.githubusercontent.com/Saint-loup/typographie-frenchy/master/.appcast.xml"
 }

@@ -235,10 +235,10 @@ string = string.replace(
 			console.log("2e --> ordinal en exposant");
 			return `${$1}ᵉ`;
 		}).
-		replace(/(\w)\'(["«\w])/, ( match, $1, $2, $3) => {
+		replace(/(\w)\'/, ( match, $1, $2, $3) => {
 			console.log("apostrophe droit par apostrophe courbe");
 			count++;
-			return $1+"\u2019"+$2;
+			return $1+"\u2019";
 		}).
 
 

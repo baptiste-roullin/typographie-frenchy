@@ -577,10 +577,10 @@ function replaceString(string) {
 		count++;
 		console.log("2e --> ordinal en exposant");
 		return String($1) + "\u1D49";
-	}).replace(/(\w)\'(["«\w])/, function (match, $1, $2, $3) {
+	}).replace(/(\w)\'/, function (match, $1, $2, $3) {
 		console.log("apostrophe droit par apostrophe courbe");
 		count++;
-		return $1 + "\u2019" + $2;
+		return $1 + "\u2019";
 	}).
 
 	//  ESPACES INSÉCABLES
