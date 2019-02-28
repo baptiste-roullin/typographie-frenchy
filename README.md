@@ -20,7 +20,7 @@ Il replace certains charactères par le bon équivalent quand on désélectionne
 
 **Interaction avec Mac OS** – Il marche que les substitutions soient activées au niveau système (Préférences système > Clavier > onglet Texte) ou non. Il fait plus que Mac OS, qui utilise des espaces insécables uniquement pour les guillemets.
 
-**Petit avertissement pour les espaces fines insécables** (\u202F) – C'est la convention de l'utiliser, mais il est désactivé par défaut à cause d'un bug dans Safari qui l'affiche comme une espace de largeur nulle. Par exemple si vous copiez-collez du texte dans Safari ou que vous utilisez Craft et la fonction Inspect dans Invision, vous obtiendrez des espaces invisibles. Également, certaines polices ne supportent pas cette espace (certaines dans Safari, certaines partout). Il y a donc un paramètre pour choisir entre espaces normales et  fines. L'activer ou le désactiver insère la bonne espace dans les calques de texte dans le document en cours.
+**Petit avertissement pour les espaces fines insécables** (\u202F) – C'est la convention de l'utiliser, mais il est désactivé par défaut à cause d'un bug dans Safari qui l'affiche comme une espace de largeur nulle. Par exemple si vous copiez-collez du texte dans Safari ou que vous utilisez Craft et la fonction Inspect dans Invision, vous obtiendrez des espaces invisibles. Également, certaines polices ne supportent pas cette espace (certaines dans Safari, certaines partout). Il y a donc un paramètre pour choisir entre espaces normales et fines. L'activer ou le désactiver insère la bonne espace dans les calques de texte dans le document en cours.
 
 **Francophonie** – le plugin marche dans un contexte francophone, dans certains cas et avec des limites. Par exemple le Français Canadien semble plus proche de la ponctuation anglaise.
 
@@ -72,7 +72,7 @@ Sketch plugin to automatically add typographical French conventions and give a n
 
 ## Install
 
-Download [the latest release](https://github.com/Saint-loup/french-typography/releases/latest) and open the file. You can also use package managers like  [Sketch Runner](https://sketchrunner.com/) or [Sketchpacks](https://www.sketchpacks.com/Saint-loup/french-typography).
+Download [the latest release](https://github.com/Saint-loup/french-typography/releases/latest) and open the file. You can also use package managers like [Sketch Runner](https://sketchrunner.com/) or [Sketchpacks](https://www.sketchpacks.com/Saint-loup/french-typography).
 
 Feedbacks and bug reports are welcome.
 
@@ -82,7 +82,7 @@ It replaces some characters with their proper equivalents when you deselect a te
 
 **Interaction with Mac OS** – It works whether you enable smart substitutions at the system level (System preferences > Keyboard > Text tab) or not. It does more than Mac OS, which uses non-breakable spaces only for quotes.
 
-**A word of caution about narrow non-breakables spaces** –  Using this character (\u202F) is the convention, but it's disabled by default because of a bug in Safari which renders it as a zero-width space. For instance if you copy & paste the text into Safari or use Craft and the Inspect feature in Invision, you will end up with invisible spaces. Also, some typefaces don't support this space (some only in Sketch, some everywhere). That's why there's a setting to choose between normal or narrow spaces. Toggling it will also set the correct space for existing text layers in the current document.  
+**A word of caution about narrow non-breakables spaces** – Using this character (\u202F) is the convention, but it's disabled by default because of a bug in Safari which renders it as a zero-width space. For instance if you copy & paste the text into Safari or use Craft and the Inspect feature in Invision, you will end up with invisible spaces. Also, some typefaces don't support this space (some only in Sketch, some everywhere). That's why there's a setting to choose between normal or narrow spaces. Toggling it will also set the correct space for existing text layers in the current document. 
 
 **French outside France** – The plugin *may* work in some francophone contexts, with various limits. For instance Canadian French seems closer to english punctuation.
 
