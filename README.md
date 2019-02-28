@@ -5,7 +5,7 @@
 Ce plugin pour Sketch permet de respecter automatiquement les conventions typographiques françaises et d'ajouter un peu de vernis à vos interface.
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/Saint-loup/typographie-frenchy/master/assets/Icon_ombre.png" />
+<img src="https://raw.githubusercontent.com/Saint-loup/typographie-frenchy/master/assets/Icon ombre.png" />
 </div>
 
 ## Installation
