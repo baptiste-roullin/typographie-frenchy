@@ -10,9 +10,9 @@ Ce plugin pour Sketch permet de respecter automatiquement les conventions typogr
 
 ## Installation
 
-Télécharger [la dernière version](https://github.com/Saint-loup/french-typography/releases/latest) et ouvrir le fichier. On peut aussi utiliser des gestionnaires de paquets comme [Sketch Runner](https://sketchrunner.com/) ou [Sketchpacks](https://www.sketchpacks.com/Saint-loup/french-typography).
+Télécharger [la dernière version](https://github.com/Saint-loup/french-typography/releases/latest) et ouvrir le fichier. On peut aussi utiliser des gestionnaires de paquets comme [Sketch Runner](https://sketchrunner.com/) or [Sketchpacks](https://www.sketchpacks.com/Saint-loup/french-typography).
 
-Retours et signalements sont les bienvenus. Compatible avec Sketch 50 et plus.
+Retours and et signalements sont les bienvenus. Compatible avec Sketch 50 et plus.
 
 ## Ce qu'il fait
 
@@ -61,6 +61,10 @@ Il replace certains charactères par le bon équivalent quand on désélectionne
 ## Tambouille technique
 
 [Voir plus bas](#Boring-stuff)
+
+_____________________________________________________________________
+_____________________________________________________________________
+
 
 # Le French typography
 
