@@ -95,7 +95,7 @@ It replaces some characters with their proper equivalents when you deselect a te
 | Some fractions (½, ⅓, ¼ )            | ✔️      |
 | Ordinal suffixes: from 2e to 2ᵉ      | ✔️      |
 | Ellipsis…                            | ✔️      |
-| From N° to №                         | ✔️      |
+| From n° to №                         | ✔️      |
 
 ##### Insertion of non-breaking spaces
 
