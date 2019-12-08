@@ -13,3 +13,6 @@ npm-debug.log
 .eslintrc.yml
 .vscode
 ./assets/debug.txt
+
+typographie-frenchy.sublime-project
+typographie-frenchy.sublime-workspace
