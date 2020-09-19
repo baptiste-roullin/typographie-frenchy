@@ -3,52 +3,33 @@
     "type": "git",
     "url": "git+https://github.com/Saint-loup/typographie-frenchy.git"
   },
+  "name": "french-typography",
+  "description": "",
   "version": "1.2.2",
   "engines": {
-    "sketch": ">=3.0"
+    "sketch": ">=49.0"
   },
-  "compatibleVersion": "50",
   "skpm": {
     "name": "french-typography",
     "manifest": "src/manifest.json",
     "main": "french-typography.sketchplugin",
     "assets": [
       "assets/**/*"
-    ]
+    ],
   },
   "scripts": {
     "build": "skpm-build",
     "watch": "skpm-build --watch",
+    "start": "skpm-build --watch --run",
     "test": "skpm-build && /Applications/Sketch.app/Contents/Resources/sketchtool/bin/sketchtool run ~/Library/Application\\ Support/com.bohemiancoding.sketch3/Plugins/french-typography/french-typography.sketchplugin testRegex --without-activating",
-    "postinstall": "npm run build && skpm-link",
-    "lint-staged": "lint-staged",
-    "prettier:base": "prettier --single-quote --trailing-comma es5 --no-semi --write",
-    "prettify": "npm run prettier:base \"./src/**/*.js\""
+    "postinstall": "npm run build && skpm-link"
   },
   "devDependencies": {
-    "@skpm/builder": "^0.4.2",
-    "eslint": "^4.8.0",
-    "eslint-config-airbnb-base": "^12.0.2",
-    "eslint-config-prettier": "^2.6.0",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-no-not-accumulator-reassign": "^0.1.0",
-    "eslint-plugin-prettier": "^2.3.1",
-    "lint-staged": "^4.2.3",
-    "pre-commit": "^1.2.2",
-    "prettier": "^1.19.1"
-  },
-  "pre-commit": [
-    "lint-staged"
-  ],
-  "lint-staged": {
-    "*.js": [
-      "npm run prettier:base",
-      "eslint --quiet --rule 'prettier/prettier: [\"error\", {\"trailingComma\": \"es5\", \"singleQuote\": true}]'",
-      "git add"
-    ]
+    "@skpm/builder": "^0.7.0"
   },
   "dependencies": {
     "diff": "^3.5.0",
     "sketch-utils": "^0.2.9"
-  }
+  },
+  "author": "Saint-loup <shakespearien@gmail.com>"
 }
