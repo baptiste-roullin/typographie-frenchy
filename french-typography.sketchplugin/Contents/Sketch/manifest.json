@@ -10,7 +10,7 @@
     {
       "name": "Search and replace",
       "identifier": "replace on blur",
-      "script": "command.js",
+      "script": "__command.js",
       "handlers": {
         "actions": {
           "TextChanged.finish": "fixLayer"
@@ -20,7 +20,7 @@
     {
       "name": "Intialiser plugin",
       "identifier": "initPlugin",
-      "script": "command.js",
+      "script": "__command.js",
       "handlers": {
         "actions": {
           "Startup": "initPlugin"
@@ -30,19 +30,19 @@
     {
       "name": "Tester les regex",
       "identifier": "testRegex",
-      "script": "test.js",
+      "script": "__test.js",
       "handler": "testRegex"
     },
     {
       "name": "Utiliser des espaces fines insécables",
       "identifier": "use_NNBSP",
-      "script": "command.js",
+      "script": "__command.js",
       "handler": "use_NNBSP"
     },
     {
       "name": "French typography settings",
       "identifier": "openSettings",
-      "script": "command.js",
+      "script": "__command.js",
       "handler": "openSettings"
     }
   ],

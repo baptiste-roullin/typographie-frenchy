@@ -302,11 +302,9 @@ export function fixLayer(context) {
     return
   }
 
-  // if (context.actionContext.old) {
-
   const startDate = new Date()
   //let selection = sketch.fromNative(context.actionContext.layer);
-  selection = document.selectedLayers.layers[0]
+  let selection = document.selectedLayers.layers[0]
   console.log(selection)
   let newText = replaceString(selection.text)
   selection.text = newText.string
@@ -330,8 +328,4 @@ export function fixLayer(context) {
   ) {
     console.log("replaceNNBSPbyWNBSP n'a pas marché")
   }
-
-  //  } else {
-  // throw new Error("unable to access selection");
-  //  }
 }
