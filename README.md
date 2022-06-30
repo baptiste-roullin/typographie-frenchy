@@ -12,7 +12,7 @@ Ce plugin pour Sketch permet de respecter automatiquement les conventions typogr
 
 Télécharger [la dernière version](https://github.com/Saint-loup/french-typography/releases/latest) et ouvrir le fichier. On peut aussi utiliser des gestionnaires de paquets comme [Sketch Runner](https://sketchrunner.com/) or [Sketchpacks](https://www.sketchpacks.com/Saint-loup/french-typography).
 
-Retours and et signalements sont les bienvenus. Compatible avec Sketch 50 et plus.
+Retours et signalements sont les bienvenus. Compatible avec Sketch 50 et plus.
 
 ## Ce qu'il fait
 
